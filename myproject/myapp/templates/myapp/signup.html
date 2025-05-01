@@ -1,0 +1,59 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}สมัครสมาชิก - MeetUp{% endblock %}
+
+{% block content %}
+<section class="py-10">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">สมัครสมาชิก</h1>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <div class="mb-4">
+                <label for="{{ form.username.id_for_label }}" class="block text-gray-700 font-medium mb-2">ชื่อผู้ใช้</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+                <p class="text-sm text-gray-500 mt-1">ตัวอักษร ตัวเลข และเครื่องหมาย @/./+/-/_ เท่านั้น</p>
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.password1.id_for_label }}" class="block text-gray-700 font-medium mb-2">รหัสผ่าน</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.password1.errors.0 }}</p>
+                {% endif %}
+                <ul class="text-sm text-gray-500 mt-1 list-disc pl-5">
+                    <li>รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</li>
+                    <li>รหัสผ่านต้องไม่เหมือนกับชื่อผู้ใช้</li>
+                    <li>รหัสผ่านควรประกอบด้วยตัวอักษรและตัวเลข</li>
+                </ul>
+            </div>
+            
+            <div class="mb-6">
+                <label for="{{ form.password2.id_for_label }}" class="block text-gray-700 font-medium mb-2">ยืนยันรหัสผ่าน</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.password2.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-6">
+                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md">สมัครสมาชิก</button>
+            </div>
+            
+            <p class="text-center text-gray-600">มีบัญชีอยู่แล้ว? <a href="{% url 'login' %}" class="text-purple-600 hover:text-purple-800">เข้าสู่ระบบ</a></p>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'myapp/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{% if form.instance.id %}แก้ไขกิจกรรม{% else %}สร้างกิจกรรมใหม่{% endif %} - MeetUp{% endblock %}
+
+{% block content %}
+<section class="py-6">
+    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+        <h1 class="text-3xl font-bold text-purple-800 mb-8 text-center">{% if form.instance.id %}แก้ไขกิจกรรม{% else %}สร้างกิจกรรมใหม่{% endif %}</h1>
+        
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- ชื่อกิจกรรม -->
+            <div>
+                <label for="{{ form.title.id_for_label }}" class="block text-gray-800 font-medium mb-2">ชื่อกิจกรรม</label>
+                {{ form.title|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
+                {% if form.title.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.title.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- หมวดหมู่ -->
+            <div>
+                <label for="{{ form.category.id_for_label }}" class="block text-gray-800 font-medium mb-2">หมวดหมู่</label>
+                {{ form.category|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
+                {% if form.category.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.category.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- ชุมชน -->
+            <div>
+                <label for="{{ form.community.id_for_label }}" class="block text-gray-800 font-medium mb-2">ชุมชน</label>
+                {{ form.community|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
+                {% if form.community.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.community.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- รายละเอียด -->
+            <div>
+                <label for="{{ form.description.id_for_label }}" class="block text-gray-800 font-medium mb-2">รายละเอียด</label>
+                {{ form.description|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
+                {% if form.description.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.description.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- สถานที่ -->
+            <div>
+                <label for="{{ form.location.id_for_label }}" class="block text-gray-800 font-medium mb-2">สถานที่</label>
+                {{ form.location|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
+                {% if form.location.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.location.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- วันที่ เวลา -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.date.id_for_label }}" class="block text-gray-800 font-medium mb-2">วันที่</label>
+                    {{ form.date|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
+                    {% if form.date.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.time.id_for_label }}" class="block text-gray-800 font-medium mb-2">เวลา</label>
+                    {{ form.time|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
+                    {% if form.time.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.time.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- จำนวนผู้เข้าร่วม -->
+            <div>
+                <label for="{{ form.max_attendees.id_for_label }}" class="block text-gray-800 font-medium mb-2">จำนวนผู้เข้าร่วมสูงสุด (ปล่อยว่างหากไม่จำกัด)</label>
+                {{ form.max_attendees|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
+                {% if form.max_attendees.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.max_attendees.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- รูปภาพ -->
+            <div>
+                <label for="{{ form.image.id_for_label }}" class="block text-gray-800 font-medium mb-2">รูปภาพกิจกรรม</label>
+                {% if form.instance.image %}
+                <div class="mb-3">
+                    <img src="{{ form.instance.image.url }}" alt="{{ form.instance.title }}" class="h-48 w-full object-cover rounded-lg">
+                    <p class="text-sm text-gray-500 mt-2">รูปภาพปัจจุบัน</p>
+                </div>
+                {% endif %}
+                {{ form.image|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
+                {% if form.image.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.image.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex justify-center">
+                <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-medium px-8 py-3 rounded-lg transition">บันทึกกิจกรรม</button>
+            </div>
+
+        </form>
+    </div>
+</section>
+{% endblock %}

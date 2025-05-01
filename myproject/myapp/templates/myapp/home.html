@@ -1,0 +1,137 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}Chum-Chon Link - หน้าแรก{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<h2 class="text-3xl font-bold text-gray-900">
+    Welcome, {{ user.username }} 👋
+</h2>
+{% else %}
+
+<div class="flex items-center space-x-6">
+
+    <!-- ข้อความและปุ่ม -->
+    <div class="flex-1">
+        <h2 class="text-2xl font-extrabold text-gray-900 mb-2 border-l-4 border-purple-500 pl-2">
+            ที่ซึ่งผีเสื้อหลากสี โบยบินมาพบกัน
+        </h2>
+        <div class="space-y-4 text-gray-700 leading-relaxed">
+            <p>
+                พื้นที่ดี ๆ ที่จะทำให้ทุกคนที่มีความสนใจหลากหลาย ได้มาพบปะ แลกเปลี่ยน และสร้างมิตรภาพ
+            </p>
+            <p>
+                เหมือนผีเสื้อหลากสีสันที่โบยบินมาเจอกัน กิจกรรมต่าง ๆ รอให้คุณเข้ามาเรียนรู้ แบ่งปัน และสนุกไปกับเพื่อนใหม่
+            </p>
+            <p>
+                ที่นี่คือที่ที่คุณจะได้พบคนใจเดียวกัน และร่วมสร้างสังคมที่สวยงาม สมัครสมาชิกวันนี้ แล้วไปบินไปพร้อมกัน!
+            </p>
+        </div>
+
+        <a href="{% url 'signup' %}" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-5 py-3 rounded-md transition">
+            สมัคร Chum-Chon Link
+        </a>
+    </div>
+
+    <!-- รูปภาพ -->
+    <div class="flex-shrink-0">
+        <img src="{% static 'images/signup-banner.png' %}" alt="Signup Banner" class="w-72 h-auto rounded-md">
+    </div>
+
+</div>
+
+{% endif %}
+
+<section class="py-10">
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">ค้นพบกิจกรรมที่คุณสนใจ</h1>
+        <p class="text-xl text-gray-600">เข้าร่วมกิจกรรมที่คุณชื่นชอบ พบปะกับคนที่มีความสนใจเหมือนกัน</p>
+    </div>
+
+    <!-- Search Section -->
+    <div class="max-w-2xl mx-auto mb-12">
+        <form action="{% url 'event_list' %}" method="get" class="flex">
+            <input type="text" name="search" placeholder="ค้นหากิจกรรม..." class="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-r-md">ค้นหา</button>
+        </form>
+    </div>
+
+    <!-- Communities -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">ชุมชน</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% for community in communities %}
+            <a href="{% url 'event_list' %}?community={{ community.id }}" class="group">
+                <div class="relative rounded-lg overflow-hidden h-40 bg-gray-200">
+                    {% if community.image %}
+                    <img src="{{ community.image.url }}" alt="{{ community.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-green-100">
+                        <span class="text-green-600 font-bold text-lg">{{ community.name }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                        <h3 class="text-white font-bold text-xl">{{ community.name }}</h3>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">หมวดหมู่กิจกรรม</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% for category in categories %}
+            <a href="{% url 'event_list' %}?category={{ category.id }}" class="group">
+                <div class="relative rounded-lg overflow-hidden h-40 bg-gray-200">
+                    {% if category.image %}
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-blue-100">
+                        <span class="text-blue-600 font-bold text-lg">{{ category.name }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                        <h3 class="text-white font-bold text-xl">{{ category.name }}</h3>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Featured Events -->
+    <div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">กิจกรรมแนะนำ</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for event in featured_events %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="h-48 overflow-hidden">
+                    {% if event.image %}
+                    <img src="{{ event.image.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span class="text-gray-500">ไม่มีรูปภาพ</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">{{ event.title }}</h3>
+                    <p class="text-gray-600 mb-3">{{ event.date|date:"d M Y" }} | {{ event.time|time:"H:i" }}</p>
+                    <p class="text-gray-600 mb-4">{{ event.location }}</p>
+                    <a href="{% url 'event_detail' event.id %}" class="block text-center bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md">ดูรายละเอียด</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-4 text-center py-10">
+                <p class="text-gray-500">ไม่พบกิจกรรมแนะนำ</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+    <h1 class="text-3xl font-bold mb-6">Dashboard Summary</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-6 bg-white rounded-2xl shadow text-center">
+            <h2 class="text-lg font-semibold text-gray-600 mb-2">Users</h2>
+            <p class="text-4xl font-bold text-blue-600">{{ user_count }}</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow text-center">
+            <h2 class="text-lg font-semibold text-gray-600 mb-2">Events</h2>
+            <p class="text-4xl font-bold text-green-600">{{ event_count }}</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow text-center">
+            <h2 class="text-lg font-semibold text-gray-600 mb-2">Communities</h2>
+            <p class="text-4xl font-bold text-yellow-600">{{ community_count }}</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow text-center">
+            <h2 class="text-lg font-semibold text-gray-600 mb-2">Attendances</h2>
+            <p class="text-4xl font-bold text-red-600">{{ attendance_count }}</p>
+        </div>
+    </div>
+
+</body>
+</html>

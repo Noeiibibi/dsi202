@@ -1,0 +1,157 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}{{ event.title }} - MeetUp{% endblock %}
+
+{% block content %}
+<section class="py-6">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <!-- Event Image -->
+        <div class="h-80 overflow-hidden">
+            {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
+            {% else %}
+            <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span class="text-gray-500">ไม่มีรูปภาพ</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="p-6">
+            <!-- Event Header -->
+            <div class="mb-6">
+                <div class="flex flex-wrap items-center mb-2">
+                    <span class="inline-block bg-purple-100 text-purple-800 text-sm px-3 py-1 rounded-md mr-2">{{ event.category.name }}</span>
+                    <span class="text-gray-500">จัดโดย <a href="{% url 'view_profile' event.organizer.username %}" class="text-purple-600 hover:underline">{{ event.organizer.username }}</a></span>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ event.title }}</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ event.date|date:"d M Y" }}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{{ event.time|time:"H:i" }} น.</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>{{ event.location }}</span>
+                    </div>
+                </div>
+                
+                {% if user.is_authenticated %}
+                    <div class="flex flex-wrap gap-2">
+                        <form method="post" action="{% url 'attend_event' event.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="attending">
+                            <button type="submit" class="{% if attendance and attendance.status == 'attending' %}bg-purple-600{% else %}bg-purple-600 hover:bg-purple-700{% endif %} text-white px-4 py-2 rounded-md">
+                                {% if attendance and attendance.status == 'attending' %}กำลังเข้าร่วม{% else %}เข้าร่วม{% endif %}
+                            </button>
+                        </form>
+                        
+                        <form method="post" action="{% url 'attend_event' event.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="interested">
+                            <button type="submit" class="{% if attendance and attendance.status == 'interested' %}bg-purple-500{% else %}bg-gray-200 hover:bg-gray-300 text-gray-800{% endif %} px-4 py-2 rounded-md">
+                                {% if attendance and attendance.status == 'interested' %}สนใจแล้ว{% else %}สนใจ{% endif %}
+                            </button>
+                        </form>
+                        
+                        {% if event.organizer == user %}
+                            <a href="{% url 'event_update' event.id %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md">แก้ไขกิจกรรม</a>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="inline-block bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md">เข้าสู่ระบบเพื่อเข้าร่วม</a>
+                {% endif %}
+            </div>
+            
+            <!-- Event Description -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-3">รายละเอียดกิจกรรม</h2>
+                <div class="prose max-w-none">
+                    {{ event.description|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Attendees -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-3">ผู้เข้าร่วม ({{ attendees.count }})</h2>
+                {% if attendees %}
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for attendance in attendees %}
+                            <a href="{% url 'view_profile' attendance.user.username %}" class="flex items-center bg-gray-100 px-3 py-2 rounded-md hover:bg-gray-200">
+                                {% if attendance.user.profile.profile_image %}
+                                    <img src="{{ attendance.user.profile.profile_image.url }}" alt="{{ attendance.user.username }}" class="w-6 h-6 rounded-full mr-2">
+                                {% else %}
+                                    <div class="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center mr-2">{{ attendance.user.username.0|upper }}</div>
+                                {% endif %}
+                                <span>{{ attendance.user.username }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-500">ยังไม่มีผู้เข้าร่วมกิจกรรมนี้</p>
+                {% endif %}
+            </div>
+            
+            <!-- Interested -->
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-3">ผู้ที่สนใจ ({{ interested.count }})</h2>
+                {% if interested %}
+                    <div class="flex flex-wrap gap-2">
+                        {% for attendance in interested %}
+                            <a href="{% url 'view_profile' attendance.user.username %}" class="flex items-center bg-gray-100 px-3 py-2 rounded-md hover:bg-gray-200">
+                                {% if attendance.user.profile.profile_image %}
+                                    <img src="{{ attendance.user.profile.profile_image.url }}" alt="{{ attendance.user.username }}" class="w-6 h-6 rounded-full mr-2">
+                                {% else %}
+                                    <div class="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center mr-2">{{ attendance.user.username.0|upper }}</div>
+                                {% endif %}
+                                <span>{{ attendance.user.username }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-500">ยังไม่มีผู้ที่สนใจกิจกรรมนี้</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Events -->
+    {% if related_events %}
+    <div class="mt-10">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">กิจกรรมที่คล้ายกัน</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for event in related_events %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="h-40 overflow-hidden">
+                    {% if event.image %}
+                    <img src="{{ event.image.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span class="text-gray-500">ไม่มีรูปภาพ</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">{{ event.title }}</h3>
+                    <p class="text-gray-600 mb-2">{{ event.date|date:"d M Y" }} | {{ event.time|time:"H:i" }}</p>
+                    <p class="text-gray-600 mb-4">{{ event.location }}</p>
+                    <a href="{% url 'event_detail' event.id %}" class="block text-center bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md">ดูรายละเอียด</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

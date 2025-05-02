@@ -31,3 +31,46 @@ It provides a platform where users can create, discover, and join local events, 
 - *"As a retiree, I want to discover volunteer opportunities to stay active and contribute."*  
 - *"As a local business owner, I want to promote my events to reach more people in the neighborhood."*  
 - *"As someone who enjoys outdoor activities, I want to connect with people who have similar hobbies."*
+
+#### ✅ Step-by-step Instructions
+
+1. **Navigate to the Django project folder**
+```bash
+cd dsi202/myproject
+```
+
+2. **Create a virtual environment** (only needed the first time)
+```bash
+python3 -m venv env
+```
+
+3. **Activate the virtual environment**
+```bash
+source env/bin/activate
+```
+
+4. **Install required dependencies**
+```bash
+pip install -r ../requirements_django.txt
+```
+
+5. **Apply database migrations**
+```bash
+python manage.py migrate
+```
+
+6. **Start the development server**
+```bash
+python manage.py runserver
+```
+
+7. **Visit the web app in your browser**
+```
+http://127.0.0.1:8000
+```
+
+#### 🛑 Troubleshooting
+
+- Ensure you're inside the folder that contains `manage.py`
+- If `env/bin/activate` doesn't exist, you may need to re-create the virtual environment
+- Use `python3` instead of `python` if `python` points to version 2.x

@@ -31,4 +31,3 @@ It provides a platform where users can create, discover, and join local events, 
 - *"As a retiree, I want to discover volunteer opportunities to stay active and contribute."*  
 - *"As a local business owner, I want to promote my events to reach more people in the neighborhood."*  
 - *"As someone who enjoys outdoor activities, I want to connect with people who have similar hobbies."*
-

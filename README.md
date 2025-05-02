@@ -24,7 +24,7 @@ It provides a platform where users can create, discover, and join local events, 
 🔍 Discover cultural activities, volunteer opportunities, and community news  
 🔐 User authentication and profile system (residents, students, organizers)
 
-### 📚 Example User Sปtories
+### 📚 Example User Stories
 
 - *"As a new university student, I want to join local events so that I can meet new people and feel connected to the area."*  
 - *"As a local resident, I want to find cultural events and festivals so I can participate in my community's traditions."*  

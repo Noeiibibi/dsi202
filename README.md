@@ -1,5 +1,4 @@
 # Chomchonlink
-🧩 Project Overview — Chomchonlink
 
 **Type**: Web Application  
 **Language**: Python (Django Framework)  

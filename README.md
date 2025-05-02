@@ -1,3 +1,2 @@
 # Chomchonlink
-12345
-56789
+Chumchon Link" is a web application inspired by "Meetup," designed to foster community connections within the Khlong Luang Chumchon area, including local residents and university students

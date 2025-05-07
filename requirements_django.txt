@@ -10,3 +10,4 @@ jupyterlab==4.0.2
 Pillow
 djangorestframework>=3.14.0
 django-widget-tweaks
+django-admin-interface

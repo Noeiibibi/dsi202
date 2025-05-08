@@ -1,0 +1,310 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f0f4ff;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    /* กำหนดให้ body เป็น flex container และจัดเรียงในแนวตั้ง */
+}
+
+main {
+    flex-grow: 1; /* ให้ main ขยายเพื่อเติมพื้นที่ว่าง ทำให้ footer อยู่ด้านล่าง */
+}
+
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.main-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #555;
+    padding: 5px 0;
+}
+
+.main-nav a:hover {
+    color: #ac33df;
+}
+
+.auth-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.register-button {
+    text-decoration: none;
+    color: #ac33df;
+    border: 1px solid #ac33df;
+    padding: 8px 15px;
+    border-radius: 50px;
+}
+
+.register-button:hover {
+    background-color: #d9edf7;
+}
+
+.auth-links a:last-child {
+    text-decoration: none;
+    color: #555;
+}
+
+.auth-links a:last-child:hover {
+    color: #ac33df;
+}
+
+.menu-icon, .search-icon, .side-nav, nav ul, nav ul li, nav ul li a,
+.dropdown-menu, .dropdown:hover .dropdown-menu, .dropdown-menu li,
+.dropdown-menu li a, .arrow-down, .hamburger {
+    /* จัดกลุ่ม selector ที่ถูกซ่อนหรือไม่มีผลต่อ layout หลัก */
+    display: none;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0; /* ลบ margin ด้านล่าง */
+    padding-bottom: 56.25%; /* ลบ padding ด้านล่าง */
+}
+
+.hero .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+.call-to-action {
+    background-color: #e12d15;
+    color: #fff;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1em;
+    text-decoration: none;
+}
+
+.call-to-action:hover {
+    background-color: #0056b3;
+}
+
+/* Body Content */
+.body-content {
+    padding-top: 40px;
+    padding-bottom: 0; /* ลบ padding ด้านล่าง */
+}
+
+.body-content .container {
+    display: flex;
+    gap: 30px;
+}
+
+.main-body {
+    flex: 2;
+}
+
+.sidebar {
+    flex: 1;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.recent-article {
+    margin-bottom: 15px;
+}
+
+.recent-article a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.recent-article p {
+    color: #777;
+    font-size: 0.9em;
+}
+
+.cards-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+.hyperlink {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.hyperlink:hover {
+    color: #0056b3;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 30px 0;
+    text-align: center;
+}
+
+footer .container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.contact-info, .social-links, .copyright {
+    margin-bottom: 15px;
+}
+
+.social-links a {
+    color: #fff;
+    font-size: 1.5em;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    color: #ccc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    header .container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    header .logo {
+        margin-bottom: 15px;
+    }
+
+    /* แสดงผล navigation บนมือถือ */
+    nav ul {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    nav ul.open {
+        display: flex;
+    }
+
+    nav ul li {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    .dropdown-menu {
+        position: static;
+        border: none;
+        box-shadow: none;
+        padding-left: 20px;
+    }
+
+    .hamburger {
+        display: block;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+
+    .body-content .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        margin-top: 30px;
+    }
+
+    footer .container {
+        align-items: center;
+        flex-direction: column; /* จัดเรียง footer ในแนวตั้งบนมือถือ */
+    }
+
+    .contact-info, .social-links, .copyright {
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: center;
+    }
+}

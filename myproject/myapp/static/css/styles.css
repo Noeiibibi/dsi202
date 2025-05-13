@@ -1,26 +1,34 @@
-html, body {
-    height: 100%;
-    margin: 0;
-    font-family: sans-serif;
-    background-color: #f0f4ff;
-    display: flex;
-    flex-direction: column;
-}
+/* styles.css */
 
 body {
-    /* กำหนดให้ body เป็น flex container และจัดเรียงในแนวตั้ง */
+    height: 100%;
+    margin: 0;
+    font-family: 'Kanit', sans-serif;
+    background-image: url('images/cc.jpeg'); /* เปลี่ยน 'path/to/your/background.jpeg' เป็นพาธไฟล์ JPEG ของคุณ */
+    background-repeat: repeat; /* สั่งให้ทำซ้ำพื้นหลัง */
+    background-size: auto; /* ปรับขนาดตามขนาดภาพ หรือกำหนดขนาดเอง เช่น background-size: 200px 200px; */
+    background-attachment: fixed; /* ให้พื้นหลังคงที่ (ถ้าต้องการ) */
 }
 
 main {
-    flex-grow: 1; /* ให้ main ขยายเพื่อเติมพื้นที่ว่าง ทำให้ footer อยู่ด้านล่าง */
+    flex-grow: 1;
+    padding-top: 40px;
+    padding-bottom: 0;
 }
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
 .top-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #f8f8f8;
+    background-color: rgba(248, 248, 248, 0.8);
     color: #333;
 }
 
@@ -70,241 +78,272 @@ main {
 .auth-links a:last-child:hover {
     color: #ac33df;
 }
-
-.menu-icon, .search-icon, .side-nav, nav ul, nav ul li, nav ul li a,
-.dropdown-menu, .dropdown:hover .dropdown-menu, .dropdown-menu li,
-.dropdown-menu li a, .arrow-down, .hamburger {
-    /* จัดกลุ่ม selector ที่ถูกซ่อนหรือไม่มีผลต่อ layout หลัก */
-    display: none;
-}
-
 /* Hero Section */
-.hero {
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 0; /* ลบ margin ด้านล่าง */
-    padding-bottom: 56.25%; /* ลบ padding ด้านล่าง */
-}
-
-.hero .container {
+.hero-style-1 {
+    background: rgba(255, 255, 255, 0); /* ปรับความโปร่งใสของพื้นหลัง (optional) */
+    padding: 80px 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-.hero-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
     text-align: center;
+    border-radius: 10px;
+    margin: 20px auto;
+    border: 1px solid rgba(0, 0, 0, 0.1); /* เพิ่มขอบบางๆ สีเทาอ่อน */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* เพิ่มเงาเล็กน้อย (optional) */
 }
 
-.hero-content h1 {
-    font-size: 2.5em;
-    margin-bottom: 15px;
-}
-
-.call-to-action {
-    background-color: #e12d15;
-    color: #fff;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 1em;
-    text-decoration: none;
-}
-
-.call-to-action:hover {
-    background-color: #0056b3;
-}
-
-/* Body Content */
-.body-content {
-    padding-top: 40px;
-    padding-bottom: 0; /* ลบ padding ด้านล่าง */
-}
-
-.body-content .container {
-    display: flex;
-    gap: 30px;
-}
-
-.main-body {
-    flex: 2;
-}
-
-.sidebar {
-    flex: 1;
-    background-color: #fff;
+.hero-style-1 .hero-content {
+    max-width: 80%; /* Limit content width for better readability */
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
 }
 
-.sidebar h3 {
-    margin-top: 0;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-.recent-article {
-    margin-bottom: 15px;
-}
-
-.recent-article a {
-    text-decoration: none;
+.hero-style-1 h1 {
+    font-size: 3em;
     color: #333;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.hero-style-1 p {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.hero-style-1 .hero-buttons {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    gap: 15px; /* Space between buttons */
+}
+
+.hero-style-1 .hero-buttons a {
+    display: inline-block;
+    padding: 12px 25px;
+    border-radius: 50px; /* Rounded buttons */
+    text-decoration: none;
     font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
 }
 
-.recent-article p {
+.hero-style-1 .hero-buttons .primary {
+    background-color: #ac33df;
+    color: white;
+}
+
+.hero-style-1 .hero-buttons .primary:hover {
+    background-color: #9129b9;
+}
+
+.hero-style-1 .hero-buttons .secondary {
+    background-color: transparent;
+    color: #ac33df;
+    border: 2px solid #ac33df;
+}
+
+.hero-style-1 .hero-buttons .secondary:hover {
+    background-color: #f0f8ff;
+}
+
+
+/* About Us Section */
+.about-us {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0); /* ปรับความโปร่งใสของพื้นหลัง (optional) */
+    border-radius: 0px;
+    margin: 20px auto; /* เพิ่ม margin ด้านบนเพื่อสร้างช่วงว่าง */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* เพิ่มขอบบางๆ สีเทาอ่อน */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* เพิ่มเงาเล็กน้อย (optional) */
+}
+
+.about-us h2 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.about-us .features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.about-us .feature {
+    flex: 1 1 300px;
+    text-align: center;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.about-us .feature i {
+    color: #ac33df;
+    margin-bottom: 20px;
+}
+
+.about-us .feature h3 {
+    font-size: 1.5em;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.about-us .feature p {
     color: #777;
-    font-size: 0.9em;
+    line-height: 1.6;
 }
 
-.cards-section {
+/* Healthy and Easy Section */
+.healthy-easy {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: rgba(240, 244, 195, 0.7);
+    border-radius: 10px;
+    margin: 20px auto;
+}
+
+.healthy-easy h2 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.healthy-easy .features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.healthy-easy .feature {
+    flex: 1 1 250px;
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.healthy-easy .feature img {
+    max-width: 80px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.healthy-easy .feature h3 {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.healthy-easy .feature p {
+    color: #777;
+    line-height: 1.6;
+}
+
+/* Testimonials Section */
+.testimonials {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #f8f8f8; /* เปลี่ยนเป็นสีพื้นหลังทึบ */
+    border-radius: 10px;
+    margin: 20px auto;
+}
+
+.testimonials h2 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.testimonials .subtitle {
+    color: #777;
+    margin-bottom: 40px;
+}
+
+.testimonials .testimonial-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
-.card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
+.testimonials .testimonial {
+    background-color: white;
 }
 
-.card h3 {
-    margin-top: 0;
-}
-
-.hyperlink {
-    color: #007bff;
-    text-decoration: underline;
-}
-
-.hyperlink:hover {
-    color: #0056b3;
-}
-
-/* Footer */
+/* Footer Styles */
 footer {
-    background-color: #333;
-    color: #fff;
+    background-color: #333; /* สีพื้นหลัง footer */
+    color: #fff; /* สีข้อความหลักใน footer */
     padding: 30px 0;
-    text-align: center;
+    text-align: center; /* จัดข้อความเริ่มต้นให้อยู่ตรงกลาง */
 }
 
-footer .container {
+.footer-content {
     display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
+    justify-content: space-around; /* กระจายเนื้อหาหลักใน footer */
+    align-items: center; /* จัดแนวเนื้อหาหลักให้อยู่ตรงกลางแนวตั้ง */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px; /* เพิ่ม padding ด้านข้าง */
 }
 
-.contact-info, .social-links, .copyright {
-    margin-bottom: 15px;
+.copyright {
+    text-align: left; /* จัดข้อความลิขสิทธิ์ไปทางซ้าย */
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px; /* ระยะห่างระหว่างลิงก์ */
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease; /* เพิ่ม transition สำหรับ hover */
+}
+
+.footer-links a:hover {
+    color: #ac33df; /* สีเมื่อ hover */
+}
+
+.social-links {
+    display: flex;
+    gap: 15px; /* ระยะห่างระหว่างไอคอนโซเชียล */
 }
 
 .social-links a {
     color: #fff;
-    font-size: 1.5em;
-    margin: 0 10px;
+    font-size: 1.5em; /* ขนาดไอคอนโซเชียล */
     text-decoration: none;
+    transition: color 0.3s ease; /* เพิ่ม transition สำหรับ hover */
 }
 
 .social-links a:hover {
-    color: #ccc;
+    color: #ac33df; /* สีเมื่อ hover */
 }
 
-/* Responsive Design */
+/* Responsive Design สำหรับ Footer */
 @media (max-width: 768px) {
-    .container {
-        padding: 15px;
-    }
-
-    header .container {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    header .logo {
-        margin-bottom: 15px;
-    }
-
-    /* แสดงผล navigation บนมือถือ */
-    nav ul {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    nav ul.open {
-        display: flex;
-    }
-
-    nav ul li {
-        margin-left: 0;
-        margin-bottom: 10px;
-    }
-
-    .dropdown-menu {
-        position: static;
-        border: none;
-        box-shadow: none;
-        padding-left: 20px;
-    }
-
-    .hamburger {
-        display: block;
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 1.5em;
-        cursor: pointer;
-    }
-
-    .body-content .container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        margin-top: 30px;
-    }
-
-    footer .container {
+    .footer-content {
+        flex-direction: column; /* จัดเรียงเนื้อหาในแนวตั้งเมื่อหน้าจอเล็กลง */
         align-items: center;
-        flex-direction: column; /* จัดเรียง footer ในแนวตั้งบนมือถือ */
+        text-align: center;
     }
 
-    .contact-info, .social-links, .copyright {
-        margin-bottom: 20px;
-        width: 100%;
-        text-align: center;
+    .copyright, .footer-links, .social-links {
+        margin-bottom: 15px; /* เพิ่มระยะห่างด้านล่างในหน้าจอเล็ก */
+    }
+
+    .footer-links {
+        flex-direction: column; /* จัดเรียงลิงก์ในแนวตั้ง */
+        align-items: center;
     }
 }

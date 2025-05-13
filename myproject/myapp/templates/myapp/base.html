@@ -5,31 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-            <img png="{% static 'logo.png' %}" alt="โลโก้" style="height: 20px; vertical-align: middle; margin-right: 5px;">
-            {% block title %}Chum-Chon Link{% endblock %}
-        </title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <img  src="{% static 'logo.png' %}" alt="โลโก้" style="height: 20px; vertical-align: middle; margin-right: 5px;">
+        {% block title %}Chum-Chon Link{% endblock %}
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-
     <style>
         body {
-            font-family: 'Kanit', sans-serif; /* เปลี่ยนฟอนต์เป็น Kanit */
-            margin: 0;
+        font-family: 'Kanit', sans-serif;
+        margin: 0;
+        background-image: url('{% static 'images/cc.jpeg' %}');
+        background-repeat: repeat; /* หรือ no-repeat, cover, contain ตามต้องการ */
+        background-size: auto; /* หรือ cover, contain, ขนาดที่กำหนดเอง */
+        background-attachment: fixed; /* หรือ scroll */
+        background-position: center; /* หรือ top, bottom, left, right ตามต้องการ */
         }
-
 
         .top-header {
             display: flex;
-            justify-content: space-between; /* กระจายพื้นที่ระหว่างส่วนต่างๆ */
+            justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
-            background-color: #f8f8f8; /* เปลี่ยนสีพื้นหลังเป็นสีอ่อน */
-            color: #333; /* เปลี่ยนสีข้อความเป็นสีเข้มขึ้น */
+            background-color: #f8f8f8;
+            color: #333;
         }
 
         .logo {
@@ -39,36 +40,36 @@
 
         .main-nav {
             display: flex;
-            gap: 20px; /* กำหนดระยะห่างระหว่างลิงก์เมนู */
+            gap: 20px;
         }
 
         .main-nav a {
             text-decoration: none;
             color: #555;
-            padding: 5px 0; /* เพิ่ม padding ด้านบนและล่างเล็กน้อย */
+            padding: 5px 0;
         }
 
         .main-nav a:hover {
-            color: #ac33df; /* เปลี่ยนสีเมื่อ hover */
+            color: #ac33df;
         }
-        
+
         .register-button {
             text-decoration: none;
-            color: #ac33df; 
-            border: 1px solid #ac33df; 
+            color: #ac33df;
+            border: 1px solid #ac33df;
             padding: 8px 15px;
             border-radius: 5px;
         }
 
         .register-button:hover {
-            background-color: #d9edf7; /* เปลี่ยนสีพื้นหลังเมื่อ hover */
+            background-color: #d9edf7;
         }
 
-        .auth-links a:last-child { /* สำหรับลิงก์ Sign In ตัวสุดท้าย */
+        .auth-links a:last-child {
             text-decoration: none;
             color: #555;
         }
-       
+
     </style>
 </head>
 <body>
@@ -78,7 +79,6 @@
                 <img src="{% static 'images/logo.png' %}" alt="โลโก้ Chum-Chon Link" style="height: 30px; vertical-align: middle; margin-right: 10px;">
                 Chum-Chon Link
             </div>
-</div>
         </div>
         <nav class="main-nav">
             <a href="#">Home</a>
@@ -90,77 +90,60 @@
             <a href="#">Sign In</a>
         </div>
     </header>
-
     
-    <main>
-        <section class="hero">
-            <div class="hero-image">
-                <img src="{% static 'images/hero.jpg' %}" alt="Hero Image" class="w-full h-auto rounded-lg">
-            </div>
-            <div class="hero-overlay">
-                <div class="hero-content">
-                    <h1>Let’s Link & Live</h1>
-                    <button class="call-to-action">Sign up now</button>
-                </div>
-            </div>
-        </section>
-        <section class="featured-events body-content">
-            <div class="container">
-                <h2>กิจกรรมที่น่าสนใจ</h2>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <h3>Meet & Greet ในสวนสาธารณะ</h3>
-                            <p>พบปะเพื่อนใหม่และทำกิจกรรมสนุกๆ กลางสวนสาธารณะ บรรยากาศสบายๆ เป็นกันเอง...</p>
-                            <a href="#" class="hyperlink">อ่านเพิ่มเติม</a>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <h3>เวิร์คช็อปทำอาหารพื้นบ้าน</h3>
-                            <p>เรียนรู้การทำอาหารพื้นบ้านจากเชฟชุมชน สัมผัสรสชาติและวัฒนธรรมท้องถิ่น...</p>
-                            <a href="#" class="hyperlink">ลงทะเบียน</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    
-        <section class="community-news body-content">
-            <div class="container">
-                <h2>ข่าวสารชุมชน</h2>
-                <ul>
-                    <li><a href="#">ประกาศเรื่องการจัดงานประจำปีของชุมชน</a></li>
-                    <li><a href="#">ขอเชิญเข้าร่วมการประชุมพัฒนาชุมชน</a></li>
-                    <li><a href="#">อาสาสมัครร่วมกันปรับปรุงภูมิทัศน์ในหมู่บ้าน</a></li>
-                </ul>
-            </div>
-        </section>
-    
-        <section class="call-to-action-bottom body-content">
-            <div class="container">
-                <h2>เข้าร่วมเป็นส่วนหนึ่งของ Chum-Chon Link</h2>
-                <p>สร้างกลุ่มของคุณ แบ่งปันกิจกรรม และเชื่อมต่อกับผู้คนในชุมชนของคุณได้แล้ววันนี้!</p>
-                <a href="#" class="call-to-action">เริ่มต้นเลย</a>
-            </div>
-        </section>
-    
-        </main>
-    
-    <!-- Footer -->
-    <footer class="bg-gray-100 py-6">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <p class="text-gray-700">© 2025 Chum-Chon Link - แพลตฟอร์มสำหรับการพบปะและทำกิจกรรมร่วมกัน</p>
-                </div>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-gray-700 hover:text-purple-700">เกี่ยวกับเรา</a>
-                    <a href="#" class="text-gray-700 hover:text-purple-700">ติดต่อ</a>
-                    <a href="#" class="text-gray-700 hover:text-purple-700">นโยบายความเป็นส่วนตัว</a>
-                </div>
+    <section class="hero hero-style-1">
+        <div class="hero-content">
+            <h1>Where colorful butterflies gather and soar</h1>
+            <p>A digital space where people with diverse interests come together to connect, exchange ideas, and build meaningful friendships—like vibrant butterflies drawn to one another in flight.
+            <p>Explore a variety of activities waiting for you to learn, share, and have fun with new friends
+            <p>Here, you’ll find kindred spirits and help shape a beautiful, inclusive community
+                Join us today and let’s soar together!
+                </p>
+            <div class="hero-buttons">
+                <a href="{% url 'signup' %}" class="call-to-action primary">Sign Up</a>
+                <a href="{% url 'event_list' %}" class="call-to-action secondary">Find Out More</a>
             </div>
         </div>
-    </footer>
-</body>
-</html>
+    </section>
+
+    <section class="about-us">
+        <h2>About Us</h2>
+        <div class="features">
+            <div class="feature">
+                <i class="fa-solid fa-users fa-3x"></i>
+                <h3>Connect</h3>
+                <p>Connect with people with the same interests in your community</p>
+            </div>
+            <div class="feature">
+                <i class="fa-solid fa-calendar-alt fa-3x"></i>
+                <h3>Discover</h3>
+                <p>Discover interesting and diverse activities held in the community</p>
+            </div>
+            <div class="feature">
+                <i class="fa-solid fa-lightbulb fa-3x"></i>
+                <h3>Create</h3>
+                <p>Easily create and share your events with community members</p>
+            </div>
+        </div>
+    </section>
+    <footer>
+    <div class="container footer-content">
+        <div class="copyright">
+            <p>&copy; 2025 Chum-Chon Link. สงวนลิขสิทธิ์.</p>
+        </div>
+        <nav class="footer-links">
+            <a href="#">เกี่ยวกับเรา</a>
+            <a href="#">ทำไมถึงเรา</a>
+            <a href="#">กิจกรรม</a>
+            <a href="#">ติดต่อ</a>
+            <a href="#">ชุมชน</a>
+            <a href="#">ช่วยเหลือ</a>
+        </nav>
+        <div class="social-links">
+            <a href="#"><i class="fa-brands fa-facebook fa-lg"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter fa-lg"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram fa-lg"></i></a>
+        </div>
+    </div>
+</footer>
+

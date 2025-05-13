@@ -70,4 +70,3 @@ class UserProfile(models.Model):
         return self.user.username
     
 from django.db import models
-

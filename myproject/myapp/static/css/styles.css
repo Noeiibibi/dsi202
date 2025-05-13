@@ -80,7 +80,7 @@ main {
 }
 /* Hero Section */
 .hero-style-1 {
-    background: rgba(255, 255, 255, 0); /* ปรับความโปร่งใสของพื้นหลัง (optional) */
+    background: rgba(255, 255, 255, 0.8); /* ปรับความโปร่งใสของพื้นหลัง (optional) */
     padding: 80px 20px;
     display: flex;
     flex-direction: column;
@@ -152,8 +152,8 @@ main {
 .about-us {
     padding: 60px 20px;
     text-align: center;
-    background-color: rgba(255, 255, 255, 0); /* ปรับความโปร่งใสของพื้นหลัง (optional) */
-    border-radius: 0px;
+    background-color: rgba(255, 255, 255, 0.8); /* ปรับความโปร่งใสของพื้นหลัง (optional) */
+    border-radius: 10px;
     margin: 20px auto; /* เพิ่ม margin ด้านบนเพื่อสร้างช่วงว่าง */
     border: 1px solid rgba(0, 0, 0, 0.1); /* เพิ่มขอบบางๆ สีเทาอ่อน */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* เพิ่มเงาเล็กน้อย (optional) */

@@ -33,32 +33,35 @@ It provides a platform where users can create, discover, and join local events, 
 
 #### ✅ Step-by-step Instructions
 
-1. **Navigate to the Django project folder**
+1. **Navigate to the Django project folder**  เข้าไปในโฟลเดอร์ที่มี Django Projec
 ```bash
 cd dsi202/myproject
 ```
 
-2. **Create a virtual environment** (only needed the first time)
+2. **Create a virtual environment** (only needed the first time) สร้าง Virtual Environment (ครั้งแรกเท่านั้น)
 ```bash
 python3 -m venv env
 ```
 
-3. **Activate the virtual environment**
+3. **Activate the virtual environment**  เปิดใช้งาน Virtual Environment
 ```bash
 source env/bin/activate
 ```
 
-4. **Install required dependencies**
+4. **Install required dependencies** ติดตั้งไลบรารีที่จำเป็น
 ```bash
 pip install -r ../requirements_django.txt
 ```
 
-5. **Apply database migrations**
+5. **Apply database migrations** สร้างฐานข้อมูลด้วย migration
+bash
+CopyEdit
+
 ```bash
 python manage.py migrate
 ```
 
-6. **Start the development server**
+6. **Start the development server**   รันเซิร์ฟเวอร์
 ```bash
 python manage.py runserver
 ```

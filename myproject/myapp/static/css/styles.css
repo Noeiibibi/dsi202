@@ -6,7 +6,7 @@ body {
     height: 100%;
     margin: 0;
     font-family: 'Kanit', sans-serif;
-    background-image: url('images/bg1.jpeg'); /* เปลี่ยน 'path/to/your/background.jpeg' เป็นพาธไฟล์ JPEG ของคุณ */
+    background-image: url('images/gg.jpg'); /* เปลี่ยน 'path/to/your/background.jpeg' เป็นพาธไฟล์ JPEG ของคุณ */
     background-repeat: repeat; /* สั่งให้ทำซ้ำพื้นหลัง */
     background-size: auto; /* ปรับขนาดตามขนาดภาพ หรือกำหนดขนาดเอง เช่น background-size: 200px 200px; */
     background-attachment: fixed; /* ให้พื้นหลังคงที่ (ถ้าต้องการ) */

@@ -1,4 +1,3 @@
-
 {% extends 'myapp/base.html' %}
 {% load static %}
 
@@ -6,97 +5,11 @@
 
 {% block content %}
 
-  
 {% if user.is_authenticated %}
 <h2 class="text-3xl font-bold text-gray-900">
     Welcome, {{ user.username }} 👋
 </h2>
 {% else %}
-
-
-    <main>
-        <section class="hero">
-            <div class="container">
-                <div class="hero-image">
-                    <img src="hero-image.jpg" alt="Hero Image">
-                </div>
-                <div class="hero-content">
-                    <h1>Start your adventure</h1>
-                    <button class="call-to-action">Sign up now</button>
-                </div>
-            </div>
-        </section>
-
-        <section class="body-content">
-            <div class="container">
-                <div class="carousel-slider">
-                    </div>
-
-                <div class="main-body">
-                    <h2>Lorem Ipsum</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
-                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur...</p>
-                    <a href="#" class="hyperlink">commodo consequat</a>
-
-                    <div class="cards-section">
-                        <div class="card">
-                            </div>
-                        <div class="card">
-                            </div>
-                        <div class="card">
-                            </div>
-                    </div>
-                </div>
-
-                <aside class="sidebar">
-                    <h3>Recent Articles</h3>
-                    <div class="recent-article">
-                        <a href="#">Duis autem vel eum iriure dolor in hendrerit</a>
-                        <p>Odio dignissim qui blandit</p>
-                    </div>
-                    <div class="recent-article">
-                        <a href="#">Ut wisi enim ad minim veniam</a>
-                        <p>Ut wisi enim ad</p>
-                    </div>
-                </aside>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="contact-info">
-                <p>Contact</p>
-                <p>1400 John F Kennedy Blvd</p>
-                <p>Philadelphia, PA 19107</p>
-            </div>
-            <div class="social-links">
-                <a href="#"><i class="facebook-icon"></i></a>
-                <a href="#"><i class="twitter-icon"></i></a>
-                <a href="#"><i class="instagram-icon"></i></a>
-            </div>
-            <div class="copyright">
-                <p>&copy; Copyright 2021</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="script.js"></script> </body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <div class="flex items-center space-x-6">
 
@@ -222,4 +135,3 @@
     </div>
 </section>
 {% endblock %}
-

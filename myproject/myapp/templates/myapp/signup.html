@@ -2,52 +2,224 @@
 {% load static %}
 {% load widget_tweaks %}
 
-{% block title %}สมัครสมาชิก - Chum-Chon Link{% endblock %}
+{% block title %}สร้างบัญชีใหม่ - Chum-Chon Link{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Ensure body takes full height for gradient to show well if content is short */
+    html, body {
+        height: 100%;
+    }
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+    main.flex-grow { /* Ensure main content pushes footer down */
+        flex: 1 0 auto;
+    }
+    /* Animated Gradient Background for the main card */
+    .animated-gradient-bg-card {
+        background-size: 200% 200%;
+        background-image: linear-gradient(45deg, #f3e8ff, #e9d5ff, #d8b4fe, #c084fc, #a855f7, #9333ea);
+        animation: gradientFlow 15s ease infinite;
+    }
+    .dark .animated-gradient-bg-card {
+        background-image: linear-gradient(45deg, #581c87, #6b21a8, #7e22ce, #9333ea, #a855f7);
+    }
+
+    @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Input focus animation for floating labels */
+    .form-input-vibrant .peer:focus ~ label,
+    .form-input-vibrant .peer:not(:placeholder-shown) ~ label {
+        transform: translateY(-1.15rem) translateX(-0.25rem) scale(0.8); /* Adjusted for better positioning */
+        color: theme('colors.purple.600');
+        background-color: theme('colors.white'); /* Match form panel bg */
+    }
+    .dark .form-input-vibrant .peer:focus ~ label,
+    .dark .form-input-vibrant .peer:not(:placeholder-shown) ~ label {
+        color: theme('colors.purple.400');
+        background-color: theme('colors.slate.800'); /* Match dark form panel bg */
+    }
+    
+    /* Butterfly animation */
+    .butterfly-signup {
+        animation: flutterSignup 10s ease-in-out infinite alternate;
+        opacity: 0.1;
+        position: absolute;
+        pointer-events: none;
+        z-index: 0; /* Ensure butterflies are behind the main card */
+    }
+    .butterfly-signup-1 { animation-delay: 0s; top: 10%; left: 5%; width: 70px; height: 70px; }
+    .butterfly-signup-2 { animation-delay: 2s; bottom: 15%; right: 10%; width: 90px; height: 90px; transform: rotate(15deg); }
+    .butterfly-signup-3 { animation-delay: 4s; top: 40%; left: 20%; width: 50px; height: 50px; transform: rotate(-10deg); }
+
+    @keyframes flutterSignup {
+        0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--initial-rotate, 0deg)); opacity: var(--initial-opacity, 0.1); }
+        25% { transform: translateX(15px) translateY(-10px) rotate(calc(var(--initial-rotate, 0deg) + 5deg)); opacity: calc(var(--initial-opacity, 0.1) + 0.1); }
+        50% { transform: translateX(-8px) translateY(8px) rotate(calc(var(--initial-rotate, 0deg) - 3deg)); opacity: calc(var(--initial-opacity, 0.1) + 0.2); }
+        75% { transform: translateX(10px) translateY(-5px) rotate(calc(var(--initial-rotate, 0deg) + 2deg)); opacity: calc(var(--initial-opacity, 0.1) + 0.05); }
+    }
+
+    /* Entrance animation for the card */
+    .animate-fadeInUp {
+        animation: fadeInUp 0.7s ease-out forwards;
+        opacity: 0;
+    }
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Custom styling for Django's password help text */
+    .django-form-helptext-password ul { 
+        list-style: none !important;
+        padding-left: 0 !important;
+        margin-top: 0.25rem; /* theme('spacing.1') */
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem; /* theme('spacing.1') */
+    }
+    .django-form-helptext-password ul li {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 0.125rem; /* theme('spacing.0.5') */
+    }
+    .django-form-helptext-password ul li::before {
+        content: '';
+        display: inline-block;
+        width: 0.75rem; /* w-3 */
+        height: 0.75rem; /* h-3 */
+        margin-right: 0.375rem; /* mr-1.5 */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z' clip-rule='evenodd' /%3E%3C/svg%3E"); /* slate-500 icon */
+        background-repeat: no-repeat;
+        background-position: center;
+        flex-shrink: 0;
+        margin-top: 0.2rem; /* Adjusted for text-xs line-height */
+    }
+    .dark .django-form-helptext-password ul li::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z' clip-rule='evenodd' /%3E%3C/svg%3E"); /* slate-400 icon for dark mode */
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<section class="py-12 bg-gradient-to-br from-purple-100 to-white min-h-screen flex items-center justify-center px-4">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
-        <div class="text-center mb-6">
-            <img src="{% static 'images/logo.png' %}" alt="โลโก้ Chum-Chon Link" class="h-16 mx-auto mb-2">
-            <h1 class="text-2xl font-bold text-purple-700">สมัครสมาชิก</h1>
-            <p class="text-sm text-gray-500">เข้าร่วมชุมชนของเราได้ฟรี!</p>
-        </div>
+<section class="relative min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-100 via-pink-100 to-indigo-100 dark:from-slate-900 dark:via-purple-900 dark:to-slate-800 overflow-hidden">
+    <svg class="butterfly-signup butterfly-signup-1 text-purple-300 dark:text-purple-700" style="--initial-opacity: 0.05;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3.25A.75.75 0 0110.75 4v3.372c.637.233 1.22.56 1.738.952.518.391.97.848 1.332 1.332.362.484.628.99.807 1.504A4.002 4.002 0 0116.25 13a.75.75 0 01-1.5 0 2.5 2.5 0 00-1.4-2.242.99.99 0 01-.193-.193c-.06-.06-.125-.117-.193-.17A2.501 2.501 0 0010.75 8V4a.75.75 0 01-.75-.75zm-1.5 0A.75.75 0 007.75 4v3.372a2.501 2.501 0 00-2.212 2.212c-.053.068-.11.133-.17.193a.99.99 0 01-.193.193A2.5 2.5 0 003.75 13a.75.75 0 00-1.5 0 4.002 4.002 0 001.425 2.972c.179.514.445 1.02.807 1.504.362.484.814.94 1.332 1.332.518.391 1.1.719 1.738.952V16a.75.75 0 001.5 0v-3.372a2.501 2.501 0 002.212-2.212c-.053-.068.11-.133.17-.193a.99.99 0 01.193-.193A2.5 2.5 0 0016.25 13a.75.75 0 001.5 0 4.002 4.002 0 00-1.425-2.972c-.179-.514-.445-1.02-.807-1.504a4.002 4.002 0 00-1.332-1.332A4.002 4.002 0 0010.75 6.37V4a.75.75 0 00-.75-.75zM8.5 4A.75.75 0 019.25 4.75v1.622A4.002 4.002 0 007.028 7.03a.99.99 0 01-.193.193c-.06-.06-.125-.117-.193-.17A2.501 2.501 0 004.75 9.622V16a.75.75 0 01-1.5 0V9.622a4.002 4.002 0 011.425-2.972c.179-.514.445-1.02.807-1.504a4.002 4.002 0 011.332-1.332A4.002 4.002 0 018.5 3.25V4z" clip-rule="evenodd" /></svg>
+    <svg class="butterfly-signup butterfly-signup-2 text-pink-300 dark:text-pink-600" style="--initial-rotate: 15deg; --initial-opacity: 0.08;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3.25A.75.75 0 0110.75 4v3.372c.637.233 1.22.56 1.738.952.518.391.97.848 1.332 1.332.362.484.628.99.807 1.504A4.002 4.002 0 0116.25 13a.75.75 0 01-1.5 0 2.5 2.5 0 00-1.4-2.242.99.99 0 01-.193-.193c-.06-.06-.125-.117-.193-.17A2.501 2.501 0 0010.75 8V4a.75.75 0 01-.75-.75zm-1.5 0A.75.75 0 007.75 4v3.372a2.501 2.501 0 00-2.212 2.212c-.053.068-.11.133-.17.193a.99.99 0 01-.193.193A2.5 2.5 0 003.75 13a.75.75 0 00-1.5 0 4.002 4.002 0 001.425 2.972c.179.514.445 1.02.807 1.504.362.484.814.94 1.332 1.332.518.391 1.1.719 1.738.952V16a.75.75 0 001.5 0v-3.372a2.501 2.501 0 002.212-2.212c-.053-.068.11-.133.17-.193a.99.99 0 01.193-.193A2.5 2.5 0 0016.25 13a.75.75 0 001.5 0 4.002 4.002 0 00-1.425-2.972c-.179-.514-.445-1.02-.807-1.504a4.002 4.002 0 00-1.332-1.332A4.002 4.002 0 0010.75 6.37V4a.75.75 0 00-.75-.75zM8.5 4A.75.75 0 019.25 4.75v1.622A4.002 4.002 0 007.028 7.03a.99.99 0 01-.193.193c-.06-.06-.125-.117-.193-.17A2.501 2.501 0 004.75 9.622V16a.75.75 0 01-1.5 0V9.622a4.002 4.002 0 011.425-2.972c.179-.514.445-1.02.807-1.504a4.002 4.002 0 011.332-1.332A4.002 4.002 0 018.5 3.25V4z" clip-rule="evenodd" /></svg>
+    <svg class="butterfly-signup butterfly-signup-3 text-indigo-200 dark:text-indigo-600" style="--initial-rotate: -10deg; --initial-opacity: 0.07;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3.25A.75.75 0 0110.75 4v3.372c.637.233 1.22.56 1.738.952.518.391.97.848 1.332 1.332.362.484.628.99.807 1.504A4.002 4.002 0 0116.25 13a.75.75 0 01-1.5 0 2.5 2.5 0 00-1.4-2.242.99.99 0 01-.193-.193c-.06-.06-.125-.117-.193-.17A2.501 2.501 0 0010.75 8V4a.75.75 0 01-.75-.75zm-1.5 0A.75.75 0 007.75 4v3.372a2.501 2.501 0 00-2.212 2.212c-.053.068-.11.133-.17.193a.99.99 0 01-.193.193A2.5 2.5 0 003.75 13a.75.75 0 00-1.5 0 4.002 4.002 0 001.425 2.972c.179.514.445 1.02.807 1.504.362.484.814.94 1.332 1.332.518.391 1.1.719 1.738.952V16a.75.75 0 001.5 0v-3.372a2.501 2.501 0 002.212-2.212c-.053-.068.11-.133.17-.193a.99.99 0 01.193-.193A2.5 2.5 0 0016.25 13a.75.75 0 001.5 0 4.002 4.002 0 00-1.425-2.972c-.179-.514-.445-1.02-.807-1.504a4.002 4.002 0 00-1.332-1.332A4.002 4.002 0 0010.75 6.37V4a.75.75 0 00-.75-.75zM8.5 4A.75.75 0 019.25 4.75v1.622A4.002 4.002 0 007.028 7.03a.99.99 0 01-.193.193c-.06-.06-.125-.117-.193-.17A2.501 2.501 0 004.75 9.622V16a.75.75 0 01-1.5 0V9.622a4.002 4.002 0 011.425-2.972c.179-.514.445-1.02.807-1.504a4.002 4.002 0 011.332-1.332A4.002 4.002 0 018.5 3.25V4z" clip-rule="evenodd" /></svg>
 
-        <form method="post" class="space-y-5">
-            {% csrf_token %}
-
-            {% if form.non_field_errors %}
-            <div class="bg-red-100 text-red-700 px-4 py-2 rounded">
-                {% for error in form.non_field_errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
+    <div class="w-full max-w-4xl lg:max-w-5xl mx-auto my-8 animate-fadeInUp relative z-10">
+        <div class="flex flex-col md:flex-row rounded-xl shadow-2xl overflow-hidden">
+            <div class="w-full md:w-2/5 lg:w-1/2 p-8 sm:p-12 flex flex-col items-center justify-center text-white animated-gradient-bg-card">
+                <a href="{% url 'home' %}" class="inline-block mb-6 transition-transform duration-300 hover:scale-110">
+                    <img src="{% static 'images/logo.png' %}" 
+                         alt="โลโก้ Chum-Chon Link" 
+                         class="h-20 sm:h-24 mx-auto drop-shadow-lg"
+                         onerror="this.onerror=null; this.src='https://placehold.co/150x96/FFFFFF/FFFFFF?text=Logo&font=notosansthai';">
+                </a>
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-center tracking-tight">เข้าร่วมชุมชนของเรา</h2>
+                <p class="text-md sm:text-lg lg:text-xl text-purple-100 mb-8 text-center leading-relaxed">
+                    ค้นพบกิจกรรมที่ใช่ สร้างมิตรภาพใหม่ และเติบโตไปด้วยกันใน <span class="font-semibold">Chum-Chon Link!</span>
+                </p>
             </div>
-            {% endif %}
 
-            {% for field in form %}
-                <div>
-                    <label for="{{ field.id_for_label }}" class="block text-gray-700 font-medium mb-1">
-                        {{ field.label }}
-                    </label>
-                    {{ field|add_class:"w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" }}
-                    {% if field.errors %}
-                        <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
-                    {% endif %}
+            <div class="w-full md:w-3/5 lg:w-1/2 bg-white dark:bg-slate-800 p-8 sm:p-10">
+                <div class="text-left mb-6 sm:mb-8">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-purple-700 dark:text-purple-400">สร้างบัญชีผู้ใช้ใหม่</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">ง่ายนิดเดียว! กรอกข้อมูลเพื่อเริ่มต้นการผจญภัยของคุณ</p>
                 </div>
-            {% endfor %}
 
-            <div>
-                <button type="submit"
-                    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-md transition duration-150">
-                    สมัครสมาชิก
-                </button>
+                <form method="post" class="space-y-5">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="bg-red-100 dark:bg-red-700/20 border-l-4 border-red-500 dark:border-red-400 text-red-700 dark:text-red-300 p-4 rounded-md shadow-sm" role="alert">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 pt-0.5">
+                                <svg class="h-5 w-5 text-red-500 dark:text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.707-4.293a1 1 0 001.414-1.414L10 10.586l.707-.707a1 1 0 00-1.414-1.414L10 8.172l-.707.707a1 1 0 001.414 1.414L10 10.586l-.707.707zM10 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-semibold text-red-800 dark:text-red-200">เกิดข้อผิดพลาดในการสมัคร:</h3>
+                                <div class="mt-1 text-sm text-red-700 dark:text-red-300">
+                                    <ul class="list-disc list-inside space-y-0.5">
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% for field in form %}
+                        <div class="relative form-input-vibrant pt-2">
+                            {% render_field field class="block px-3.5 py-3 w-full text-sm text-slate-900 dark:text-white bg-transparent rounded-lg border border-slate-300 dark:border-slate-600 appearance-none focus:outline-none focus:ring-0 focus:border-purple-600 dark:focus:border-purple-500 peer" placeholder=" " id=field.auto_id %}
+                            <label for="{{ field.auto_id }}" 
+                                   class="absolute text-sm text-slate-500 dark:text-slate-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-slate-800 px-2 peer-focus:px-2 peer-focus:text-purple-600 dark:peer-focus:text-purple-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+                                {{ field.label }}
+                                {% if field.field.required %}<span class="text-red-500 ml-0.5">*</span>{% endif %}
+                            </label>
+                            
+                            <div class="mt-2 px-1 space-y-1">
+                                {% if field.help_text %}
+                                    {% if field.name == 'password1' or field.name == 'password2' %}
+                                        <div class="text-xs text-slate-500 dark:text-slate-400 django-form-helptext-password">
+                                            {{ field.help_text|safe }}
+                                        </div>
+                                    {% else %}
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ field.help_text|safe }}</p>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <ul class="list-none space-y-1 {% if field.help_text %}pt-1{% endif %}">
+                                        {% for error in field.errors %}
+                                        <li class="text-xs text-red-600 dark:text-red-400 font-medium flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1.5 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span>{{ error }}</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="pt-3">
+                        <button type="submit"
+                            class="w-full flex items-center justify-center bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                            </svg>
+                            สร้างบัญชีผู้ใช้
+                        </button>
+                    </div>
+
+                    <p class="text-center text-sm text-slate-600 dark:text-slate-400 pt-3">
+                        มีบัญชีอยู่แล้ว?
+                        <a href="{% url 'login' %}" class="font-semibold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 hover:underline">
+                            เข้าสู่ระบบที่นี่
+                        </a>
+                    </p>
+                </form>
             </div>
-
-            <p class="text-center text-sm text-gray-600">
-                มีบัญชีอยู่แล้ว?
-                <a href="{% url 'login' %}" class="text-purple-600 hover:underline">เข้าสู่ระบบ</a>
-            </p>
-        </form>
+        </div>
     </div>
 </section>
 {% endblock %}

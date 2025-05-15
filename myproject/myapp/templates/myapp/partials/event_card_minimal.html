@@ -1,0 +1,52 @@
+{# Path: myapp/templates/myapp/partials/event_card_minimal.html #}
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1 group border border-slate-200 dark:border-slate-700">
+    <a href="{% url 'event_detail' event.id %}" class="block">
+        <div class="h-48 sm:h-52 bg-slate-200 dark:bg-slate-700 overflow-hidden">
+            {% if event.image and event.image.url %}
+            <img src="{{ event.image.url }}" alt="ภาพปกกิจกรรม {{ event.title }}"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                 onerror="this.onerror=null; this.src='https://placehold.co/400x220/DDD6FE/4338CA?text=Event&font=notosansthai';"
+                 loading="lazy">
+            {% else %}
+            <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="text-xs">ไม่มีรูปภาพ</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="p-4 sm:p-5">
+            {% if event.category %}
+            <span class="inline-block bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 text-xs font-semibold px-2.5 py-1 rounded-full mb-2">{{ event.category.name }}</span>
+            {% endif %}
+            <h3 class="font-semibold text-md sm:text-lg text-slate-800 dark:text-white mb-1.5 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate" title="{{ event.title }}">{{ event.title }}</h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 inline mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
+                {{ event.date|date:"j M Y" }} &bull; {{ event.time|time:"H:i" }} น.
+            </p>
+            <div class="flex items-center text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 inline mr-1 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
+                <span class="truncate">{{ event.location }}</span>
+            </div>
+            <div class="flex items-center justify-between text-xs sm:text-sm pt-3 border-t border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500 dark:text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 inline mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                    </svg>
+                    {{ event.attendee_count }} คน
+                </span>
+                <span class="font-semibold text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
+                    ดูรายละเอียด &rarr;
+                </span>
+            </div>
+            {% if show_edit_link and request.user == event.organizer %}
+            <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-700 text-right">
+                <a href="{% url 'event_update' event.id %}" class="text-xs text-green-600 hover:text-green-700 font-medium transition-colors">
+                    แก้ไขกิจกรรม
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </a>
+</div>

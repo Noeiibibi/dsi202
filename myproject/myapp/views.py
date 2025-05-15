@@ -8,22 +8,25 @@ from .models import Event, Category, Attendance, UserProfile ,Community
 from .forms import EventForm, UserProfileForm
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-
+from .models import Community, Category, Event
+import datetime
 
 def index(request):
     return HttpResponse("Hello from myapp!")
 
 def home(request):
-    featured_events = Event.objects.all().order_by('-created_at')[:4]
-    categories = Category.objects.all()
-    communities = Community.objects.all()  # เพิ่มตัวนี้เข้ามา
+    communities = Community.objects.all().order_by('-id')[:4]
+    categories = Category.objects.all()[:5]
+    today = datetime.date.today()
+    featured_events = Event.objects.filter(date__gte=today).order_by('date')[:4]
 
     context = {
-        'featured_events': featured_events,
-        'categories': categories,
-        'communities': communities,  # ส่งไป template
+        'communities': communities if communities.exists() else [],
+        'categories': categories if categories.exists() else [],
+        'featured_events': featured_events if featured_events.exists() else [],
     }
     return render(request, 'myapp/home.html', context)
+
 
 class EventListView(ListView):
     model = Event

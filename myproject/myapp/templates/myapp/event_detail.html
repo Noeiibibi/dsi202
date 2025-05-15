@@ -1,157 +1,223 @@
 {% extends 'myapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %} {# Assuming you might use it for forms if any are on this page, or remove if not needed #}
 
-{% block title %}{{ event.title }} - MeetUp{% endblock %}
+{% block title %}{{ event.title }} - Chum-Chon Link{% endblock %}
+
+{% block extra_head %}
+<style>
+    .event-hero-bg {
+        background-size: cover;
+        background-position: center center;
+    }
+    .event-hero-overlay {
+        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 100%);
+    }
+    .attendee-avatar {
+        width: 2.5rem; /* w-10 */
+        height: 2.5rem; /* h-10 */
+        font-size: 0.875rem; /* text-sm */
+    }
+    .animate-fadeIn {
+        animation: fadeIn 0.5s ease-out forwards;
+        opacity: 0;
+    }
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<section class="py-6">
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <!-- Event Image -->
-        <div class="h-80 overflow-hidden">
-            {% if event.image %}
-            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
-            {% else %}
-            <div class="w-full h-full bg-gray-200 flex items-center justify-center">
-                <span class="text-gray-500">ไม่มีรูปภาพ</span>
+<div class="animate-fadeIn">
+    <section class="relative event-hero-bg text-white py-20 md:py-32 lg:py-40 {% if not event.image %} bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 {% endif %}"
+             {% if event.image and event.image.url %}style="background-image: url('{{ event.image.url }}');"{% endif %}>
+        <div class="absolute inset-0 event-hero-overlay z-0"></div>
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                {% if event.category %}
+                <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-xs sm:text-sm font-semibold px-3 py-1 rounded-full mb-3 sm:mb-4 tracking-wide">
+                    {{ event.category.name }}
+                </span>
+                {% endif %}
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6 leading-tight tracking-tight shadow-text-strong">
+                    {{ event.title }}
+                </h1>
+                <p class="text-lg sm:text-xl text-purple-100 dark:text-purple-200 mb-1">
+                    จัดโดย: 
+                    <a href="{% url 'view_profile' event.organizer.username %}" class="font-semibold hover:underline hover:text-yellow-300 transition-colors">
+                        {{ event.organizer.username }}
+                    </a>
+                </p>
+                {% if event.community %}
+                <p class="text-sm text-purple-200 dark:text-purple-300">
+                    ในชุมชน: <span class="font-medium">{{ event.community.name }}</span>
+                </p>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
-        
-        <div class="p-6">
-            <!-- Event Header -->
-            <div class="mb-6">
-                <div class="flex flex-wrap items-center mb-2">
-                    <span class="inline-block bg-purple-100 text-purple-800 text-sm px-3 py-1 rounded-md mr-2">{{ event.category.name }}</span>
-                    <span class="text-gray-500">จัดโดย <a href="{% url 'view_profile' event.organizer.username %}" class="text-purple-600 hover:underline">{{ event.organizer.username }}</a></span>
+    </section>
+
+    <section class="bg-white dark:bg-slate-800 py-10 md:py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                <div class="lg:w-2/3">
+                    <div class="mb-6 sm:mb-8 p-4 sm:p-6 bg-slate-50 dark:bg-slate-700/50 rounded-xl shadow-md">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-sm sm:text-base">
+                            <div class="flex items-center text-slate-700 dark:text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2.5 text-purple-500 dark:text-purple-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                <div>
+                                    <span class="font-semibold block">วันที่</span>
+                                    <span>{{ event.date|date:"l, j F Y" }}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-slate-700 dark:text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2.5 text-purple-500 dark:text-purple-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <div>
+                                    <span class="font-semibold block">เวลา</span>
+                                    <span>{{ event.time|time:"H:i" }} น.</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-slate-700 dark:text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2.5 text-purple-500 dark:text-purple-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                <div>
+                                    <span class="font-semibold block">สถานที่</span>
+                                    <span>{{ event.location }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6 sm:mb-8">
+                        <h2 class="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-white mb-4">รายละเอียดกิจกรรม</h2>
+                        <div class="prose prose-slate dark:prose-invert max-w-none leading-relaxed text-slate-700 dark:text-slate-300">
+                            {{ event.description|linebreaksbr }}
+                        </div>
+                    </div>
                 </div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ event.title }}</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <span>{{ event.date|date:"d M Y" }}</span>
-                    </div>
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>{{ event.time|time:"H:i" }} น.</span>
-                    </div>
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <span>{{ event.location }}</span>
-                    </div>
-                </div>
-                
-                {% if user.is_authenticated %}
-                    <div class="flex flex-wrap gap-2">
-                        <form method="post" action="{% url 'attend_event' event.id %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="status" value="attending">
-                            <button type="submit" class="{% if attendance and attendance.status == 'attending' %}bg-purple-600{% else %}bg-purple-600 hover:bg-purple-700{% endif %} text-white px-4 py-2 rounded-md">
-                                {% if attendance and attendance.status == 'attending' %}กำลังเข้าร่วม{% else %}เข้าร่วม{% endif %}
-                            </button>
-                        </form>
-                        
-                        <form method="post" action="{% url 'attend_event' event.id %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="status" value="interested">
-                            <button type="submit" class="{% if attendance and attendance.status == 'interested' %}bg-purple-500{% else %}bg-gray-200 hover:bg-gray-300 text-gray-800{% endif %} px-4 py-2 rounded-md">
-                                {% if attendance and attendance.status == 'interested' %}สนใจแล้ว{% else %}สนใจ{% endif %}
-                            </button>
-                        </form>
-                        
-                        {% if event.organizer == user %}
-                            <a href="{% url 'event_update' event.id %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md">แก้ไขกิจกรรม</a>
+
+                <div class="lg:w-1/3 space-y-6 sm:space-y-8">
+                    <div class="p-4 sm:p-6 bg-slate-50 dark:bg-slate-700/50 rounded-xl shadow-md">
+                        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">เข้าร่วมกิจกรรมนี้?</h3>
+                        {% if user.is_authenticated %}
+                            <div class="space-y-3">
+                                <form method="post" action="{% url 'attend_event' event.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="attending">
+                                    <button type="submit" 
+                                            class="w-full flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-all duration-200 ease-in-out transform hover:scale-105
+                                            {% if attendance and attendance.status == 'attending' %}bg-green-500 text-white hover:bg-green-600 focus:ring-green-500{% else %}bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500{% endif %}">
+                                        {% if attendance and attendance.status == 'attending' %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                                            กำลังเข้าร่วม
+                                        {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                                            ยืนยันเข้าร่วม
+                                        {% endif %}
+                                    </button>
+                                </form>
+                                <form method="post" action="{% url 'attend_event' event.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="interested">
+                                    <button type="submit" 
+                                            class="w-full flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-all duration-200 ease-in-out transform hover:scale-105
+                                            {% if attendance and attendance.status == 'interested' %}bg-sky-500 text-white hover:bg-sky-600 focus:ring-sky-500{% else %}bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-slate-500 focus:ring-slate-400{% endif %}">
+                                        {% if attendance and attendance.status == 'interested' %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" /></svg>
+                                            สนใจแล้ว
+                                        {% else %}
+                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                                            สนใจกิจกรรมนี้
+                                        {% endif %}
+                                    </button>
+                                </form>
+                                {% if event.organizer == user %}
+                                    <a href="{% url 'event_update' event.id %}" class="w-full flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm bg-amber-400 text-amber-900 hover:bg-amber-500 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-800 focus:ring-amber-400 transition-all duration-200 ease-in-out transform hover:scale-105">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                                        แก้ไขกิจกรรม
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <a href="{% url 'login' %}?next={{ request.path }}" class="w-full inline-flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-all duration-200 ease-in-out transform hover:scale-105">
+                                เข้าสู่ระบบเพื่อเข้าร่วม/แสดงความสนใจ
+                            </a>
                         {% endif %}
                     </div>
-                {% else %}
-                    <a href="{% url 'login' %}?next={{ request.path }}" class="inline-block bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md">เข้าสู่ระบบเพื่อเข้าร่วม</a>
-                {% endif %}
-            </div>
-            
-            <!-- Event Description -->
-            <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-3">รายละเอียดกิจกรรม</h2>
-                <div class="prose max-w-none">
-                    {{ event.description|linebreaks }}
+
+                    <div class="p-4 sm:p-6 bg-slate-50 dark:bg-slate-700/50 rounded-xl shadow-md">
+                        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">ผู้เข้าร่วม ({{ attendees.count }})</h3>
+                        {% if attendees %}
+                            <div class="flex flex-wrap -space-x-2 overflow-hidden">
+                                {% for attendance_obj in attendees|slice:":10" %} {# Show first 10 avatars #}
+                                    <a href="{% url 'view_profile' attendance_obj.user.username %}" class="inline-block" title="{{ attendance_obj.user.username }}">
+                                        {% if attendance_obj.user.profile.profile_image and attendance_obj.user.profile.profile_image.url %}
+                                            <img class="attendee-avatar rounded-full object-cover ring-2 ring-white dark:ring-slate-800 hover:ring-purple-400 dark:hover:ring-purple-500 transition-all" src="{{ attendance_obj.user.profile.profile_image.url }}" alt="{{ attendance_obj.user.username }}">
+                                        {% else %}
+                                            <span class="attendee-avatar rounded-full bg-purple-500 dark:bg-purple-600 text-white flex items-center justify-center font-semibold ring-2 ring-white dark:ring-slate-800 hover:ring-purple-400 dark:hover:ring-purple-500 transition-all">{{ attendance_obj.user.username.0|upper }}</span>
+                                        {% endif %}
+                                    </a>
+                                {% endfor %}
+                                {% if attendees.count > 10 %}
+                                    <span class="attendee-avatar rounded-full bg-slate-300 dark:bg-slate-600 text-slate-700 dark:text-slate-200 flex items-center justify-center font-semibold ring-2 ring-white dark:ring-slate-800">
+                                        +{{ attendees.count|add:"-10" }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            {% if attendees.count > 5 %} {# Or some other threshold #}
+                                <a href="#attendee-list-modal" class="mt-3 text-xs text-purple-600 dark:text-purple-400 hover:underline">ดูทั้งหมด</a>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-sm text-slate-500 dark:text-slate-400 italic">ยังไม่มีผู้ยืนยันเข้าร่วม</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="p-4 sm:p-6 bg-slate-50 dark:bg-slate-700/50 rounded-xl shadow-md">
+                        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">ผู้ที่สนใจ ({{ interested.count }})</h3>
+                        {% if interested %}
+                            <div class="flex flex-wrap -space-x-2 overflow-hidden">
+                                {% for int_obj in interested|slice:":10" %}
+                                 <a href="{% url 'view_profile' int_obj.user.username %}" class="inline-block" title="{{ int_obj.user.username }}">
+                                    {% if int_obj.user.profile.profile_image and int_obj.user.profile.profile_image.url %}
+                                        <img class="attendee-avatar rounded-full object-cover ring-2 ring-white dark:ring-slate-800 hover:ring-sky-400 dark:hover:ring-sky-500 transition-all" src="{{ int_obj.user.profile.profile_image.url }}" alt="{{ int_obj.user.username }}">
+                                    {% else %}
+                                        <span class="attendee-avatar rounded-full bg-sky-500 dark:bg-sky-600 text-white flex items-center justify-center font-semibold ring-2 ring-white dark:ring-slate-800 hover:ring-sky-400 dark:hover:ring-sky-500 transition-all">{{ int_obj.user.username.0|upper }}</span>
+                                    {% endif %}
+                                 </a>
+                                {% endfor %}
+                                {% if interested.count > 10 %}
+                                    <span class="attendee-avatar rounded-full bg-slate-300 dark:bg-slate-600 text-slate-700 dark:text-slate-200 flex items-center justify-center font-semibold ring-2 ring-white dark:ring-slate-800">
+                                        +{{ interested.count|add:"-10" }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                             {% if interested.count > 5 %}
+                                <a href="#interested-list-modal" class="mt-3 text-xs text-purple-600 dark:text-purple-400 hover:underline">ดูทั้งหมด</a>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-sm text-slate-500 dark:text-slate-400 italic">ยังไม่มีผู้ที่สนใจ</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-            
-            <!-- Attendees -->
-            <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-3">ผู้เข้าร่วม ({{ attendees.count }})</h2>
-                {% if attendees %}
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        {% for attendance in attendees %}
-                            <a href="{% url 'view_profile' attendance.user.username %}" class="flex items-center bg-gray-100 px-3 py-2 rounded-md hover:bg-gray-200">
-                                {% if attendance.user.profile.profile_image %}
-                                    <img src="{{ attendance.user.profile.profile_image.url }}" alt="{{ attendance.user.username }}" class="w-6 h-6 rounded-full mr-2">
-                                {% else %}
-                                    <div class="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center mr-2">{{ attendance.user.username.0|upper }}</div>
-                                {% endif %}
-                                <span>{{ attendance.user.username }}</span>
-                            </a>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-gray-500">ยังไม่มีผู้เข้าร่วมกิจกรรมนี้</p>
-                {% endif %}
-            </div>
-            
-            <!-- Interested -->
-            <div>
-                <h2 class="text-xl font-bold text-gray-800 mb-3">ผู้ที่สนใจ ({{ interested.count }})</h2>
-                {% if interested %}
-                    <div class="flex flex-wrap gap-2">
-                        {% for attendance in interested %}
-                            <a href="{% url 'view_profile' attendance.user.username %}" class="flex items-center bg-gray-100 px-3 py-2 rounded-md hover:bg-gray-200">
-                                {% if attendance.user.profile.profile_image %}
-                                    <img src="{{ attendance.user.profile.profile_image.url }}" alt="{{ attendance.user.username }}" class="w-6 h-6 rounded-full mr-2">
-                                {% else %}
-                                    <div class="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center mr-2">{{ attendance.user.username.0|upper }}</div>
-                                {% endif %}
-                                <span>{{ attendance.user.username }}</span>
-                            </a>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-gray-500">ยังไม่มีผู้ที่สนใจกิจกรรมนี้</p>
-                {% endif %}
-            </div>
         </div>
-    </div>
-    
-    <!-- Related Events -->
+    </section>
+
     {% if related_events %}
-    <div class="mt-10">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">กิจกรรมที่คล้ายกัน</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {% for event in related_events %}
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="h-40 overflow-hidden">
-                    {% if event.image %}
-                    <img src="{{ event.image.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
-                    {% else %}
-                    <div class="w-full h-full bg-gray-200 flex items-center justify-center">
-                        <span class="text-gray-500">ไม่มีรูปภาพ</span>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="p-4">
-                    <h3 class="font-bold text-lg mb-2">{{ event.title }}</h3>
-                    <p class="text-gray-600 mb-2">{{ event.date|date:"d M Y" }} | {{ event.time|time:"H:i" }}</p>
-                    <p class="text-gray-600 mb-4">{{ event.location }}</p>
-                    <a href="{% url 'event_detail' event.id %}" class="block text-center bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md">ดูรายละเอียด</a>
-                </div>
+    <section class="py-10 md:py-16 bg-slate-100 dark:bg-slate-950">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-white mb-6 md:mb-8 text-center sm:text-left">กิจกรรมอื่นที่น่าสนใจ</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                {% for rel_event in related_events %}
+                    {% include 'myapp/partials/event_card_minimal.html' with event=rel_event %}
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
+    </section>
     {% endif %}
-</section>
+
+    {# TODO: Add modals for full attendee/interested lists if needed #}
+    {# Example: <div id="attendee-list-modal" class="hidden fixed ..."> ... </div> #}
+
+</div>
 {% endblock %}

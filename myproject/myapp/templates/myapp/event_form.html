@@ -1,108 +1,233 @@
 {% extends 'myapp/base.html' %}
+{% load static %}
 {% load widget_tweaks %}
 
-{% block title %}{% if form.instance.id %}แก้ไขกิจกรรม{% else %}สร้างกิจกรรมใหม่{% endif %} - MeetUp{% endblock %}
+{% block title %}{% if form.instance.pk %}แก้ไขกิจกรรม{% else %}สร้างกิจกรรมใหม่{% endif %} - Chum-Chon Link{% endblock %}
+
+{% block extra_head %}
+<style>
+    html, body { height: 100%; }
+    body { display: flex; flex-direction: column; }
+    main.flex-grow { flex: 1 0 auto; }
+
+    .animated-gradient-bg-event-form {
+        background-size: 200% 200%;
+        background-image: linear-gradient(45deg, #d8b4fe, #c084fc, #a855f7, #9333ea, #7e22ce, #6b21a8);
+        animation: gradientFlowEventForm 18s ease infinite;
+    }
+    .dark .animated-gradient-bg-event-form {
+        background-image: linear-gradient(45deg, #7e22ce, #9333ea, #a855f7, #c084fc, #d8b4fe);
+    }
+    @keyframes gradientFlowEventForm {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .form-input-event .peer:focus ~ label,
+    .form-input-event .peer:not(:placeholder-shown):not([type="file"]) ~ label { /* Exclude file input from this specific label behavior */
+        transform: translateY(-1.15rem) translateX(-0.25rem) scale(0.8);
+        color: theme('colors.purple.600');
+        background-color: theme('colors.white');
+    }
+    .dark .form-input-event .peer:focus ~ label,
+    .dark .form-input-event .peer:not(:placeholder-shown):not([type="file"]) ~ label {
+        color: theme('colors.purple.400');
+        background-color: theme('colors.slate.800');
+    }
+    
+    .animate-fadeInUpEventForm {
+        animation: fadeInUpEventForm 0.7s ease-out forwards;
+        opacity: 0;
+    }
+    @keyframes fadeInUpEventForm {
+        from { opacity: 0; transform: translateY(25px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Custom styling for file input to make it more appealing */
+    .styled-file-input-container {
+        @apply relative border border-slate-300 dark:border-slate-600 rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:border-purple-500 dark:hover:border-purple-500 transition-colors; /* Increased padding slightly */
+        min-height: 90px; /* Adjusted min-height */
+    }
+    .styled-file-input-container input[type="file"] {
+        @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+    }
+    .styled-file-input-icon {
+        @apply w-6 h-6 text-purple-500 dark:text-purple-400 mb-1; /* Changed size to w-6 h-6 */
+    }
+    .styled-file-input-text {
+        @apply text-xs text-slate-500 dark:text-slate-400; /* Kept text small */
+    }
+    .styled-file-input-filename {
+        @apply mt-1.5 text-xs text-slate-500 dark:text-slate-300 truncate; /* Adjusted margin-top */
+        max-width: 100%;
+    }
+    .current-image-preview img {
+        @apply max-h-28 rounded-md shadow-sm border border-slate-300 dark:border-slate-600 object-contain; /* Adjusted max-h */
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<section class="py-6">
-    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-        <h1 class="text-3xl font-bold text-purple-800 mb-8 text-center">{% if form.instance.id %}แก้ไขกิจกรรม{% else %}สร้างกิจกรรมใหม่{% endif %}</h1>
-        
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
-            {% csrf_token %}
+<section class="relative min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-slate-900 dark:via-purple-800 dark:to-slate-900 overflow-hidden">
 
-            <!-- ชื่อกิจกรรม -->
-            <div>
-                <label for="{{ form.title.id_for_label }}" class="block text-gray-800 font-medium mb-2">ชื่อกิจกรรม</label>
-                {{ form.title|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
-                {% if form.title.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.title.errors.0 }}</p>
-                {% endif %}
+    <div class="w-full max-w-4xl lg:max-w-6xl mx-auto my-8 animate-fadeInUpEventForm relative z-10">
+        <div class="flex flex-col md:flex-row rounded-xl shadow-2xl overflow-hidden">
+            
+            <div class="w-full md:w-2/5 lg:w-5/12 p-8 sm:p-12 flex flex-col items-center justify-center text-white animated-gradient-bg-event-form">
+                <a href="{% url 'home' %}" class="inline-block mb-6 transition-transform duration-300 hover:scale-110">
+                    <img src="{% static 'images/logo.png' %}" 
+                         alt="โลโก้ Chum-Chon Link" 
+                         class="h-20 sm:h-24 mx-auto drop-shadow-lg"
+                         onerror="this.onerror=null; this.src='https://placehold.co/150x96/FFFFFF/FFFFFF?text=Logo&font=notosansthai';">
+                </a>
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 text-center tracking-tight">
+                    {% if form.instance.pk %}แก้ไขกิจกรรมของคุณ{% else %}สร้างสรรค์กิจกรรมใหม่{% endif %}
+                </h2>
+                <p class="text-md sm:text-lg text-purple-100 mb-8 text-center leading-relaxed">
+                    แบ่งปันความสุข สร้างแรงบันดาลใจ และเชื่อมต่อผู้คนผ่านกิจกรรมที่คุณจัดขึ้น
+                </p>
+               
             </div>
 
-            <!-- หมวดหมู่ -->
-            <div>
-                <label for="{{ form.category.id_for_label }}" class="block text-gray-800 font-medium mb-2">หมวดหมู่</label>
-                {{ form.category|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
-                {% if form.category.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.category.errors.0 }}</p>
-                {% endif %}
-            </div>
+            <div class="w-full md:w-3/5 lg:w-7/12 bg-white dark:bg-slate-800 p-6 sm:p-8 overflow-y-auto" style="max-height: 90vh;">
+                <div class="text-left mb-6 sm:mb-8">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-purple-700 dark:text-purple-400">
+                        {% if form.instance.pk %}แก้ไขรายละเอียดกิจกรรม{% else %}กรอกรายละเอียดกิจกรรมใหม่{% endif %}
+                    </h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">
+                        {% if form.instance.pk %}อัปเดตข้อมูลกิจกรรมของคุณให้เป็นปัจจุบัน{% else %}แบ่งปันรายละเอียดเพื่อให้กิจกรรมของคุณน่าสนใจ{% endif %}
+                    </p>
+                </div>
 
-            <!-- ชุมชน -->
-            <div>
-                <label for="{{ form.community.id_for_label }}" class="block text-gray-800 font-medium mb-2">ชุมชน</label>
-                {{ form.community|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
-                {% if form.community.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.community.errors.0 }}</p>
-                {% endif %}
-            </div>
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
 
-            <!-- รายละเอียด -->
-            <div>
-                <label for="{{ form.description.id_for_label }}" class="block text-gray-800 font-medium mb-2">รายละเอียด</label>
-                {{ form.description|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
-                {% if form.description.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.description.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <!-- สถานที่ -->
-            <div>
-                <label for="{{ form.location.id_for_label }}" class="block text-gray-800 font-medium mb-2">สถานที่</label>
-                {{ form.location|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
-                {% if form.location.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.location.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <!-- วันที่ เวลา -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="{{ form.date.id_for_label }}" class="block text-gray-800 font-medium mb-2">วันที่</label>
-                    {{ form.date|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
-                    {% if form.date.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ form.date.errors.0 }}</p>
+                    {% if form.non_field_errors %}
+                    <div class="bg-red-100 dark:bg-red-700/20 border-l-4 border-red-500 dark:border-red-400 text-red-700 dark:text-red-300 p-4 rounded-md shadow-sm" role="alert">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 pt-0.5"><svg class="h-5 w-5 text-red-500 dark:text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.707-4.293a1 1 0 001.414-1.414L10 10.586l.707-.707a1 1 0 00-1.414-1.414L10 8.172l-.707.707a1 1 0 001.414 1.414L10 10.586l-.707.707zM10 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg></div>
+                            <div class="ml-3"><h3 class="text-sm font-semibold text-red-800 dark:text-red-200">เกิดข้อผิดพลาด:</h3>
+                                <div class="mt-1 text-sm text-red-700 dark:text-red-300"><ul class="list-disc list-inside space-y-0.5">{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul></div>
+                            </div>
+                        </div>
+                    </div>
                     {% endif %}
-                </div>
-                <div>
-                    <label for="{{ form.time.id_for_label }}" class="block text-gray-800 font-medium mb-2">เวลา</label>
-                    {{ form.time|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
-                    {% if form.time.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ form.time.errors.0 }}</p>
-                    {% endif %}
-                </div>
-            </div>
 
-            <!-- จำนวนผู้เข้าร่วม -->
-            <div>
-                <label for="{{ form.max_attendees.id_for_label }}" class="block text-gray-800 font-medium mb-2">จำนวนผู้เข้าร่วมสูงสุด (ปล่อยว่างหากไม่จำกัด)</label>
-                {{ form.max_attendees|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
-                {% if form.max_attendees.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.max_attendees.errors.0 }}</p>
-                {% endif %}
-            </div>
+                    {% for field in form %}
+                        <div class="relative form-input-event {% if field.name != 'image' %}pt-2{% endif %}">
+                            
+                            {% if field.name == 'image' %}
+                                <label for="{{ field.auto_id }}" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                                    {{ field.label }} {% if field.field.required %}<span class="text-red-500 ml-0.5">*</span>{% endif %}
+                                </label>
+                                {% if form.instance.image and form.instance.image.url %}
+                                <div class="mb-3 current-image-preview">
+                                    <img src="{{ form.instance.image.url }}" alt="รูปภาพปัจจุบัน">
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">รูปภาพปัจจุบัน. เลือกไฟล์ใหม่เพื่อเปลี่ยนแปลง</p>
+                                </div>
+                                {% endif %}
+                                <div class="styled-file-input-container">
+                                    <input type="file" name="{{ field.name }}" id="{{ field.auto_id }}" class="custom-file-input-element">
+                                    <p class="styled-file-input-text">คลิกเพื่อเลือกรูปภาพ หรือลากมาวาง</p>
+                                    <span class="styled-file-input-filename"></span>
+                                </div>
 
-            <!-- รูปภาพ -->
-            <div>
-                <label for="{{ form.image.id_for_label }}" class="block text-gray-800 font-medium mb-2">รูปภาพกิจกรรม</label>
-                {% if form.instance.image %}
-                <div class="mb-3">
-                    <img src="{{ form.instance.image.url }}" alt="{{ form.instance.title }}" class="h-48 w-full object-cover rounded-lg">
-                    <p class="text-sm text-gray-500 mt-2">รูปภาพปัจจุบัน</p>
-                </div>
-                {% endif %}
-                {{ form.image|add_class:"w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" }}
-                {% if form.image.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.image.errors.0 }}</p>
-                {% endif %}
-            </div>
+                            {% elif field.widget_type == 'select' %}
+                                <label for="{{ field.auto_id }}" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                                    {{ field.label }} {% if field.field.required %}<span class="text-red-500 ml-0.5">*</span>{% endif %}
+                                </label>
+                                {% render_field field class="block w-full px-3.5 py-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-700 rounded-lg border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-600 dark:focus:ring-purple-500 focus:border-purple-600 dark:focus:border-purple-500" %}
+                            
+                            {% elif field.widget_type == 'textarea' %}
+                                 {% render_field field class="block px-3.5 py-3 w-full text-sm text-slate-900 dark:text-white bg-transparent rounded-lg border border-slate-300 dark:border-slate-600 appearance-none focus:outline-none focus:ring-0 focus:border-purple-600 dark:focus:border-purple-500 peer" placeholder=" " rows="4" id=field.auto_id %}
+                                <label for="{{ field.auto_id }}" class="absolute text-sm text-slate-500 dark:text-slate-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-slate-800 px-2 peer-focus:px-2 peer-focus:text-purple-600 dark:peer-focus:text-purple-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+                                    {{ field.label }} {% if field.field.required %}<span class="text-red-500 ml-0.5">*</span>{% endif %}
+                                </label>
+                            {% else %}
+                                {% render_field field class="block px-3.5 py-3 w-full text-sm text-slate-900 dark:text-white bg-transparent rounded-lg border border-slate-300 dark:border-slate-600 appearance-none focus:outline-none focus:ring-0 focus:border-purple-600 dark:focus:border-purple-500 peer" placeholder=" " id=field.auto_id %}
+                                <label for="{{ field.auto_id }}" class="absolute text-sm text-slate-500 dark:text-slate-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-slate-800 px-2 peer-focus:px-2 peer-focus:text-purple-600 dark:peer-focus:text-purple-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+                                    {{ field.label }} {% if field.field.required %}<span class="text-red-500 ml-0.5">*</span>{% endif %}
+                                </label>
+                            {% endif %}
+                            
+                            <div class="mt-2 px-1 space-y-1">
+                                {% if field.help_text %}
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ field.help_text|safe }}</p>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <ul class="list-none space-y-1 {% if field.help_text %}pt-1{% endif %}">
+                                        {% for error in field.errors %}
+                                        <li class="text-xs text-red-600 dark:text-red-400 font-medium flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1.5 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                                            <span>{{ error }}</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
 
-            <div class="flex justify-center">
-                <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-medium px-8 py-3 rounded-lg transition">บันทึกกิจกรรม</button>
+                    <div class="pt-4">
+                        <button type="submit"
+                            class="w-full flex items-center justify-center bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            {% if form.instance.pk %}บันทึกการแก้ไข{% else %}สร้างกิจกรรม{% endif %}
+                        </button>
+                    </div>
+                </form>
             </div>
-
-        </form>
+        </div>
     </div>
 </section>
+
+<script>
+// JavaScript to show filename for custom file input
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInputElements = document.querySelectorAll('.custom-file-input-element');
+    fileInputElements.forEach(function(input) { 
+        input.addEventListener('change', function(e) {
+            let fileName = '';
+            const container = e.target.closest('.styled-file-input-container');
+            if (!container) return;
+
+            const textElement = container.querySelector('.styled-file-input-text');
+            const fileNameDisplay = container.querySelector('.styled-file-input-filename');
+            const iconElement = container.querySelector('.styled-file-input-icon'); 
+
+            if (e.target.files && e.target.files.length > 0) {
+                fileName = e.target.files[0].name;
+                if (textElement) textElement.textContent = 'ไฟล์ที่เลือก:';
+                if (fileNameDisplay) fileNameDisplay.textContent = fileName;
+                if (iconElement) iconElement.classList.add('hidden'); 
+            } else {
+                if (textElement) textElement.textContent = 'คลิกเพื่อเลือกรูปภาพ หรือลากมาวาง';
+                if (fileNameDisplay) fileNameDisplay.textContent = '';
+                if (iconElement) iconElement.classList.remove('hidden'); 
+            }
+        });
+
+        if (input.files && input.files.length > 0) {
+            const event = new Event('change', { bubbles: true });
+            input.dispatchEvent(event);
+        } else {
+            const container = input.closest('.styled-file-input-container');
+             if (container) {
+                const textElement = container.querySelector('.styled-file-input-text');
+                const fileNameDisplay = container.querySelector('.styled-file-input-filename');
+                const iconElement = container.querySelector('.styled-file-input-icon');
+
+                if (textElement && (!fileNameDisplay || fileNameDisplay.textContent === '')) {
+                     textElement.textContent = 'คลิกเพื่อเลือกรูปภาพ หรือลากมาวาง';
+                }
+                if (iconElement) iconElement.classList.remove('hidden'); 
+            }
+        }
+    });
+});
+</script>
 {% endblock %}

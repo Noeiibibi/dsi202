@@ -1,57 +1,193 @@
 {% extends 'myapp/base.html' %}
 {% load static %}
 
-{% block title %}Chum-Chon Link - กิจกรรมทั้งหมด{% endblock %}
+{% block title %}Chum-Chon Link - ค้นหากิจกรรมที่ใช่!{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* อาจจะย้าย class เหล่านี้ไปรวมกับ CSS หลักใน base.html หรือ styles.css ได้ */
+    .section-title-playful {
+        font-family: 'Mitr', sans-serif;
+        color: #86198f; /* Tailwind fuchsia-700 */
+    }
+    .dark .section-title-playful {
+        color: #f0abfc; /* Tailwind fuchsia-300 */
+    }
+
+    .filter-button-playful {
+        transition: all 0.2s ease-in-out;
+        border-width: 1.5px; /* ทำให้ขอบชัดขึ้นเล็กน้อย */
+    }
+    .filter-button-playful.active {
+        background-color: #ec4899; /* Pink-500 */
+        color: white;
+        border-color: #ec4899;
+        box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+    }
+    .dark .filter-button-playful.active {
+        background-color: #f472b6; /* Pink-400 */
+        color: #1f2937; /* gray-800 */
+        border-color: #f472b6;
+         box-shadow: 0 2px 8px rgba(244, 114, 182, 0.4);
+    }
+    .filter-button-playful.inactive {
+        background-color: white;
+        color: #4b5563; /* gray-600 */
+        border-color: #e5e7eb; /* gray-200 */
+    }
+    .filter-button-playful.inactive:hover {
+        border-color: #f472b6; /* Pink-400 */
+        color: #ec4899; /* Pink-500 */
+        transform: translateY(-1px);
+    }
+    .dark .filter-button-playful.inactive {
+        background-color: #374151; /* gray-700 */
+        color: #d1d5db; /* gray-300 */
+        border-color: #4b5563; /* gray-600 */
+    }
+    .dark .filter-button-playful.inactive:hover {
+        border-color: #f472b6; /* Pink-400 */
+        color: #fce7f3; /* Pink-100 */
+    }
+
+    /* Playful Search Bar (คล้ายกับใน home.html) */
+    .playful-search-bar-list input {
+        background-color: white;
+        border: 1px solid #fbcfe8; /* pink-200 */
+        color: #374151; /* gray-700 */
+        border-radius: 0.75rem 0 0 0.75rem; /* มนซ้าย */
+        padding-left: 1.25rem; /* px-5 */
+        padding-right: 1.25rem;
+        padding-top: 0.875rem; /* py-3.5 */
+        padding-bottom: 0.875rem;
+    }
+    .playful-search-bar-list input:focus {
+        border-color: #f472b6; /* pink-400 */
+        box-shadow: 0 0 0 2.5px rgba(244, 114, 182, 0.18);
+        outline: none;
+    }
+    .dark .playful-search-bar-list input {
+        background-color: #4c1d95; /* violet-800 */
+        border-color: #7c3aed; /* violet-600 */
+        color: #e0e7ff; /* indigo-100 */
+    }
+    .dark .playful-search-bar-list input:focus {
+        border-color: #a78bfa; /* violet-400 */
+        box-shadow: 0 0 0 2.5px rgba(167, 139, 250, 0.25);
+    }
+    .playful-search-bar-list button {
+        background-color: #f472b6; /* pink-400 */
+        border-radius: 0 0.75rem 0.75rem 0; /* มนขวา */
+        padding-left: 1.25rem; /* px-5 */
+        padding-right: 1.25rem;
+        padding-top: 0.875rem; /* py-3.5 */
+        padding-bottom: 0.875rem;
+    }
+    .playful-search-bar-list button:hover {
+        background-color: #ec4899; /* pink-500 */
+    }
+    .dark .playful-search-bar-list button {
+        background-color: #a855f7; /* purple-500 */
+    }
+    .dark .playful-search-bar-list button:hover {
+        background-color: #9333ea; /* purple-600 */
+    }
+
+    /* Pagination */
+    .pagination-playful a, .pagination-playful span {
+        transition: all 0.2s ease-in-out;
+        border-width: 1.5px;
+    }
+    .pagination-playful a.active-page {
+        background-color: #ec4899; /* Pink-500 */
+        color: white;
+        border-color: #ec4899;
+        font-weight: 600;
+    }
+    .dark .pagination-playful a.active-page {
+        background-color: #f472b6; /* Pink-400 */
+        color: #1f2937; /* gray-800 */
+        border-color: #f472b6;
+    }
+    .pagination-playful a.inactive-page {
+        background-color: white;
+        color: #4b5563; /* gray-600 */
+        border-color: #e5e7eb; /* gray-200 */
+    }
+    .pagination-playful a.inactive-page:hover {
+        border-color: #f472b6; /* Pink-400 */
+        color: #ec4899; /* Pink-500 */
+        transform: translateY(-1px);
+    }
+    .dark .pagination-playful a.inactive-page {
+        background-color: #374151; /* gray-700 */
+        color: #d1d5db; /* gray-300 */
+        border-color: #4b5563; /* gray-600 */
+    }
+    .dark .pagination-playful a.inactive-page:hover {
+        border-color: #f472b6; /* Pink-400 */
+        color: #fce7f3; /* Pink-100 */
+    }
+    .pagination-playful span.ellipsis { /* สำหรับ ... */
+        color: #9ca3af; /* gray-400 */
+        border-color: transparent;
+        background-color: transparent;
+    }
+    .dark .pagination-playful span.ellipsis {
+        color: #6b7280; /* gray-500 */
+    }
+
+</style>
+{% endblock %}
 
 {% block content %}
-<section class="py-8 md:py-12 px-4 bg-slate-50 dark:bg-slate-900 min-h-screen">
+<section class="py-8 md:py-12 px-4 bg-pink-50 dark:bg-slate-900 min-h-screen">
     <div class="container mx-auto">
         <div class="mb-8 md:mb-10 text-center">
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-purple-700 dark:text-purple-400 mb-3 tracking-tight">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 sm:h-12 sm:w-12 inline-block mr-2 -mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold section-title-playful mb-3 tracking-tight">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 sm:h-12 sm:w-12 inline-block mr-2 -mt-1 text-pink-500 dark:text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                ค้นหากิจกรรมที่น่าสนใจ
+                ค้นหากิจกรรมที่ใช่ สไตล์คุณ!
             </h1>
             <p class="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-                สำรวจกิจกรรมหลากหลายจากชุมชนต่างๆ หรือค้นหาสิ่งที่คุณสนใจโดยเฉพาะ
+                สำรวจกิจกรรมหลากหลายจากชุมชนต่างๆ หรือค้นหาสิ่งที่คุณสนใจโดยเฉพาะ แล้วมาสนุกด้วยกันนะ!
             </p>
         </div>
 
         <div class="max-w-2xl mx-auto mb-10 md:mb-12">
-            <form action="{% url 'event_list' %}" method="get" class="flex items-center shadow-xl rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+            <form action="{% url 'event_list' %}" method="get" class="playful-search-bar-list flex items-center shadow-xl rounded-xl overflow-hidden">
                 <input type="text" name="search" value="{{ search_query|default:'' }}" placeholder="พิมพ์ชื่อกิจกรรม, สถานที่, หรือคำค้นหา..."
-                       class="w-full px-6 py-4 text-base text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-0 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-inset"
+                       class="w-full text-sm border-0 focus:outline-none focus:ring-0"
                        aria-label="ค้นหากิจกรรม">
                 <button type="submit"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-0 transition-colors duration-150 ease-in-out"
-                        aria-label="ค้นหา">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                        class="text-white focus:outline-none focus:ring-0 transition-colors duration-150 ease-in-out transform active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                     </svg>
                 </button>
             </form>
         </div>
 
-        <div class="mb-8 md:mb-10 p-5 sm:p-6 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700">
+        <div class="mb-8 md:mb-10 p-5 sm:p-6 bg-white dark:bg-slate-800/70 backdrop-blur-sm dark:border dark:border-slate-700/80 rounded-2xl shadow-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 <div>
-                    <h2 class="text-lg font-semibold text-slate-800 dark:text-white mb-3 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-purple-500" viewBox="0 0 20 20" fill="currentColor">
+                    <h2 class="text-lg font-semibold section-title-playful mb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-pink-500 dark:text-pink-400" viewBox="0 0 20 20" fill="currentColor">
                           <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013-3c.29 0 .57.043.83.121z"/>
                         </svg>
                         กรองตามชุมชน
                     </h2>
                     <div class="flex flex-wrap gap-2">
                         <a href="{% url 'event_list' %}?search={{ search_query|default:'' }}{% if selected_category %}&category={{ selected_category }}{% endif %}"
-                           class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out border
-                                  {% if not selected_community %}bg-purple-600 text-white border-purple-600 shadow-md hover:bg-purple-700{% else %}bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400{% endif %}">
+                           class="filter-button-playful px-4 py-1.5 rounded-lg text-sm font-medium
+                                  {% if not selected_community %}active{% else %}inactive{% endif %}">
                            ทั้งหมด
                         </a>
                         {% for community in communities %}
                         <a href="?search={{ search_query|default:'' }}&community={{ community.id }}{% if selected_category %}&category={{ selected_category }}{% endif %}"
-                           class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out border
-                                  {% if selected_community == community.id|stringformat:'i' %}bg-purple-600 text-white border-purple-600 shadow-md hover:bg-purple-700{% else %}bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400{% endif %}">
+                           class="filter-button-playful px-4 py-1.5 rounded-lg text-sm font-medium
+                                  {% if selected_community == community.id|stringformat:'i' %}active{% else %}inactive{% endif %}">
                             {{ community.name }}
                         </a>
                         {% endfor %}
@@ -59,22 +195,22 @@
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-semibold text-slate-800 dark:text-white mb-3 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-purple-500" viewBox="0 0 20 20" fill="currentColor">
+                    <h2 class="text-lg font-semibold section-title-playful mb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-pink-500 dark:text-pink-400" viewBox="0 0 20 20" fill="currentColor">
                           <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 9V5a1 1 0 011-1h12a1 1 0 011 1v4a1 1 0 01-.293.707zM6 5h2v2H6V5zm4 0h2v2h-2V5zm4 0h2v2h-2V5zm-8 4h2v2H6V9zm4 0h2v2h-2V9zm4 0h2v2h-2V9z" clip-rule="evenodd" />
                         </svg>
                         กรองตามหมวดหมู่
                     </h2>
                     <div class="flex flex-wrap gap-2">
                         <a href="{% url 'event_list' %}?search={{ search_query|default:'' }}{% if selected_community %}&community={{ selected_community }}{% endif %}"
-                           class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out border
-                                  {% if not selected_category %}bg-purple-600 text-white border-purple-600 shadow-md hover:bg-purple-700{% else %}bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400{% endif %}">
+                           class="filter-button-playful px-4 py-1.5 rounded-lg text-sm font-medium
+                                  {% if not selected_category %}active{% else %}inactive{% endif %}">
                            ทั้งหมด
                         </a>
                         {% for category in categories %}
                         <a href="?search={{ search_query|default:'' }}&category={{ category.id }}{% if selected_community %}&community={{ selected_community }}{% endif %}"
-                           class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out border
-                                  {% if selected_category == category.id|stringformat:'i' %}bg-purple-600 text-white border-purple-600 shadow-md hover:bg-purple-700{% else %}bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400{% endif %}">
+                           class="filter-button-playful px-4 py-1.5 rounded-lg text-sm font-medium
+                                  {% if selected_category == category.id|stringformat:'i' %}active{% else %}inactive{% endif %}">
                             {{ category.name }}
                         </a>
                         {% endfor %}
@@ -84,21 +220,19 @@
         </div>
 
         {% if events %}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
                 {% for event in events %}
-                    {# This assumes you have a partial for event cards #}
                     {% include 'myapp/partials/event_card_minimal.html' with event=event %}
                 {% endfor %}
             </div>
         {% else %}
-            {# This block is shown if the 'events' list is empty or not provided #}
-            <div class="col-span-full text-center py-12 sm:py-16 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-purple-400 dark:text-purple-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <div class="col-span-full text-center py-12 sm:py-16 bg-white dark:bg-slate-800/70 backdrop-blur-sm dark:border dark:border-slate-700/80 rounded-2xl shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-pink-400 dark:text-pink-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 10l.01.01" />
                 </svg>
-                <h3 class="text-2xl font-semibold text-slate-800 dark:text-white mb-2">ไม่พบกิจกรรมที่ตรงกับเงื่อนไข</h3>
-                <p class="text-slate-600 dark:text-slate-400 mb-6">ลองปรับเปลี่ยนคำค้นหาหรือตัวกรองของคุณ หรือดูรายการกิจกรรมทั้งหมด</p>
-                <a href="{% url 'event_list' %}" class="inline-flex items-center bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-all duration-150 ease-in-out">
+                <h3 class="text-2xl font-semibold text-slate-800 dark:text-slate-100 mb-2 section-title-playful">ไม่พบกิจกรรมที่ตรงกับเงื่อนไข</h3>
+                <p class="text-slate-600 dark:text-slate-300 mb-6">ลองปรับเปลี่ยนคำค้นหาหรือตัวกรองของคุณ หรือดูรายการกิจกรรมทั้งหมดนะคะ</p>
+                <a href="{% url 'event_list' %}" class="inline-flex items-center bg-pink-500 hover:bg-pink-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-all duration-150 ease-in-out transform hover:scale-105">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-1.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                     </svg>
@@ -107,23 +241,23 @@
             </div>
         {% endif %}
 
-        {% if is_paginated and events %} {# Also check if events exist to hide pagination for empty search results #}
+        {% if is_paginated and events %}
         <div class="mt-10 md:mt-12 flex flex-col sm:flex-row justify-center items-center gap-4">
-            <nav aria-label="Pagination">
-                <ul class="flex items-center -space-x-px h-10 text-sm">
+            <nav aria-label="Pagination" class="pagination-playful">
+                <ul class="flex items-center -space-x-px h-9 text-sm">
                     {% if page_obj.has_previous %}
                     <li>
                         <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_community %}&community={{ selected_community }}{% endif %}"
-                           class="flex items-center justify-center px-3 h-10 ms-0 leading-tight text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-s-lg hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-white transition-colors">
+                           class="inactive-page flex items-center justify-center px-3 h-9 ms-0 rounded-s-lg">
                             <span class="sr-only">หน้าแรก</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" /></svg>
                         </a>
                     </li>
                     <li>
                         <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_community %}&community={{ selected_community }}{% endif %}"
-                           class="flex items-center justify-center px-3 h-10 leading-tight text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-white transition-colors">
+                           class="inactive-page flex items-center justify-center px-3 h-9">
                             <span class="sr-only">ก่อนหน้า</span>
-                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
                             </svg>
                         </a>
@@ -133,39 +267,39 @@
                     {% for num in page_obj.paginator.page_range %}
                         {% if page_obj.number == num %}
                         <li>
-                            <a href="#" aria-current="page" class="z-10 flex items-center justify-center px-3 h-10 leading-tight text-purple-600 dark:text-purple-300 border border-purple-400 dark:border-purple-500 bg-purple-100 dark:bg-purple-700/30 hover:bg-purple-200 dark:hover:bg-purple-700/50 hover:text-purple-700 dark:hover:text-purple-200 transition-colors">
+                            <a href="#" aria-current="page" class="active-page z-10 flex items-center justify-center px-3.5 h-9">
                                 {{ num }}
                             </a>
                         </li>
                         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                         <li>
                             <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_community %}&community={{ selected_community }}{% endif %}"
-                               class="flex items-center justify-center px-3 h-10 leading-tight text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-white transition-colors">
+                               class="inactive-page flex items-center justify-center px-3.5 h-9">
                                {{ num }}
                             </a>
                         </li>
                         {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
                          <li>
-                            <span class="flex items-center justify-center px-3 h-10 leading-tight text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600">...</span>
+                            <span class="ellipsis flex items-center justify-center px-3 h-9">...</span>
                         </li>
                         {% endif %}
                     {% endfor %}
-                    
+
                     {% if page_obj.has_next %}
                     <li>
                         <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_community %}&community={{ selected_community }}{% endif %}"
-                           class="flex items-center justify-center px-3 h-10 leading-tight text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-white transition-colors">
+                           class="inactive-page flex items-center justify-center px-3 h-9">
                             <span class="sr-only">ถัดไป</span>
-                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                             </svg>
                         </a>
                     </li>
                     <li>
                         <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_community %}&community={{ selected_community }}{% endif %}"
-                           class="flex items-center justify-center px-3 h-10 leading-tight text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-e-lg hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-white transition-colors">
+                           class="inactive-page flex items-center justify-center px-3 h-9 rounded-e-lg">
                             <span class="sr-only">หน้าสุดท้าย</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" /></svg>
                         </a>
                     </li>
                     {% endif %}
@@ -178,4 +312,4 @@
         {% endif %}
     </div>
 </section>
-{% endblock %} {# This is the crucial closing tag for block content #}
+{% endblock %}

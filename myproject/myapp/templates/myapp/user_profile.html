@@ -3,37 +3,128 @@
 
 {% block title %}โปรไฟล์ของ {{ profile.user.username }} - Chum-Chon Link{% endblock %}
 
+{% block extra_head %}
+<style>
+    /* Playful Gradient for Profile Header Background */
+    .profile-header-bg {
+        background: linear-gradient(135deg, #fbcfe8 0%, #fde68a 50%, #bfdbfe 100%); /* pink-200, amber-200, blue-200 */
+        color: rgb(3, 3, 3); /* Ensure text color is white in dark mode */
+    }
+    .dark .profile-header-bg {
+        background: linear-gradient(135deg, #86efac 0%, #93c5fd 50%, #d8b4fe 100%); /* pastel green, pastel blue, pastel purple for dark */
+        color: white; /* Ensure text color is white in dark mode */
+    }
+
+    /* Profile Avatar Styling */
+    .profile-avatar-wrapper {
+        border: 4px solid white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .dark .profile-avatar-wrapper {
+        border-color: #374151; /* gray-700 */
+    }
+    .profile-avatar-img {
+        object-fit: cover;
+    }
+    .profile-avatar-placeholder {
+        background: linear-gradient(to br, #a78bfa, #f472b6); /* violet-400 to pink-400 */
+        color: white;
+        font-family: 'Mitr', sans-serif;
+        font-size: 3.5rem; /* Adjust based on avatar size */
+    }
+
+    /* Section Titles */
+    .profile-section-title {
+        font-family: 'Mitr', sans-serif;
+        color: #c026d3; /* fuchsia-600 */
+    }
+    .dark .profile-section-title {
+        color: #e879f9; /* fuchsia-400 */
+    }
+
+    /* Edit Profile Button */
+    .btn-edit-profile-playful {
+        background-color: #f59e0b; /* amber-500 */
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 0.75rem; /* rounded-xl */
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .btn-edit-profile-playful:hover {
+        background-color: #d97706; /* amber-600 */
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .dark .btn-edit-profile-playful {
+        background-color: #fcd34d; /* amber-300 */
+        color: #4b5563; /* gray-600 */
+    }
+    .dark .btn-edit-profile-playful:hover {
+        background-color: #f59e0b; /* amber-500 */
+    }
+
+    /* "No Events" Placeholder Styling */
+    .no-events-placeholder {
+        background-color: rgba(255, 255, 255, 0.7);
+        border: 1px dashed #fbcfe8; /* pink-200 */
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    .dark .no-events-placeholder {
+        background-color: rgba(42, 39, 61, 0.5); /* Dark Purple/Slate transparent */
+        border-color: #ec4899; /* pink-500 */
+    }
+    .no-events-placeholder svg {
+        color: #f472b6; /* pink-400 */
+    }
+    .dark .no-events-placeholder svg {
+        color: #f9a8d4; /* pink-300 */
+    }
+    .no-events-placeholder .btn-create-event-playful { /* Button from placeholder */
+        background: linear-gradient(135deg, #a855f7, #ec4899); /* Purple to Pink */
+        color: white;
+        box-shadow: 0 3px 12px rgba(168, 85, 247, 0.2);
+    }
+    .no-events-placeholder .btn-create-event-playful:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.25);
+    }
+
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="py-8 md:py-10 px-4 bg-slate-50 dark:bg-slate-900 min-h-screen">
+<section class="py-8 md:py-10 px-4 bg-pink-50 dark:bg-slate-900 min-h-screen">
     <div class="container mx-auto max-w-5xl">
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl overflow-hidden">
-            <div class="p-6 md:p-8 bg-gradient-to-r from-purple-50 via-pink-50 to-indigo-50 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-indigo-900/30">
+        <div class="bg-white dark:bg-slate-800/80 backdrop-blur-md dark:border dark:border-slate-700/70 rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-6 md:p-8 profile-header-bg">
                 <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-8">
-                    <div class="flex-shrink-0 w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full overflow-hidden shadow-lg border-4 border-white dark:border-slate-700">
+                    <div class="flex-shrink-0 w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full overflow-hidden profile-avatar-wrapper">
                         {% if profile.profile_image and profile.profile_image.url %}
-                        <img src="{{ profile.profile_image.url }}" alt="รูปโปรไฟล์ของ {{ profile.user.username }}" class="w-full h-full object-cover">
+                        <img src="{{ profile.profile_image.url }}" alt="รูปโปรไฟล์ของ {{ profile.user.username }}" class="w-full h-full profile-avatar-img">
                         {% else %}
-                        <div class="w-full h-full bg-purple-200 dark:bg-purple-700 flex items-center justify-center text-purple-600 dark:text-purple-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                            </svg>
+                        <div class="w-full h-full profile-avatar-placeholder flex items-center justify-center">
+                            {# {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="w-16 h-16 text-white/80" %} #}
+                            <span>{{ profile.user.username.0|upper }}</span>
                         </div>
                         {% endif %}
                     </div>
-                    <div class="text-center sm:text-left flex-grow">
-                        <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-white mb-1.5">{{ profile.user.username }}</h1>
+                    <div class="text-center sm:text-left flex-grow pt-2 sm:pt-4">
+                        <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-white mb-1" style="font-family: 'Mitr', sans-serif;">{{ profile.user.username }}</h1>
                         {% if profile.user.first_name and profile.user.last_name %}
-                            <p class="text-md text-slate-600 dark:text-slate-300 mb-3">{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
+                            <p class="text-md text-slate-700 dark:text-slate-200 mb-2.5">{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
                         {% endif %}
                         {% if profile.bio %}
-                        <p class="text-slate-700 dark:text-slate-300 mb-4 leading-relaxed text-sm sm:text-base max-w-xl">{{ profile.bio|linebreaksbr }}</p>
+                        <p class="text-slate-600 dark:text-slate-300 mb-4 leading-relaxed text-sm sm:text-base max-w-xl">{{ profile.bio|linebreaksbr }}</p>
                         {% else %}
-                        <p class="text-slate-500 dark:text-slate-400 mb-4 italic text-sm sm:text-base">ผู้ใช้นี้ยังไม่ได้เพิ่มข้อมูลเกี่ยวกับตัวเอง</p>
+                        <p class="text-slate-500 dark:text-slate-400 mb-4 italic text-sm sm:text-base">ผู้ใช้นี้ยังไม่ได้เพิ่มเรื่องราวเกี่ยวกับตัวเองเลยค่ะ 🦋</p>
                         {% endif %}
-                        
+
                         {% if request.user == profile.user %}
-                        <a href="{% url 'edit_profile' %}" 
-                           class="inline-flex items-center bg-purple-600 hover:bg-purple-700 text-white font-semibold px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-all duration-150 ease-in-out text-sm">
+                        <a href="{% url 'edit_profile' %}"
+                           class="btn-edit-profile-playful inline-flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                             </svg>
@@ -43,100 +134,76 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="border-b border-slate-200 dark:border-slate-700 px-6 md:px-8">
+
+            {# Tabs could be added here if needed in future, for now just sections #}
+        
+            <div class="border-b border-pink-200 dark:border-slate-700 px-6 md:px-8">
                 <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                    <button class="whitespace-nowrap py-4 px-1 border-b-2 border-purple-600 dark:border-purple-400 font-semibold text-purple-600 dark:text-purple-300 text-sm flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M5 2a1 1 0 00-1 1v1H3a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H6V3a1 1 0 00-1-1zm14 9H1V6a1 1 0 011-1h12a1 1 0 011 1v5zm-5 3H6a1 1 0 100 2h8a1 1 0 100-2z" clip-rule="evenodd" />
-                        </svg>
+                    <button class="whitespace-nowrap py-4 px-1 border-b-2 border-pink-500 dark:border-pink-400 font-semibold text-pink-600 dark:text-pink-300 text-sm flex items-center">
+                        <svg class="h-5 w-5 mr-2" ...>...</svg>
                         กิจกรรมของฉัน
                     </button>
                 </nav>
             </div>
-            
+           
             <div class="p-6 md:p-8 space-y-10">
                 <div>
-                    <h2 class="text-xl sm:text-2xl font-semibold text-slate-800 dark:text-white mb-5 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                    <h2 class="text-xl sm:text-2xl font-semibold profile-section-title mb-5 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2.5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
                           <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                         </svg>
                         กิจกรรมที่เข้าร่วม
                     </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% if attending_events %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
                         {% for event in attending_events %}
-                        <div class="bg-white dark:bg-slate-700 rounded-lg shadow-md overflow-hidden border border-slate-200 dark:border-slate-600">
-                            <div class="h-40 overflow-hidden">
-                                {% if event.image and event.image.url %}
-                                <img src="{{ event.image.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
-                                {% else %}
-                                <div class="w-full h-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center">
-                                    <span class="text-slate-500 dark:text-slate-400">ไม่มีรูปภาพ</span>
-                                </div>
-                                {% endif %}
-                            </div>
-                            <div class="p-4">
-                                <h3 class="font-bold text-lg mb-2 text-slate-800 dark:text-white">{{ event.title }}</h3>
-                                <p class="text-slate-600 dark:text-slate-300 mb-2 text-sm">{{ event.date|date:"j M Y" }} | {{ event.time|time:"H:i" }} น.</p>
-                                <p class="text-slate-600 dark:text-slate-300 mb-3 text-sm">{{ event.location }}</p>
-                                <a href="{% url 'event_detail' event.id %}" class="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium text-sm">ดูรายละเอียด →</a>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-8 px-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-400 dark:text-slate-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                            </svg>
-                            <p class="text-slate-600 dark:text-slate-300 font-medium">ยังไม่เคยเข้าร่วมกิจกรรมใดๆ</p>
-                        </div>
+                            {% include 'myapp/partials/event_card_minimal.html' with event=event %}
                         {% endfor %}
                     </div>
+                    {% else %}
+                    <div class="col-span-full text-center py-8 px-4 no-events-placeholder rounded-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-slate-600 dark:text-slate-300 font-medium mb-2">ยังไม่เคยเข้าร่วมกิจกรรมใดๆ เลยนี่นา</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">ลองไปค้นหากิจกรรมที่น่าสนใจดูสิ!</p>
+                        <a href="{% url 'event_list' %}" class="inline-flex items-center hero-cta-button-playful primary text-sm px-5 py-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                            ค้นหากิจกรรม
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
-                
+
                 <div>
-                    <h2 class="text-xl sm:text-2xl font-semibold text-slate-800 dark:text-white mb-5 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                    <h2 class="text-xl sm:text-2xl font-semibold profile-section-title mb-5 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2.5 text-sky-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
                         </svg>
                         กิจกรรมที่จัด
                     </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% if organized_events %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
                         {% for event in organized_events %}
-                        <div class="bg-white dark:bg-slate-700 rounded-lg shadow-md overflow-hidden border border-slate-200 dark:border-slate-600">
-                            <div class="h-40 overflow-hidden">
-                                {% if event.image and event.image.url %}
-                                <img src="{{ event.image.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
-                                {% else %}
-                                <div class="w-full h-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center">
-                                    <span class="text-slate-500 dark:text-slate-400">ไม่มีรูปภาพ</span>
-                                </div>
-                                {% endif %}
-                            </div>
-                            <div class="p-4">
-                                <h3 class="font-bold text-lg mb-2 text-slate-800 dark:text-white">{{ event.title }}</h3>
-                                <p class="text-slate-600 dark:text-slate-300 mb-2 text-sm">{{ event.date|date:"j M Y" }} | {{ event.time|time:"H:i" }} น.</p>
-                                <p class="text-slate-600 dark:text-slate-300 mb-3 text-sm">{{ event.location }}</p>
-                                <div class="flex justify-between items-center">
-                                    <a href="{% url 'event_detail' event.id %}" class="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium text-sm">ดูรายละเอียด</a>
-                                    {% if request.user == event.organizer %}
-                                    <a href="{% url 'event_update' event.id %}" class="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium text-sm">แก้ไข</a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-8 px-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-400 dark:text-slate-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            <p class="text-slate-600 dark:text-slate-300 font-medium mb-2">ยังไม่เคยจัดกิจกรรมใดๆ</p>
-                            <a href="{% url 'event_create' %}" class="inline-block bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all">สร้างกิจกรรมใหม่</a>
-                        </div>
+                             {% include 'myapp/partials/event_card_minimal.html' with event=event show_edit_link=True %}
                         {% endfor %}
                     </div>
+                    {% else %}
+                    <div class="col-span-full text-center py-8 px-4 no-events-placeholder rounded-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-slate-600 dark:text-slate-300 font-medium mb-2">ยังไม่เคยจัดกิจกรรมใดๆ เลย</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">มาสร้างสรรค์กิจกรรมแรกของคุณกันเถอะ!</p>
+                        <a href="{% url 'event_create' %}" class="inline-flex items-center hero-cta-button-playful primary text-sm px-5 py-2 btn-create-event-playful">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                            สร้างกิจกรรมใหม่
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </section>
-{% endblock %} {# This is the crucial closing tag for the content block #}
+{% endblock %}

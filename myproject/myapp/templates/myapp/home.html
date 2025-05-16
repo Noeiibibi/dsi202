@@ -1,196 +1,406 @@
 {% extends 'myapp/base.html' %}
 {% load static %}
 
-{% block title %}Chum-Chon Link - ที่ซึ่งการเชื่อมต่อเริ่มต้น{% endblock %}
+{% block title %}Chum-Chon Link - ที่ซึ่งการเชื่อมต่อเบ่งบาน{% endblock %}
 
 {% block extra_head %}
 <style>
-    .butterfly {
-        animation: flutter 8s ease-in-out infinite alternate;
-        opacity: 0; /* Start hidden, reveal with JS or CSS animation delay */
+    html {
+        scroll-behavior: smooth;
     }
-    .butterfly-1 { animation-delay: 0s; }
-    .butterfly-2 { animation-delay: 1.5s; }
-    .butterfly-3 { animation-delay: 3s; }
-
-    @keyframes flutter {
-        0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); opacity: 0.6; }
-        25% { transform: translateX(20px) translateY(-15px) rotate(5deg); opacity: 0.8; }
-        50% { transform: translateX(-10px) translateY(10px) rotate(-3deg); opacity: 1; }
-        75% { transform: translateX(15px) translateY(-5px) rotate(2deg); opacity: 0.7; }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif; /* Example styles */
     }
 
-    .hero-bg-pattern {
-        background-image: radial-gradient(circle at top left, theme('colors.purple.200') 0%, transparent 30%),
-                          radial-gradient(circle at bottom right, theme('colors.pink.200') 0%, transparent 40%);
-        opacity: 0.3;
-        filter: blur(60px);
+    /* Hero Section - Inspired by Video */
+    .hero-futuristic {
+        min-height: 100vh;
+        background-color: #030712; /* Very dark base - Tailwind gray-950 */
+        color: #f9fafb; /* Tailwind gray-50 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
     }
-    .dark .hero-bg-pattern {
-        background-image: radial-gradient(circle at top left, theme('colors.purple.700') 0%, transparent 40%),
-                          radial-gradient(circle at bottom right, theme('colors.pink.700') 0%, transparent 50%);
-        opacity: 0.2;
+
+    /* Abstract Background Grid/Lines (Subtle) */
+    .hero-futuristic::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-image:
+            linear-gradient(to right, rgba(168, 85, 247, 0.05) 1px, transparent 1px), /* Faint purple lines */
+            linear-gradient(to bottom, rgba(168, 85, 247, 0.05) 1px, transparent 1px);
+        background-size: 40px 40px; /* Size of the grid cells */
+        z-index: 0;
+        animation: panGrid 60s linear infinite;
     }
-    .card-hover-effect {
+    @keyframes panGrid {
+        0% { background-position: 0 0; }
+        100% { background-position: 1000px 1000px; } /* Adjust for desired speed/distance */
+    }
+
+    /* Central Animated Element - "Butterfly Nebula" or "Digital Wings" */
+    .hero-central-animation {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300px; /* Adjust size as needed */
+        height: 300px;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        pointer-events: none;
+    }
+    .hero-central-animation .wing {
+        position: absolute;
+        width: 150px;
+        height: 250px;
+        background: radial-gradient(ellipse at center, rgba(192, 132, 252, 0.3) 0%, rgba(124, 58, 237,0.1) 40%, transparent 70%);
+        border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%; /* Asymmetric shape */
+        opacity: 0.7;
+        filter: blur(5px);
+        animation: wingFlutter 6s infinite ease-in-out;
+    }
+    .wing.left {
+        left: 0;
+        top: 50%;
+        transform-origin: 100% 50%; /* Pivot point for flapping */
+        transform: translateY(-50%) rotateY(0deg) scale(1);
+    }
+    .wing.right {
+        right: 0;
+        top: 50%;
+        transform-origin: 0% 50%; /* Pivot point for flapping */
+        transform: translateY(-50%) rotateY(0deg) scale(-1, 1); /* Mirrored */
+        animation-delay: -3s; /* Offset animation for asymmetry */
+    }
+    @keyframes wingFlutter {
+        0%, 100% { transform: translateY(-50%) rotateY(10deg) scale(1,1); }
+        50% { transform: translateY(-50%) rotateY(-30deg) scale(0.9, 1.05); }
+    }
+    /* Glowing Core */
+    .hero-central-animation::after {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 80px; height: 80px;
+        background: radial-gradient(circle, rgba(251, 191, 36, 0.8) 0%, rgba(245, 158, 11, 0.3) 50%, transparent 70%); /* Amber/Yellow glow */
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: pulseCore 3s infinite ease-in-out;
+        box-shadow: 0 0 30px 10px rgba(251, 191, 36, 0.4), 0 0 50px 20px rgba(236, 72, 153, 0.2);
+    }
+    @keyframes pulseCore {
+        0%, 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.8; }
+        50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    }
+
+
+    .hero-content-futuristic {
+        position: relative;
+        z-index: 10;
+        max-width: 800px;
+        opacity: 0;
+        animation: fadeInContent 1.2s 0.5s ease-out forwards;
+    }
+    @keyframes fadeInContent {
+        to { opacity: 1; }
+    }
+
+    .hero-main-title-futuristic {
+        font-size: clamp(2.8rem, 7vw, 5.5rem);
+        font-weight: 800; /* extrabold */
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: #fff;
+        text-shadow: 0 0 15px rgba(192, 132, 252, 0.5), 0 0 25px rgba(219, 39, 119, 0.3);
+        margin-bottom: 0.75rem;
+    }
+    .hero-main-title-futuristic .highlight {
+        /* Use a brighter, distinct color for "ผีเสื้อหลากสี" */
+        background: linear-gradient(90deg, #fde047, #fb7185, #ec4899); /* yellow-300, rose-500, pink-500 */
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle-futuristic {
+        font-size: clamp(1.25rem, 3vw, 1.75rem);
+        font-weight: 500; /* medium */
+        color: #d1d5db; /* gray-300 */
+        line-height: 1.6;
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0;
+        transform: translateY(15px);
+        animation: fadeInUpText 0.8s ease-out 1s forwards;
+    }
+    @keyframes fadeInUpText {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-cta-button-futuristic {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.875rem 2.25rem; /* py-3.5 px-9 */
+        font-size: 1rem; 
+        font-weight: 600; 
+        border-radius: 0.75rem; 
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transform-style: preserve-3d;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
+        opacity: 0;
+        transform: translateY(10px) scale(0.9);
+        animation: popInCTA 0.6s cubic-bezier(0.175, 0.885, 0.320, 1.275) 1.5s forwards;
     }
-    .card-hover-effect:hover {
-        transform: translateY(-6px) scale(1.02);
-        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+     @keyframes popInCTA {
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .dark .card-hover-effect:hover {
-        box-shadow: 0 20px 25px -5px rgba(168, 85, 247, 0.2), 0 10px 10px -5px rgba(168, 85, 247, 0.1); /* Purple glow for dark mode */
+
+    .hero-cta-button-futuristic.primary {
+        background: linear-gradient(135deg, #a855f7, #ec4899); /* Purple to Pink */
+        color: white;
+        box-shadow: 0 5px 20px rgba(236, 72, 153, 0.3), 0 0 0 0 rgba(168, 85, 247, 0.4);
     }
-    @keyframes pulse-slow { /* Ensure this is not duplicated if already in base.html */
-        0%, 100% { opacity: 0.4; transform: scale(1); }
-        50% { opacity: 0.6; transform: scale(1.05); }
+    .hero-cta-button-futuristic.primary:hover {
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4), 0 0 25px 8px rgba(168, 85, 247, 0.3);
     }
-    .animate-pulse-slow { /* Ensure this is not duplicated if already in base.html */
-        animation: pulse-slow var(--animation-duration, 8s) cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    .hero-cta-button-futuristic.secondary {
+        background-color: rgba(255,255,255,0.05);
+        color: #e5e7eb; /* gray-200 */
+        border-color: rgba(255,255,255,0.15);
     }
+     .hero-cta-button-futuristic.secondary:hover {
+        background-color: rgba(255,255,255,0.1);
+        border-color: rgba(255,255,255,0.3);
+        transform: translateY(-4px) scale(1.03);
+    }
+
+    /* General Section Styling (can be in base.html or here if specific) */
+    .content-section-futuristic {
+        padding-top: 4rem; /* py-16 */
+        padding-bottom: 4rem; /* py-16 */
+        background-color: #111827; /* gray-900 for sections below hero */
+    }
+    .dark .content-section-futuristic {
+        background-color: #030712; /* gray-950 for even darker sections */
+    }
+    .section-header-futuristic {
+        text-align: center;
+        margin-bottom: 3.5rem; /* mb-14 */
+    }
+    .section-header-futuristic .main-title {
+        font-size: clamp(2rem, 5.5vw, 2.75rem); /* text-3xl to text-4xl */
+        font-weight: 700; /* bold */
+        color: #f3f4f6; /* gray-100 */
+        margin-bottom: 1rem; /* mb-4 */
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+    .dark .section-header-futuristic .main-title { color: #f9fafb; /* gray-50 */ }
+    .section-header-futuristic .sub-title {
+        font-size: 1.125rem; /* text-lg */
+        color: #9ca3af; /* gray-400 */
+        max-width: 42rem; /* max-w-2xl */
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.7;
+    }
+    .dark .section-header-futuristic .sub-title { color: #6b7280; /* gray-500 */ }
+    
+    /* Card styling for "Why Us", Communities, Categories, Events */
+    .futuristic-card {
+        background-color: rgba(31, 41, 55, 0.7); /* gray-800 with opacity */
+        border: 1px solid rgba(75, 85, 99, 0.5); /* gray-600 with opacity */
+        border-radius: 1rem; /* rounded-xl */
+        padding: 1.5rem; /* p-6 */
+        transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+        backdrop-filter: blur(8px); /* Glassmorphism effect */
+        -webkit-backdrop-filter: blur(8px);
+    }
+    .futuristic-card:hover {
+        transform: translateY(-10px) scale(1.03);
+        border-color: rgba(168, 85, 247, 0.7); /* purple-500 */
+        box-shadow: 0 15px 35px rgba(0,0,0,0.25), 0 0 40px rgba(168, 85, 247, 0.25);
+    }
+    .futuristic-card-icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 3.5rem; /* h-14 */
+        width: 3.5rem; /* w-14 */
+        border-radius: 9999px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 1.25rem; /* mb-5 */
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2));
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .futuristic-card-icon { height: 1.75rem; width: 1.75rem; color: #e0e7ff; } /* h-7 w-7 */
+    .futuristic-card h3 { font-size: 1.125rem; font-weight: 600; color: #f3f4f6; margin-bottom: 0.5rem; }
+    .futuristic-card p { font-size: 0.875rem; color: #9ca3af; line-height: 1.625; }
+
+    /* Staggered animation for sections */
+    .animate-section-item-futuristic { opacity: 0; transform: translateY(25px); animation: fadeInUpStaggeredFuturistic 0.6s ease-out forwards; }
+    @keyframes fadeInUpStaggeredFuturistic { 
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        } 
+    }
+    /* Generate delay classes dynamically */
+    /* Corrected the loop to be inside a script tag for JavaScript or remove if CSS-only approach is preferred */
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        let css = '';
+        ["1", "2", "3", "4", "5", "6"].forEach(i => {
+            css += `.delay-ft-${i}00 { animation-delay: ${i}00ms !important; }\n`;
+        });
+        style.appendChild(document.createTextNode(css));
+        document.head.appendChild(style);
+    });
+</script>
 {% endblock %}
 
 {% block content %}
 
-<section class="relative overflow-hidden min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-100 dark:from-slate-900 dark:via-purple-900 dark:to-slate-800 py-12 md:py-0">
-    <div class="hero-bg-pattern absolute inset-0 z-0"></div>
+<section class="hero-futuristic">
+    <div class="hero-central-animation">
+        <div class="wing left"></div>
+        <div class="wing right"></div>
+    </div>
     
-    <div class="absolute inset-0 overflow-hidden z-0 pointer-events-none">
-        {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly butterfly-1 absolute top-[10%] left-[5%] w-16 h-16 text-purple-400 dark:text-purple-600" %}
-        {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly butterfly-2 absolute bottom-[15%] right-[10%] w-20 h-20 text-pink-400 dark:text-pink-600 transform rotate-12" %}
-        {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly butterfly-3 absolute top-[50%] left-[20%] w-12 h-12 text-indigo-400 dark:text-indigo-600 transform -rotate-15" %}
+    <div class="hero-particles" id="hero-particles-js-futuristic">
+        {# Particles will be generated by JavaScript for more randomness #}
     </div>
 
-    <div class="w-full px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="hero-content-futuristic container mx-auto px-4 sm:px-6 lg:px-8">
         {% if user.is_authenticated %}
-            <div class="text-center max-w-3xl mx-auto">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white">
-                    ยินดีต้อนรับ, <span class="text-purple-600">{{ user.username }}</span>!
-                </h1>
-                <p class="mt-4 text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
-                    พร้อมที่จะค้นพบกิจกรรมใหม่ๆ และเชื่อมต่อกับชุมชนที่น่าสนใจแล้วหรือยัง?
-                </p>
-                <div class="mt-8 flex flex-col sm:flex-row sm:justify-center gap-4">
-                    <a href="{% url 'event_list' %}" class="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold leading-7 text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all duration-200 ease-in-out transform hover:scale-105">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
-                        ค้นหากิจกรรมทั้งหมด
-                    </a>
-                    <a href="{% url 'event_create' %}" class="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold leading-7 text-purple-700 bg-purple-100 hover:bg-purple-200 dark:text-white dark:bg-purple-500 dark:hover:bg-purple-600 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all duration-200 ease-in-out transform hover:scale-105">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
-                        สร้างกิจกรรมใหม่
-                    </a>
-                </div>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-100">
+                ยินดีต้อนรับ, <span class="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300">{{ user.username }}</span>!
+            </h1>
+            <p class="mt-4 text-lg text-slate-300 hero-subtitle-futuristic">
+                พร้อมที่จะค้นพบกิจกรรมใหม่ๆ และเชื่อมต่อกับชุมชนที่น่าสนใจแล้วหรือยัง?
+            </p>
+            <div class="mt-8 flex flex-col sm:flex-row sm:justify-center gap-4">
+                <a href="{% url 'event_list' %}" class="hero-cta-button-futuristic primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                    ค้นหากิจกรรม
+                </a>
+                <a href="{% url 'event_create' %}" class="hero-cta-button-futuristic secondary" style="animation-delay: 2s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                    สร้างกิจกรรมใหม่
+                </a>
             </div>
         {% else %}
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-16 max-w-7xl mx-auto">
-                <div class="flex-1 text-center lg:text-left max-w-xl lg:max-w-2xl">
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-purple-700 dark:text-purple-400 mb-6 leading-tight tracking-tighter">
-                        <span class="block">ที่ซึ่งผีเสื้อหลากสี</span>
-                        <span class="block mt-1 sm:mt-2">โบยบินมาพบกัน</span>
-                    </h1>
-                    <p class="mt-4 text-lg sm:text-xl text-slate-700 dark:text-slate-300 leading-relaxed">
-                        <strong>Chum-Chon Link</strong> คือพื้นที่สร้างสรรค์ที่จะเชื่อมโยงทุกคนที่มีความสนใจหลากหลาย ให้ได้มาพบปะ แลกเปลี่ยน สร้างมิตรภาพ และร่วมกันสร้างสรรค์สังคมที่สวยงาม
-                    </p>
-                    <p class="mt-3 text-slate-600 dark:text-slate-400 leading-relaxed">
-                        เหมือนผีเสื้อหลากสีสันที่โบยบินมาเจอกันในสวนดอกไม้ ที่นี่กิจกรรมมากมายรอให้คุณเข้ามาเรียนรู้ แบ่งปัน และสนุกไปกับเพื่อนใหม่ที่มีใจเดียวกัน
-                    </p>
-                    <div class="mt-10 flex flex-col sm:flex-row sm:justify-center lg:justify-start gap-4">
-                        <a href="{% url 'signup' %}" class="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold leading-7 text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all duration-200 ease-in-out transform hover:scale-105">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" /></svg>
-                            สมัครสมาชิกเลย!
-                        </a>
-                        <a href="{% url 'event_list' %}" class="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold leading-7 text-purple-700 bg-purple-100 hover:bg-purple-200 dark:text-white dark:bg-purple-500 dark:hover:bg-purple-600 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all duration-200 ease-in-out transform hover:scale-105">
-                            สำรวจกิจกรรม
-                        </a>
-                    </div>
-                </div>
-                <div class="flex-shrink-0 mt-10 lg:mt-0 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl">
-                    <img src="{% static 'images/signup-banner.png' %}" alt="ภาพประกอบการรวมกลุ่มทำกิจกรรมอย่างมีความสุข"
-                         class="w-full h-auto rounded-2xl shadow-2xl object-contain transform lg:rotate-3 hover:rotate-0 transition-transform duration-500 ease-in-out"
-                         onerror="this.onerror=null; this.src='https://placehold.co/600x450/E9D5FF/6B21A8?text=Chum-Chon+Link&font=notosansthai';">
-                </div>
+            <h1 class="hero-main-title-futuristic">
+                <span class="block">ที่ซึ่ง</span><span class="highlight">ผีเสื้อหลากสี</span>
+            </h1>
+            <h2 class="hero-subtitle-futuristic text-2xl sm:text-3xl md:text-4xl font-semibold text-slate-200 mb-8">
+                โบยบินมาพบกัน
+            </h2>
+            <p class="text-lg sm:text-xl text-slate-300 leading-relaxed max-w-xl mx-auto mb-10 hero-subtitle-futuristic" style="animation-delay: 1.2s;">
+                <strong>Chum-Chon Link:</strong> จักรวาลแห่งการเชื่อมต่อ ที่ซึ่งความสนใจหลากหลายของคุณจะเบ่งบานเป็นมิตรภาพและประสบการณ์ใหม่ๆ
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row sm:justify-center gap-4">
+                <a href="{% url 'signup' %}" class="hero-cta-button-futuristic primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" /></svg>
+                    สมัครสมาชิกเลย!
+                </a>
+                <a href="{% url 'event_list' %}" class="hero-cta-button-futuristic secondary" style="animation-delay: 2s;">
+                    สำรวจกิจกรรม
+                </a>
             </div>
         {% endif %}
     </div>
 </section>
 
-<section class="py-16 md:py-24 bg-white dark:bg-slate-900">
+<section class="content-section-futuristic">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12 md:mb-16">
-            <h2 class="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-white mb-3 tracking-tight">ทำไมต้อง <span class="text-purple-600">Chum-Chon Link</span>?</h2>
-            <p class="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">เชื่อมต่อ สร้างสรรค์ แบ่งปัน – ค้นพบประสบการณ์ใหม่ๆ ที่นี่</p>
+        <div class="section-header-futuristic animate-section-item-futuristic">
+            <h2 class="main-title">ทำไมต้อง <span class="text-purple-400">Chum-Chon Link</span>?</h2>
+            <p class="sub-title">เชื่อมต่อ สร้างสรรค์ แบ่งปัน – ค้นพบประสบการณ์ใหม่ๆ ที่นี่</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-            <div class="text-center p-6 bg-slate-50 dark:bg-slate-800 rounded-xl shadow-lg card-hover-effect">
-                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 mx-auto mb-5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <div class="futuristic-card animate-section-item-futuristic delay-ft-100 group">
+                <div class="futuristic-card-icon-wrapper bg-gradient-to-br from-blue-500 to-sky-400">
+                    <svg class="futuristic-card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                 </div>
-                <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-2">ค้นพบกิจกรรมที่ใช่</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">หลากหลายกิจกรรมรอให้คุณเลือกสรรค์ ตรงกับทุกความสนใจ ไม่ว่าจะเป็นงานอดิเรก กีฬา หรือการเรียนรู้</p>
+                <h3>ค้นพบกิจกรรมที่ใช่</h3>
+                <p>หลากหลายกิจกรรมรอให้คุณเลือกสรรค์ ตรงกับทุกความสนใจ ไม่ว่าจะเป็นงานอดิเรก กีฬา หรือการเรียนรู้</p>
             </div>
-            <div class="text-center p-6 bg-slate-50 dark:bg-slate-800 rounded-xl shadow-lg card-hover-effect">
-                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-pink-100 dark:bg-pink-500/20 text-pink-600 dark:text-pink-400 mx-auto mb-5">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.126-1.264-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.126-1.264.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+            <div class="futuristic-card animate-section-item-futuristic delay-ft-200 group">
+                <div class="futuristic-card-icon-wrapper bg-gradient-to-br from-pink-500 to-rose-400">
+                     <svg class="futuristic-card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.126-1.264-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.126-1.264-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                 </div>
-                <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-2">สร้างมิตรภาพใหม่</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">พบปะผู้คนที่มีความชอบเหมือนกัน ขยายเครือข่าย และสร้างความสัมพันธ์ที่มีความหมายในชุมชนของคุณ</p>
+                <h3>สร้างมิตรภาพใหม่</h3>
+                <p>พบปะผู้คนที่มีความชอบเหมือนกัน ขยายเครือข่าย และสร้างความสัมพันธ์ที่มีความหมายในชุมชนของคุณ</p>
             </div>
-            <div class="text-center p-6 bg-slate-50 dark:bg-slate-800 rounded-xl shadow-lg card-hover-effect">
-                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 mx-auto mb-5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
+            <div class="futuristic-card animate-section-item-futuristic delay-ft-300 group">
+                <div class="futuristic-card-icon-wrapper bg-gradient-to-br from-amber-500 to-yellow-400">
+                    <svg class="futuristic-card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
                 </div>
-                <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-2">แบ่งปันและเติบโต</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">ร่วมแบ่งปันความรู้ ประสบการณ์ และความสุขในการทำกิจกรรมต่างๆ พร้อมเติบโตไปด้วยกันในชุมชนที่อบอุ่น</p>
+                <h3>แบ่งปันและเติบโต</h3>
+                <p>ร่วมแบ่งปันความรู้ ประสบการณ์ และความสุขในการทำกิจกรรมต่างๆ พร้อมเติบโตไปด้วยกันในชุมชนที่อบอุ่น</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-16 md:py-24 bg-slate-100 dark:bg-slate-950">
+<section class="content-section-futuristic bg-gray-950 dark:bg-black"> 
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12 md:mb-16">
-            <h2 class="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-white mb-3 tracking-tight">เริ่มการผจญภัยของคุณ</h2>
-            <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">ค้นหากิจกรรม ชุมชน หรือหมวดหมู่ที่คุณสนใจได้ง่ายๆ</p>
+        <div class="section-header-futuristic animate-section-item-futuristic delay-ft-400">
+            <h2 class="main-title">เริ่มการผจญภัยของคุณ</h2>
+            <p class="sub-title">ค้นหากิจกรรม ชุมชน หรือหมวดหมู่ที่คุณสนใจได้ง่ายๆ</p>
         </div>
 
-        <div class="max-w-2xl mx-auto mb-12 md:mb-16">
-            <form action="{% url 'event_list' %}" method="get" class="flex items-center shadow-xl rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+        <div class="max-w-2xl mx-auto mb-12 md:mb-16 animate-section-item-futuristic delay-ft-500">
+            <form action="{% url 'event_list' %}" method="get" class="flex items-center shadow-xl rounded-xl overflow-hidden border border-slate-700">
                 <input type="text" name="search" placeholder="ค้นหากิจกรรม, ชุมชน, สถานที่..."
-                       class="w-full px-6 py-4 text-base text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border-0 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-inset"
+                       class="w-full px-6 py-4 text-base text-slate-200 bg-slate-800 border-0 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-inset"
                        aria-label="ค้นหากิจกรรม">
                 <button type="submit"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-0 transition-colors duration-150 ease-in-out"
-                        aria-label="ค้นหา">
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-0 transition-colors duration-150 ease-in-out transform active:scale-95">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
                 </button>
             </form>
         </div>
 
         {% if communities %}
-        <div class="mb-12 md:mb-16">
+        <div class="mb-12 md:mb-16 animate-section-item-futuristic delay-ft-600">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-white flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2.5 text-purple-500" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013-3c.29 0 .57.043.83.121z"/></svg>
+                <h2 class="text-2xl sm:text-3xl font-semibold text-slate-100 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2.5 text-purple-400" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013-3c.29 0 .57.043.83.121z"/></svg>
                     สำรวจชุมชน
                 </h2>
-                <a href="{% url 'event_list' %}" class="text-sm font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">ดูทั้งหมด &rarr;</a>
+                <a href="{% url 'event_list' %}" class="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors">ดูทั้งหมด &rarr;</a>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
                 {% for community in communities|slice:":4" %}
-                <a href="{% url 'event_list' %}?community={{ community.id }}" class="group block rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 bg-white dark:bg-slate-800 card-hover-effect">
+                <a href="{% url 'event_list' %}?community={{ community.id }}" class="group block futuristic-card">
                     <div class="relative h-52 sm:h-60">
                         {% if community.image and community.image.url %}
-                        <img src="{{ community.image.url }}" alt="ภาพชุมชน {{ community.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x300/A78BFA/FFFFFF?text={{ community.name|urlencode }}&font=notosansthai';">
+                        <img src="{{ community.image.url }}" alt="ภาพชุมชน {{ community.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/400x300/374151/9ca3af?text={{ community.name|urlencode }}&font=notosansthai';">
                         {% else %}
-                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-400 to-indigo-500 p-4"><span class="text-white font-bold text-2xl text-center">{{ community.name }}</span></div>
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-600 to-indigo-700 p-4"><span class="text-white font-bold text-2xl text-center">{{ community.name }}</span></div>
                         {% endif %}
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                             <h3 class="text-white font-semibold text-xl drop-shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-out">{{ community.name }}</h3>
                         </div>
                     </div>
                      {% if community.description %}
-                    <div class="p-4 border-t border-slate-100 dark:border-slate-700"><p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">{{ community.description }}</p></div>
+                    <div class="p-4"><p class="text-xs text-slate-400 leading-relaxed line-clamp-2">{{ community.description }}</p></div>
                     {% endif %}
                 </a>
                 {% endfor %}
@@ -199,24 +409,24 @@
         {% endif %}
 
         {% if categories %}
-        <div class="mb-12 md:mb-16">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-white flex items-center">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2.5 text-purple-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 9V5a1 1 0 011-1h12a1 1 0 011 1v4a1 1 0 01-.293.707zM6 5h2v2H6V5zm4 0h2v2h-2V5zm4 0h2v2h-2V5zm-8 4h2v2H6V9zm4 0h2v2h-2V9zm4 0h2v2h-2V9z" clip-rule="evenodd" /></svg>
+        <div class="mb-12 md:mb-16 animate-section-item-futuristic" style="animation-delay: 700ms;">
+             <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl sm:text-3xl font-semibold text-slate-100 flex items-center">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2.5 text-purple-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 9V5a1 1 0 011-1h12a1 1 0 011 1v4a1 1 0 01-.293.707zM6 5h2v2H6V5zm4 0h2v2h-2V5zm4 0h2v2h-2V5zm-8 4h2v2H6V9zm4 0h2v2h-2V9zm4 0h2v2h-2V9z" clip-rule="evenodd" /></svg>
                     หมวดหมู่กิจกรรมยอดนิยม
                 </h2>
-                 <a href="{% url 'event_list' %}" class="text-sm font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">ดูทั้งหมด &rarr;</a>
+                 <a href="{% url 'event_list' %}" class="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors">ดูทั้งหมด &rarr;</a>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
                 {% for category in categories|slice:":5" %}
-                <a href="{% url 'event_list' %}?category={{ category.id }}" class="group block rounded-xl p-1 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl card-hover-effect">
-                    <div class="relative h-36 sm:h-40 rounded-lg overflow-hidden shadow-lg bg-white dark:bg-slate-800">
+                <a href="{% url 'event_list' %}?category={{ category.id }}" class="group block p-1 futuristic-card">
+                    <div class="relative h-36 sm:h-40 rounded-lg overflow-hidden">
                         {% if category.image and category.image.url %}
-                        <img src="{{ category.image.url }}" alt="ภาพหมวดหมู่ {{ category.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/300x200/C4B5FD/4C1D95?text={{ category.name|urlencode }}&font=notosansthai';">
+                        <img src="{{ category.image.url }}" alt="ภาพหมวดหมู่ {{ category.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" onerror="this.onerror=null; this.src='https://placehold.co/300x200/4c1d95/a5b4fc?text={{ category.name|urlencode }}&font=notosansthai';">
                         {% else %}
-                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-400 to-pink-500 p-3"><span class="text-white font-bold text-lg text-center">{{ category.name }}</span></div>
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-600 to-pink-700 p-3"><span class="text-white font-bold text-lg text-center">{{ category.name }}</span></div>
                         {% endif %}
-                        <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center p-3">
+                        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/60 transition-all duration-300 flex items-center justify-center p-3">
                             <h3 class="text-white font-semibold text-lg md:text-xl text-center drop-shadow-lg opacity-90 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-300">{{ category.name }}</h3>
                         </div>
                     </div>
@@ -227,31 +437,80 @@
         {% endif %}
 
         {% if featured_events %}
-        <div> {# This is the start of the Featured Events section #}
+        <div class="animate-section-item-futuristic" style="animation-delay: 800ms;">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-white flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2.5 text-purple-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M5 2a1 1 0 00-1 1v1H3a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H6V3a1 1 0 00-1-1zm14 9H1V6a1 1 0 011-1h12a1 1 0 011 1v5zm-5 3H6a1 1 0 100 2h8a1 1 0 100-2z" clip-rule="evenodd" />
-                    </svg>
+                <h2 class="text-2xl sm:text-3xl font-semibold text-slate-100 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2.5 text-purple-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 2a1 1 0 00-1 1v1H3a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H6V3a1 1 0 00-1-1zm14 9H1V6a1 1 0 011-1h12a1 1 0 011 1v5zm-5 3H6a1 1 0 100 2h8a1 1 0 100-2z" clip-rule="evenodd" /></svg>
                     กิจกรรมที่กำลังมาแรง
                 </h2>
-                <a href="{% url 'event_list' %}" class="text-sm font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">ดูทั้งหมด &rarr;</a>
+                <a href="{% url 'event_list' %}" class="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors">ดูทั้งหมด &rarr;</a>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {% for event in featured_events %} {# Corrected: Added the for loop here #}
-                    {% include 'myapp/partials/event_card_minimal.html' with event=event %}
+                {% for event in featured_events %}
+                    {% include 'myapp/partials/event_card_minimal.html' with event=event card_class="futuristic-card" %}
                 {% empty %}
-                    <div class="col-span-full text-center py-10 sm:py-12 bg-white dark:bg-slate-800 rounded-xl shadow-lg">
-                         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-purple-400 dark:text-purple-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
-                        <p class="text-xl font-semibold text-slate-700 dark:text-white mb-2">ยังไม่มีกิจกรรมแนะนำในขณะนี้</p>
-                        <p class="text-slate-500 dark:text-slate-400">ลองกลับมาตรวจสอบใหม่ภายหลัง หรือค้นหากิจกรรมอื่นๆ ที่คุณอาจสนใจ</p>
-                    </div>
-                {% endfor %} {# Corrected: This closes the for loop #}
+                <div class="col-span-full text-center py-10 sm:py-12 bg-slate-800 rounded-xl shadow-lg futuristic-card">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-purple-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                    <p class="text-xl font-semibold text-white mb-2">ยังไม่มีกิจกรรมแนะนำในขณะนี้</p>
+                    <p class="text-slate-400">ลองกลับมาตรวจสอบใหม่ภายหลัง หรือค้นหากิจกรรมอื่นๆ ที่คุณอาจสนใจ</p>
+                </div>
+                {% endfor %}
             </div>
         </div>
-        {% endif %} {# This endif closes the "if featured_events" block #}
-        {# End of Featured Events Section #}
+        {% endif %}
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const particleContainer = document.getElementById('hero-particles-js-futuristic');
+    if (particleContainer) {
+        const numParticles = 20; // Reduced number for potentially better performance
+        for (let i = 0; i < numParticles; i++) {
+            let particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 2.5 + 0.5; 
+            const animDuration = Math.random() * 18 + 12; 
+            const travelX = (Math.random() - 0.5) * (window.innerWidth * 0.5); 
+            const travelY = -(Math.random() * (window.innerHeight * 0.7) + (window.innerHeight * 0.15)); 
+
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}%`; 
+            particle.style.setProperty('--start-x', `${(Math.random() - 0.5) * 30}px`); 
+            particle.style.setProperty('--start-y', `${window.innerHeight + Math.random() * 80}px`); 
+            particle.style.setProperty('--tx', `${travelX}px`);
+            particle.style.setProperty('--ty', `${travelY}px`);
+            particle.style.animationDuration = `${animDuration}s`;
+            particle.style.animationDelay = `${Math.random() * 12}s`; 
+            
+            particleContainer.appendChild(particle);
+        }
+    }
+
+    const animatedSections = document.querySelectorAll('.animate-section-item, .animate-section-item-futuristic');
+    const observerOptions = {
+        root: null, 
+        rootMargin: '0px',
+        threshold: 0.15 
+    };
+
+    const observer = new IntersectionObserver((entries, observerInstance) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+                observerInstance.unobserve(entry.target); 
+            }
+        });
+    }, observerOptions); 
+
+    animatedSections.forEach(section => {
+        section.style.animationPlayState = 'paused'; 
+        observer.observe(section);
+    });
+
+});
+</script>
 
 {% endblock %}

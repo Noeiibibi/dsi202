@@ -47,24 +47,77 @@
 
     /* Custom styling for file input to make it more appealing */
     .styled-file-input-container {
-        @apply relative border border-slate-300 dark:border-slate-600 rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:border-purple-500 dark:hover:border-purple-500 transition-colors; /* Increased padding slightly */
+        position: relative;
+        border: 1px solid #d1d5db; /* border-slate-300 */
+        border-radius: 0.5rem; /* rounded-lg */
+        padding: 1rem; /* p-4 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s; /* transition-colors */
         min-height: 90px; /* Adjusted min-height */
     }
+    .styled-file-input-container:hover {
+        border-color: #a855f7; /* hover:border-purple-500 */
+    }
+    .dark .styled-file-input-container {
+        border-color: #475569; /* dark:border-slate-600 */
+    }
+    .dark .styled-file-input-container:hover {
+        border-color: #a855f7; /* dark:hover:border-purple-500 */
+    }
     .styled-file-input-container input[type="file"] {
-        @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
     }
     .styled-file-input-icon {
-        @apply w-6 h-6 text-purple-500 dark:text-purple-400 mb-1; /* Changed size to w-6 h-6 */
+        width: 1.5rem; /* w-6 */
+        height: 1.5rem; /* h-6 */
+        color: #a855f7; /* text-purple-500 */
+        margin-bottom: 0.25rem; /* mb-1 */
+        color: var(--tw-text-opacity, 1) #a855f7; /* dark:text-purple-400 */
     }
     .styled-file-input-text {
-        @apply text-xs text-slate-500 dark:text-slate-400; /* Kept text small */
+        font-size: 0.75rem; /* text-xs */
+        margin-top: 0.375rem; /* mt-1.5 */
+        font-size: 0.75rem; /* text-xs */
+        color: #64748b; /* text-slate-500 */
+        color: var(--tw-text-opacity, 1) #64748b; /* dark:text-slate-300 */
+        max-height: 7rem; /* max-h-28 */
+        border-radius: 0.375rem; /* rounded-md */
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
+        border: 1px solid #d1d5db; /* border-slate-300 */
+        border: 1px solid var(--tw-border-opacity, 1) #d1d5db; /* dark:border-slate-600 */
+        object-fit: contain; /* object-contain */
+        overflow: hidden;
+        text-overflow: ellipsis; /* truncate */
+        color: var(--tw-text-opacity, 1) #64748b; /* dark:text-slate-400 */
     }
     .styled-file-input-filename {
-        @apply mt-1.5 text-xs text-slate-500 dark:text-slate-300 truncate; /* Adjusted margin-top */
+        margin-top: 0.375rem; /* mt-1.5 */
+        font-size: 0.75rem; /* text-xs */
+        color: #64748b; /* text-slate-500 */
+        color: var(--tw-text-opacity, 1) #64748b; /* dark:text-slate-300 */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* truncate */
         max-width: 100%;
     }
     .current-image-preview img {
-        @apply max-h-28 rounded-md shadow-sm border border-slate-300 dark:border-slate-600 object-contain; /* Adjusted max-h */
+        max-height: 7rem; /* max-h-28 */
+        border-radius: 0.375rem; /* rounded-md */
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
+        border: 1px solid #d1d5db; /* border-slate-300 */
+        border: 1px solid var(--tw-border-opacity, 1) #d1d5db; /* dark:border-slate-600 */
+        object-fit: contain; /* object-contain */
     }
 </style>
 {% endblock %}

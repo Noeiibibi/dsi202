@@ -1,75 +1,278 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" class="scroll-smooth"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Chum-Chon Link{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com" onerror="console.error('Failed to load Tailwind CSS from CDN. Consider self-hosting the file for reliability.');"></script>
-    
+    <script src="https://cdn.tailwindcss.com" onerror="console.error('Failed to load Tailwind CSS. Please check your internet connection or the CDN link.');"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJv3X5J6cdRSWWzQdDLqJggT0I5lS9R4zMjCkAp62DdG58XmA72pmhJE6a5J" crossorigin="anonymous">
-
+    
     <style>
         body {
             font-family: 'Noto Sans Thai', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-         /* Custom Purple Theme (ที่มีอยู่แล้ว) */
-        .bg-purple-primary {
-            background-color: #a855f7; /* This class is defined but not used in the provided nav/body structure */
+        /* Custom scrollbar for a more modern feel (optional) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-        
-
+        ::-webkit-scrollbar-track {
+            background: #f3f4f6; /* gray-100 */
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1f2937; /* gray-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a855f7; /* purple-500 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9333ea; /* purple-600 */
+        }
     </style>
-
     {% block extra_head %}{% endblock %}
 </head>
-<body class="min-h-screen flex flex-col bg-gradient-to-br from-purple-100 to-pink-100">
-    <nav class="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 shadow-lg border-b border-pink-300">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <a href="{% url 'home' %}" class="flex items-center space-x-3">
-                    <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-12 w-12 rounded-full shadow-md"
-                         onerror="this.onerror=null; this.src='https://placehold.co/48x48/E9D5FF/6B21A8?text=Logo&font=notosansthai';">
-                    <span class="text-3xl font-extrabold text-white drop-shadow-lg">Chum-Chon Link</span>
-                </a>
-            </div>
-            
-            <div class="hidden md:flex space-x-6">
-                <a href="{% url 'home' %}" class="text-white hover:text-yellow-300 transition-colors duration-200">หน้าแรก</a>
-                <a href="{% url 'event_list' %}" class="text-white hover:text-yellow-300 transition-colors duration-200">กิจกรรม</a>
-                <a href="{% url 'event_create' %}" class="text-white hover:text-yellow-300 transition-colors duration-200">สร้างกิจกรรม</a>
-            </div>
+<body class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 selection:bg-purple-500 selection:text-white transition-colors duration-300 ease-in-out" data-home-url="{% url 'home' %}">
 
-            <div class="flex items-center space-x-4">
+    <nav class="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 dark:from-purple-700 dark:via-indigo-700 dark:to-blue-700 shadow-xl sticky top-0 z-50 transition-all duration-300 ease-in-out">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <div class="flex items-center">
+                    <a href="{% url 'home' %}" class="flex-shrink-0 flex items-center group">
+                        <img class="h-10 sm:h-12 w-auto transform group-hover:scale-110 transition-transform duration-300" src="{% static 'images/logo.png' %}" alt="Chum-Chon Link Logo"
+                             onerror="this.onerror=null; this.src='https://placehold.co/120x48/FFFFFF/FFFFFF?text=Logo&font=notosansthai';">
+                        <span class="ml-3 text-xl md:text-2xl font-bold text-white tracking-tight group-hover:text-yellow-300 transition-colors duration-300">Chum-Chon Link</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="{% url 'home' %}" 
+                       class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out transform hover:scale-105">
+                       หน้าแรก
+                    </a>
+                    <a href="{% url 'event_list' %}" 
+                       class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out transform hover:scale-105">
+                       กิจกรรม
+                    </a>
+                    {# Removed {% if user.is_authenticated %} for Create Event link #}
+                    <a href="{% url 'event_create' %}" 
+                       class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out transform hover:scale-105">
+                       สร้างกิจกรรม
+                    </a>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-3">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'user_profile' %}" 
+                           class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out transform hover:scale-105">
+                           โปรไฟล์
+                        </a>
+                        <form action="{% url 'logout' %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-md hover:shadow-lg transform hover:scale-105">
+                                ออกจากระบบ
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" 
+                           class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out transform hover:scale-105">
+                           เข้าสู่ระบบ
+                        </a>
+                        <a href="{% url 'signup' %}" class="bg-yellow-400 hover:bg-yellow-500 text-purple-700 dark:text-purple-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-md hover:shadow-lg transform hover:scale-105">
+                            สมัครสมาชิก
+                        </a>
+                    {% endif %}
+                    
+                    <button id="theme-toggle-button" type="button" class="ml-2 text-purple-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-purple-700 dark:focus:ring-offset-indigo-800 focus:ring-white rounded-lg p-1.5 transition-colors">
+                        <span class="sr-only">Toggle theme</span>
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 10.607a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM17 15a1 1 0 100 2H7a1 1 0 100-2h10zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" id="mobile-menu-button-base" class="bg-transparent inline-flex items-center justify-center p-2 rounded-md text-purple-200 hover:text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu-base" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" id="icon-open-base" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" id="icon-close-base" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:hidden hidden" id="mobile-menu-base">
+            <div class="px-2 pt-2 pb-4 space-y-1 sm:px-3">
+                <a href="{% url 'home' %}" class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 block px-3 py-2 rounded-lg text-base font-medium transition-colors">หน้าแรก</a>
+                <a href="{% url 'event_list' %}" class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 block px-3 py-2 rounded-lg text-base font-medium transition-colors">กิจกรรม</a>
+                {# Removed {% if user.is_authenticated %} for Create Event link - Mobile #}
+                <a href="{% url 'event_create' %}" class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 block px-3 py-2 rounded-lg text-base font-medium transition-colors">สร้างกิจกรรม</a>
+                
                 {% if user.is_authenticated %}
-                    <a href="{% url 'user_profile' %}" class="text-white hover:text-yellow-300 transition-colors duration-200">โปรไฟล์</a>
-                    <a href="{% url 'logout' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md shadow-md transition-transform transform hover:scale-105">ออกจากระบบ</a>
+                <hr class="border-purple-500/50 my-2">
+                <a href="{% url 'user_profile' %}" class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 block px-3 py-2 rounded-lg text-base font-medium transition-colors">โปรไฟล์</a>
+                 <form action="{% url 'logout' %}" method="post" class="block">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full text-left text-purple-100 hover:bg-pink-500 hover:text-white block px-3 py-2 rounded-lg text-base font-medium transition-colors">
+                        ออกจากระบบ
+                    </button>
+                </form>
                 {% else %}
-                    <a href="{% url 'login' %}" class="text-white hover:text-yellow-300 transition-colors duration-200">เข้าสู่ระบบ</a>
-                    <a href="{% url 'signup' %}" class="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-md shadow-md transition-transform transform hover:scale-105">สมัครสมาชิก</a>
+                 <hr class="border-purple-500/50 my-2">
+                <a href="{% url 'login' %}" class="text-purple-100 hover:bg-white/10 hover:text-yellow-300 block px-3 py-2 rounded-lg text-base font-medium transition-colors">เข้าสู่ระบบ</a>
+                <a href="{% url 'signup' %}" class="bg-yellow-400 hover:bg-yellow-500 text-purple-700 dark:text-purple-800 block px-3 py-2 rounded-lg text-base font-medium transition-colors mt-1">สมัครสมาชิก</a>
                 {% endif %}
+                 <div class="border-t border-purple-500/50 pt-3 mt-3">
+                     <button id="theme-toggle-button-mobile" type="button" class="w-full flex items-center justify-between text-purple-100 hover:bg-white/10 hover:text-yellow-300 px-3 py-2 rounded-lg text-base font-medium transition-colors">
+                        <span>สลับธีม</span>
+                        <span class="inline-flex">
+                            <svg id="theme-toggle-dark-icon-mobile" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                            <svg id="theme-toggle-light-icon-mobile" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 10.607a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM17 15a1 1 0 100 2H7a1 1 0 100-2h10zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
-    
-    <main class="flex-grow px-0 sm:px-17 lg:px-17 py-15 md:py-15">
+
+    <main class="flex-grow">
+        <div id="back-button-container" class="container mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2 md:pt-8 md:pb-4">
+            <button id="page-back-button" onclick="history.back(); return false;"
+                    class="inline-flex items-center text-sm font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 px-3 py-1.5 rounded-md hover:bg-purple-50 dark:hover:bg-purple-700/20 transition-all duration-200 ease-in-out group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 transform group-hover:-translate-x-0.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                ย้อนกลับ
+            </button>
+        </div>
+        
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-indigo-700 dark:bg-indigo-800 py-8 border-t border-indigo-600 dark:border-indigo-700">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm text-indigo-200 dark:text-indigo-300">
-                &copy; {% now "Y" %} Chum-Chon Link - แพลตฟอร์มสำหรับการพบปะและทำกิจกรรมร่วมกัน
-            </p>
-            <div class="mt-4 flex justify-center space-x-6">
-                <a href="#" class="text-xs text-indigo-200 hover:text-white dark:text-indigo-300 dark:hover:text-white transition-colors">เกี่ยวกับเรา</a>
-                <a href="#" class="text-xs text-indigo-200 hover:text-white dark:text-indigo-300 dark:hover:text-white transition-colors">ติดต่อ</a>
-                <a href="#" class="text-xs text-indigo-200 hover:text-white dark:text-indigo-300 dark:hover:text-white transition-colors">นโยบายความเป็นส่วนตัว</a>
+    <footer class="bg-slate-800 dark:bg-slate-950 text-slate-400 dark:text-slate-500 py-10 md:py-12 border-t border-slate-700 dark:border-slate-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                <div class="text-center md:text-left">
+                     <a href="{% url 'home' %}" class="inline-flex items-center group mb-2">
+                        <img class="h-8 w-auto transform group-hover:scale-110 transition-transform duration-300" src="{% static 'images/logo.png' %}" alt="Chum-Chon Link Logo"
+                             onerror="this.onerror=null; this.src='https://placehold.co/100x32/FFFFFF/FFFFFF?text=Logo&font=notosansthai';">
+                        <span class="ml-2 text-lg font-semibold text-slate-200 dark:text-slate-100 group-hover:text-purple-300 transition-colors duration-300">Chum-Chon Link</span>
+                    </a>
+                    <p class="text-xs">
+                        แพลตฟอร์มสำหรับการพบปะและทำกิจกรรมร่วมกัน
+                    </p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm">
+                        &copy; {% now "Y" %} Chum-Chon Link. All rights reserved.
+                    </p>
+                </div>
+                <div class="flex justify-center md:justify-end space-x-5">
+                    <a href="#" class="text-slate-400 hover:text-purple-400 transition-colors">
+                        <span class="sr-only">เกี่ยวกับเรา</span>
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    </a>
+                    <a href="#" class="text-slate-400 hover:text-purple-400 transition-colors">
+                        <span class="sr-only">ติดต่อ</span>
+                         <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>
+                    </a>
+                    <a href="#" class="text-slate-400 hover:text-purple-400 transition-colors">
+                        <span class="sr-only">นโยบายความเป็นส่วนตัว</span>
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.5C6.201 1.5 1.5 6.201 1.5 12S6.201 22.5 12 22.5 22.5 17.799 22.5 12 17.799 1.5 12 1.5zM12 6a1.5 1.5 0 011.5 1.5v6a1.5 1.5 0 11-3 0V7.5A1.5 1.5 0 0112 6zm0 10.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" clip-rule="evenodd" /></svg>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>
 
-    {# Script for mobile menu toggle was removed as the mobile menu HTML is no longer present. #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile menu toggle
+    const mobileMenuButtonBase = document.getElementById('mobile-menu-button-base');
+    const mobileMenuBase = document.getElementById('mobile-menu-base');
+    const iconOpenBase = document.getElementById('icon-open-base');
+    const iconCloseBase = document.getElementById('icon-close-base');
+
+    if (mobileMenuButtonBase && mobileMenuBase && iconOpenBase && iconCloseBase) {
+        mobileMenuButtonBase.addEventListener('click', () => {
+            mobileMenuBase.classList.toggle('hidden');
+            iconOpenBase.classList.toggle('hidden');
+            iconCloseBase.classList.toggle('hidden');
+        });
+    }
+
+    // Theme Toggle Logic
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const themeToggleBtn = document.getElementById('theme-toggle-button'); 
+
+    const themeToggleDarkIconMobile = document.getElementById('theme-toggle-dark-icon-mobile');
+    const themeToggleLightIconMobile = document.getElementById('theme-toggle-light-icon-mobile');
+    const themeToggleBtnMobile = document.getElementById('theme-toggle-button-mobile'); 
+
+    function updateThemeIcons(isDark) {
+        if (isDark) {
+            if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove('hidden');
+            if (themeToggleLightIcon) themeToggleLightIcon.classList.add('hidden');
+            if (themeToggleDarkIconMobile) themeToggleDarkIconMobile.classList.remove('hidden');
+            if (themeToggleLightIconMobile) themeToggleLightIconMobile.classList.add('hidden');
+        } else {
+            if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add('hidden');
+            if (themeToggleLightIcon) themeToggleLightIcon.classList.remove('hidden');
+            if (themeToggleDarkIconMobile) themeToggleDarkIconMobile.classList.add('hidden');
+            if (themeToggleLightIconMobile) themeToggleLightIconMobile.classList.remove('hidden');
+        }
+    }
+
+    function applyAndSaveTheme(isDark) {
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('color-theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('color-theme', 'light');
+        }
+        updateThemeIcons(isDark);
+    }
+
+    // Initialize theme
+    const initialThemeIsDark = localStorage.getItem('color-theme') === 'dark' || 
+                             (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    applyAndSaveTheme(initialThemeIsDark); 
+
+    // Listener for desktop toggle button
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', function() {
+            applyAndSaveTheme(!document.documentElement.classList.contains('dark'));
+        });
+    }
+    
+    // Listener for mobile toggle button
+    if (themeToggleBtnMobile) {
+         themeToggleBtnMobile.addEventListener('click', function() {
+            applyAndSaveTheme(!document.documentElement.classList.contains('dark'));
+        });
+    }
+
+    // Back Button Logic
+    const backButtonContainer = document.getElementById('back-button-container');
+    if (backButtonContainer) {
+        const homeUrlFromData = document.body.dataset.homeUrl; 
+        
+        if (history.length <= 1 || (homeUrlFromData && window.location.pathname === homeUrlFromData)) {
+            backButtonContainer.style.display = 'none';
+        } else if (history.length <= 1 && window.location.pathname === '/') { 
+             backButtonContainer.style.display = 'none';
+        }
+    }
+});
+</script>
+
 </body>
 </html>

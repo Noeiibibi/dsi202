@@ -14,7 +14,8 @@
         min-height: 100vh;
         background-image: url("{% static 'images/sky.jpeg' %}"); /* <<--- เปลี่ยนเป็น path รูปของคุณ */
         background-size: cover;
-        background-position: center;
+        background-position: center center;
+        background-repeat: no-repeat;
         color: #1f2937;
         display: flex;
         align-items: center;
@@ -22,6 +23,7 @@
         text-align: center;
         position: relative;
         overflow: hidden;
+        width: 100vw; /* เพิ่มความกว้างให้เต็มหน้าจอ */
     }
     .hero-playful::before {
         content: '';

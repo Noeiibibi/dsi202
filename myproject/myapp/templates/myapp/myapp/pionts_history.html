@@ -1,0 +1,104 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"ประวัติแต้ม" }} - {{ profile.user.username }} - Chum-Chon Link{% endblock %}
+
+{% block extra_head %}
+<style>
+    .log-item {
+        border-left-width: 4px;
+        transition: background-color 0.2s ease-in-out;
+    }
+    .log-item:hover {
+        background-color: rgba(0,0,0,0.03);
+    }
+    .dark .log-item:hover {
+        background-color: rgba(255,255,255,0.03);
+    }
+
+    .log-item-positive { border-color: #10b981; /* emerald-500 */ }
+    .log-item-positive .points-value { color: #059669; /* emerald-600 */ }
+    .dark .log-item-positive { border-color: #34d399; /* emerald-400 */ }
+    .dark .log-item-positive .points-value { color: #6ee7b7; /* emerald-300 */ }
+
+    .log-item-negative { border-color: #ef4444; /* red-500 */ }
+    .log-item-negative .points-value { color: #dc2626; /* red-600 */ }
+    .dark .log-item-negative { border-color: #f87171; /* red-400 */ }
+    .dark .log-item-negative .points-value { color: #fca5a5; /* red-300 */ }
+
+    .reward-owned-card {
+        transition: all 0.2s ease-in-out;
+    }
+    .reward-owned-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15); /* purple shadow */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-8 md:py-12 px-4 bg-pink-50 dark:bg-slate-900 min-h-screen">
+    <div class="container mx-auto max-w-3xl">
+        <div class="text-center mb-8 md:mb-10">
+            <h1 class="text-3xl sm:text-4xl font-bold text-pink-600 dark:text-pink-400" style="font-family: 'Mitr', sans-serif;">{{ page_title|default:"ประวัติแต้มและของรางวัล" }}</h1>
+            {% if profile %}
+            <p class="text-xl mt-2 text-purple-600 dark:text-purple-400">
+                แต้มสะสมปัจจุบัน: <span class="font-bold text-2xl">{{ profile.total_points }}</span> คะแนน
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="bg-white dark:bg-slate-800/70 backdrop-blur-sm dark:border dark:border-slate-700/80 rounded-2xl shadow-xl p-6 md:p-8">
+            <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4 pb-3 border-b border-pink-200 dark:border-slate-700" style="font-family: 'Mitr', sans-serif;">ประวัติการได้รับ/ใช้แต้ม</h2>
+            {% if point_logs %}
+            <ul class="space-y-3">
+                {% for log in point_logs %}
+                <li class="log-item flex justify-between items-center p-3.5 rounded-lg 
+                           {% if log.points_change > 0 %}log-item-positive bg-green-50 dark:bg-green-900/20{% else %}log-item-negative bg-red-50 dark:bg-red-900/20{% endif %}">
+                    <div>
+                        <p class="font-medium text-slate-700 dark:text-slate-100">{{ log.get_activity_type_display }}</p>
+                        {% if log.description %}
+                        <p class="text-xs text-slate-500 dark:text-slate-300">{{ log.description }}</p>
+                        {% endif %}
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{{ log.timestamp|date:"j M Y, H:i" }} น.</p>
+                    </div>
+                    <span class="font-bold text-lg points-value">
+                        {% if log.points_change > 0 %}+{% endif %}{{ log.points_change }}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-slate-500 dark:text-slate-400 text-center py-6">ยังไม่มีประวัติการใช้แต้มเลยค่ะ ลองทำกิจกรรมต่างๆ เพื่อสะสมแต้มดูนะคะ! ✨</p>
+            {% endif %}
+
+            <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-200 mt-10 mb-4 pb-3 border-b border-pink-200 dark:border-slate-700" style="font-family: 'Mitr', sans-serif;">ของรางวัลของฉัน</h2>
+            {% if rewards_owned %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {% for user_reward in rewards_owned %}
+                <div class="reward-owned-card p-4 rounded-xl bg-purple-50 dark:bg-purple-800/40 flex items-center space-x-3 shadow-md border border-purple-200 dark:border-purple-700">
+                    {% if user_reward.reward.image and user_reward.reward.image.url %}
+                    <img src="{{ user_reward.reward.image.url }}" alt="{{ user_reward.reward.name }}" class="w-12 h-12 object-contain rounded-lg bg-white p-1 shadow-sm">
+                    {% else %}
+                    <div class="w-12 h-12 rounded-lg bg-purple-200 dark:bg-purple-700 flex items-center justify-center text-purple-600 dark:text-purple-300 text-xl font-bold shadow-sm">🏆</div>
+                    {% endif %}
+                    <div>
+                        <p class="font-semibold text-purple-700 dark:text-purple-200">{{ user_reward.reward.name }}</p>
+                        <p class="text-xs text-purple-500 dark:text-purple-400">แลกเมื่อ: {{ user_reward.redeemed_at|date:"j M Y" }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-slate-500 dark:text-slate-400 text-center py-6">ยังไม่มีของรางวัลที่แลกเลยค่ะ ไปที่ร้านค้าเพื่อแลกของรางวัลกัน! 🛍️</p>
+            <div class="text-center mt-3">
+                <a href="{% url 'rewards_store' %}" class="inline-flex items-center bg-pink-500 hover:bg-pink-600 text-white text-sm font-semibold px-5 py-2 rounded-xl shadow hover:shadow-md transition-all transform hover:scale-105">
+                    ไปร้านค้าของรางวัล
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

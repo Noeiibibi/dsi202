@@ -7,78 +7,131 @@
 <style>
     .reward-card {
         transition: all 0.3s ease-in-out;
-        display: flex; /* Added for consistent height */
-        flex-direction: column; /* Added for consistent height */
+        /* display: flex; */ /* เอาออกไปก่อน เพื่อให้ height ของ card ยืดหยุ่นตาม content ได้ แต่จะกำหนด min-height แทน */
+        /* flex-direction: column; */
+        min-height: 380px; /* << NEW: กำหนดความสูงขั้นต่ำของการ์ด อาจจะต้องปรับค่านี้ตามความเหมาะสม */
+        display: flex; /* << ADD BACK: เพื่อให้ flex-grow ใน reward-content ทำงานได้ */
+        flex-direction: column; /* << ADD BACK */
     }
     .reward-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(236, 72, 153, 0.1), 0 6px 6px rgba(236, 72, 153, 0.1); /* Softer pink shadow */
+        transform: translateY(-5px) scale(1.02); /* NEW: เพิ่ม scale effect เล็กน้อย */
+        box-shadow: 0 12px 24px rgba(236, 72, 153, 0.15), 0 8px 10px rgba(236, 72, 153, 0.1); /* NEW: ปรับเงาให้ดูมีมิติขึ้น */
     }
     .reward-card .reward-image-container {
-        height: 12rem; /* h-48 */
-        background-color: #fce7f3; /* pink-100 */
+        height: 12rem; /* h-48 (ประมาณ 192px) */
+        background-color: #fdf2f8; /* NEW: pink-50 ที่อ่อนกว่าเดิม หรือใช้สีเทาอ่อนๆ เช่น #f9fafb (gray-50) */
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        /* border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem; */ /* เอาออกไปก่อน เพราะ card หลักมี rounded-2xl แล้ว */
     }
     .dark .reward-card .reward-image-container {
-        background-color: #581c87; /* purple-800/50 */
+        background-color: #4a044e; /* NEW: สีม่วงเข้มขึ้น หรือสีเทาเข้ม เช่น #1f2937 (slate-800) */
     }
     .reward-card .reward-image-container img {
-        max-height: 100%;
-        max-width: 100%;
-        object-fit: contain; /* Changed to contain to show full image */
+        max-height: 90%; /* NEW: ลดขนาดลงเล็กน้อยเพื่อให้มี padding รอบๆ */
+        max-width: 90%;
+        object-fit: contain;
+        transition: transform 0.3s ease-in-out; /* NEW: เพิ่ม animation ให้รูป */
+    }
+    .reward-card:hover .reward-image-container img {
+        transform: scale(1.05); /* NEW: รูปขยายเล็กน้อยเมื่อ hover การ์ด */
     }
     .reward-card .reward-content {
         display: flex;
         flex-direction: column;
-        flex-grow: 1; /* Allows this part to grow and push footer down */
+        flex-grow: 1;
+        padding: 1rem 1.25rem 1.25rem; /* NEW: ปรับ padding บนน้อยลง p-4 md:p-5 */
     }
+    /* NEW: Title Styling */
+    .reward-card .reward-title {
+        font-family: 'Mitr', sans-serif;
+        font-size: 1.125rem; /* text-lg */
+        font-weight: 600; /* semibold */
+        color: #4b5563; /* gray-600 */
+        margin-bottom: 0.5rem; /* mb-2 */
+        line-height: 1.4;
+        min-height: 2.8em; /* NEW: ให้มีพื้นที่สำหรับชื่อ 2 บรรทัด */
+    }
+    .dark .reward-card .reward-title {
+        color: #e5e7eb; /* gray-200 */
+    }
+
     .reward-card .reward-description {
-        flex-grow: 1; /* Allows description to take up space */
-        min-height: 3.5rem; /* Ensure some space for description (approx 2-3 lines) */
+        flex-grow: 1;
+        font-size: 0.875rem; /* text-sm */
+        color: #6b7280; /* gray-500 */
+        line-height: 1.5; /* NEW: ปรับ line-height */
+        margin-bottom: 1rem; /* mb-4 */
+        min-height: 4.5em; /* NEW: ให้มีพื้นที่สำหรับคำอธิบายประมาณ 3 บรรทัด */
+    }
+    .dark .reward-card .reward-description {
+        color: #9ca3af; /* gray-400 */
+    }
+
+    /* NEW: Styling for the bottom action area */
+    .reward-action-area {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: auto; /* NEW: ดันส่วนนี้ไปอยู่ด้านล่างสุดของ .reward-content */
+        padding-top: 0.75rem; /* pt-3 */
+        border-top: 1px solid #f3f4f6; /* gray-100 */
+    }
+    .dark .reward-action-area {
+        border-top-color: #374151; /* gray-700 */
     }
 
     .points-tag {
-        background-color: #fff1f2; /* pink-50 */
-        color: #db2777; /* pink-600 */
-        font-weight: 600;
-        border: 1px solid #fbcfe8; /* pink-200 */
+        background-color: #fef2f2; /* NEW: red-50 (หรือสีอื่นที่เข้ากัน) */
+        color: #ef4444; /* NEW: red-500 */
+        font-weight: 500; /* NEW: ลดความหนาลงเล็กน้อย */
+        border: 1px solid #fee2e2; /* NEW: red-100 */
+        font-size: 0.75rem; /* text-xs */
+        padding: 0.25rem 0.75rem; /* py-1 px-3 */
+        border-radius: 9999px; /* rounded-full */
     }
     .dark .points-tag {
-        background-color: #831843; /* pink-900 */
-        color: #fce7f3; /* pink-100 */
-        border-color: #fda4af; /* pink-300 */
+        background-color: #7f1d1d; /* red-900 */
+        color: #fecaca; /* red-200 */
+        border-color: #b91c1c; /* red-700 */
     }
     .redeem-button {
-        background: linear-gradient(to right, #ec4899, #f472b6); /* Pink gradient */
+        background: linear-gradient(to right, #ec4899, #d946ef); /* NEW: ปรับสี gradient */
         color: white;
         font-weight: 500;
+        padding: 0.5rem 1rem; /* py-2 px-4 */
+        border-radius: 0.5rem; /* rounded-lg */
+        font-size: 0.875rem; /* text-sm */
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow */
+        transition: all 0.2s ease-in-out;
     }
     .redeem-button:hover {
-        background: linear-gradient(to right, #db2777, #ec4899); /* Darker pink gradient */
-        box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+        background: linear-gradient(to right, #db2777, #c026d3); /* NEW: ปรับสี gradient hover */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+        transform: translateY(-1px);
     }
     .dark .redeem-button {
-        background: linear-gradient(to right, #f472b6, #f9a8d4); /* Lighter pink gradient for dark */
-        color: #581c87; /* Dark purple text */
+        background: linear-gradient(to right, #f472b6, #e879f9);
+        color: #1f2937; /* gray-800 */
     }
     .dark .redeem-button:hover {
-        background: linear-gradient(to right, #ec4899, #f472b6);
-        color: #312e81;
+        background: linear-gradient(to right, #ec4899, #d946ef);
+        color: white;
     }
     .redeem-button:disabled,
-    .redeem-button.disabled { /* Added .disabled class for more control */
-        background: #d1d5db; /* gray-300 */
-        color: #6b7280; /* gray-500 */
+    .redeem-button.disabled {
+        background: #e5e7eb; /* gray-200 */
+        color: #9ca3af; /* gray-400 */
         cursor: not-allowed;
         box-shadow: none;
     }
     .dark .redeem-button:disabled,
     .dark .redeem-button.disabled {
-        background: #4b5563; /* gray-600 */
-        color: #9ca3af; /* gray-400 */
+        background: #374151; /* gray-700 */
+        color: #6b7280; /* gray-500 */
     }
 </style>
 {% endblock %}
@@ -108,55 +161,53 @@
             {% endfor %}
         {% endif %}
 
-        {% if rewards %}
+        {% if rewards_data %}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-            {% for reward in rewards %}
+            {% for item_data in rewards_data %}
+            {% with reward=item_data.reward is_owned_badge=item_data.is_owned_badge %}
             <div class="reward-card bg-white dark:bg-slate-800/70 backdrop-blur-sm dark:border dark:border-slate-700/80 rounded-2xl shadow-lg overflow-hidden">
                 <div class="reward-image-container">
                     {% if reward.image and reward.image.url %}
                         <img src="{{ reward.image.url }}" alt="{{ reward.name }}">
                     {% else %}
-                        <span class="text-3xl font-bold text-purple-500 dark:text-purple-300 p-4 text-center flex items-center justify-center h-full">🎁</span>
+                        <div class="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-700">
+                            <span class="text-4xl font-bold text-purple-400 dark:text-purple-300">🎁</span>
+                        </div>
                     {% endif %}
                 </div>
-                <div class="p-5 reward-content">
-                    <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1.5" style="font-family: 'Mitr', sans-serif;">{{ reward.name }}</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 reward-description">{{ reward.description|truncatewords_html:18 }}</p>
+                <div class="reward-content"> {# padding ถูกย้ายไปใน CSS แล้ว #}
+                    <h3 class="reward-title">{{ reward.name }}</h3> {# NEW: ใช้ class reward-title #}
+                    <p class="reward-description">{{ reward.description|truncatewords_html:15 }}</p> {# NEW: ปรับ truncatewords และเอา mb-3 ออก #}
 
-                    <div class="flex items-center justify-between mt-auto pt-3 border-t border-pink-100 dark:border-slate-700">
-                        <span class="points-tag text-xs px-3 py-1 rounded-full">
+                    <div class="reward-action-area"> {# NEW: เพิ่ม div ครอบส่วน action #}
+                        <span class="points-tag">
                             {{ reward.points_required }} แต้ม
                         </span>
                         {% if user.is_authenticated %}
-                        <form action="{% url 'redeem_reward' reward.id %}" method="post">
+                        <form action="{% url 'redeem_reward' reward.id %}" method="post" class="m-0"> {# NEW: เพิ่ม class m-0 ให้ form #}
                             {% csrf_token %}
-                            {# --- FIXED SECTION START --- #}
-                            {% with reward_is_badge_type=(reward.reward_type == 'badge') %}
-                            {% with reward_id_is_in_owned_list=(reward.id in user_owned_reward_ids) %}
-                            {% with is_owned_badge=(reward_is_badge_type and reward_id_is_in_owned_list) %}
                             <button type="submit"
-                                    class="redeem-button text-xs font-medium px-4 py-1.5 rounded-lg shadow-sm hover:shadow-md
+                                    class="redeem-button
                                            {% if user_profile.total_points < reward.points_required and not is_owned_badge %}disabled{% endif %}
                                            {% if is_owned_badge %}disabled{% endif %}"
                                     {% if user_profile.total_points < reward.points_required and not is_owned_badge %}title="แต้มของคุณไม่พอค่ะ"{% endif %}
                                     {% if is_owned_badge %}title="คุณมี Badge นี้แล้ว"{% endif %}>
                                 {% if is_owned_badge %}
-                                    มีแล้ว ✓
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>มีแล้ว
                                 {% else %}
                                     แลกเลย!
                                 {% endif %}
                             </button>
-                            {% endwith %}
-                            {% endwith %}
-                            {% endwith %}
-                            {# --- FIXED SECTION END --- #}
                         </form>
                         {% else %}
-                         <a href="{% url 'login' %}?next={{ request.path }}" class="redeem-button text-xs font-medium px-4 py-1.5 rounded-lg shadow-sm hover:shadow-md">Login เพื่อแลก</a>
+                         <a href="{% url 'login' %}?next={{ request.path }}" class="redeem-button">Login เพื่อแลก</a>
                         {% endif %}
                     </div>
                 </div>
             </div>
+            {% endwith %}
             {% endfor %}
         </div>
         {% else %}
@@ -171,3 +222,4 @@
     </div>
 </section>
 {% endblock %}
+

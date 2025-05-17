@@ -2,9 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 # from django.utils import timezone # อาจจะได้ใช้ในอนาคตสำหรับ daily login
 
-# Models เดิมของคุณ (Community, Category, Event, Attendance) ควรจะยังอยู่เหมือนเดิม
-# ตรวจสอบให้แน่ใจว่าโค้ดด้านล่างนี้ถูกเพิ่มเข้าไป "ต่อท้าย" หรือ "รวม" กับ Model ที่มีอยู่แล้วอย่างถูกต้อง
-
 class Community(models.Model):
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='communities/', blank=True, null=True)
@@ -33,9 +30,9 @@ class Event(models.Model):
     location = models.CharField(max_length=200)
     date = models.DateField()
     time = models.TimeField()
-    image = models.ImageField(upload_to='events/', blank=True, null=True) # ทำให้สามารถเว้นว่างรูปได้
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='events') # เปลี่ยนเป็น SET_NULL
-    community = models.ForeignKey(Community, on_delete=models.SET_NULL, null=True, blank=True, related_name='events') # เปลี่ยนเป็น SET_NULL
+    image = models.ImageField(upload_to='events/', blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='events')
+    community = models.ForeignKey(Community, on_delete=models.SET_NULL, null=True, blank=True, related_name='events')
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events')
     max_attendees = models.PositiveIntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,35 +61,71 @@ class Attendance(models.Model):
     def __str__(self):
         return f'{self.user.username} - {self.event.title} - {self.get_status_display()}'
 
-# แก้ไข UserProfile Model
+class Reward(models.Model):
+    REWARD_TYPES = [
+        ('badge', 'Badge'),
+        ('profile_frame', 'Profile Frame'),
+        ('discount_code', 'Discount Code'),
+        ('digital_good', 'Digital Good'),
+        # ('chat_feature', 'Chat Feature Unlock'),
+        # ('physical_item', 'Physical Item'),
+    ]
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    points_required = models.PositiveIntegerField()
+    image = models.ImageField(upload_to='rewards/previews/', blank=True, null=True, help_text="รูปภาพ Preview สำหรับแสดงในร้านค้า")
+    actual_frame_image = models.ImageField(upload_to='rewards/frames/', blank=True, null=True, help_text="รูปภาพกรอบโปรไฟล์จริง (PNG พื้นหลังโปร่งใส) ถ้าเป็นรางวัลประเภท Profile Frame")
+    # หรือจะใช้ JSONField สำหรับข้อมูลเพิ่มเติม เช่น URL ถ้าไม่ได้ host รูปเอง:
+    # data = models.JSONField(blank=True, null=True, help_text="เก็บข้อมูลเพิ่มเติม เช่น URL ของกรอบจริง {'frame_url': 'path/to/frame.png'}")
+    reward_type = models.CharField(max_length=50, choices=REWARD_TYPES, default='badge')
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.points_required} points)"
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True, null=True)
-    profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True, default='profiles/fw.png') # เพิ่ม default image
-    total_points = models.IntegerField(default=0) # เพิ่ม field นี้
+    profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True, default='profiles/fw.png')
+    total_points = models.IntegerField(default=0)
+    active_profile_frame = models.ForeignKey(
+        Reward,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        limit_choices_to={'reward_type': 'profile_frame'}, # จำกัดให้เลือกเฉพาะ Reward ที่เป็นประเภท 'profile_frame' เท่านั้น
+        related_name='activated_by_users',
+        help_text="กรอบโปรไฟล์ที่ผู้ใช้กำลังใช้งาน (ต้องเป็นประเภท 'profile_frame' และผู้ใช้ต้องแลกมาแล้ว)"
+    )
 
     def __str__(self):
         return self.user.username
 
-# --- Models ใหม่สำหรับระบบแต้มและของรางวัล ---
+class UserReward(models.Model): # Model นี้สำคัญสำหรับการติดตามว่าใครแลกรางวัลอะไรไปแล้วบ้าง
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rewards_owned')
+    reward = models.ForeignKey(Reward, on_delete=models.CASCADE)
+    redeemed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'reward') # ป้องกันการแลกรางวัลชิ้นเดิมซ้ำ (ถ้าไม่ต้องการให้ซ้ำ)
+
+    def __str__(self):
+        return f"{self.user.username} redeemed {self.reward.name}"
+
 class PointActivityLog(models.Model):
     ACTIVITY_CHOICES = [
         ('daily_login', 'Daily Login'),
         ('profile_complete_basic', 'Profile Basic Info Added'),
         ('profile_complete_picture', 'Profile Picture Uploaded'),
         ('create_event', 'Create Event'),
-        ('event_popular', 'Popular Event Created'), # แต้มถ้ากิจกรรมมีคนสนใจเยอะ
+        ('event_popular', 'Popular Event Created'),
         ('join_event', 'Join Event'),
-        # ('event_check_in', 'Event Check-in'), # (ขั้นสูง ถ้ามีระบบเช็คอิน)
-        # ('review_event', 'Review Event'), # (ถ้ามีระบบรีวิว)
-        # ('invite_friend_signup', 'Invite Friend Success'), # (ขั้นสูง ถ้ามีระบบชวนเพื่อน)
         ('found_easter_egg', 'Found Easter Egg'),
         ('sent_greeting_card', 'Sent Greeting Card'),
-        # ('complete_quiz_weekly', 'Weekly Quiz Completed'), # (ถ้ามีระบบ Quiz)
         ('anniversary_signup', 'Signup Anniversary'),
-        ('community_milestone', 'Community Milestone Bonus'), # Admin ให้
+        ('community_milestone', 'Community Milestone Bonus'),
         ('redeem_reward', 'Redeem Reward'),
-        ('redeem_reward_failed_reversal', 'Redeem Reward Failed Reversal'), # เพิ่มอันนี้
+        ('redeem_reward_failed_reversal', 'Redeem Reward Failed Reversal'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='point_logs')
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_CHOICES)
@@ -107,43 +140,12 @@ class PointActivityLog(models.Model):
         ordering = ['-timestamp']
 
 
-class Reward(models.Model):
-    REWARD_TYPES = [
-        ('badge', 'Badge'),
-        ('profile_frame', 'Profile Frame'),
-        ('discount_code', 'Discount Code'),
-        ('digital_good', 'Digital Good'),
-        # ('chat_feature', 'Chat Feature Unlock'),
-        # ('physical_item', 'Physical Item'),
-    ]
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    points_required = models.PositiveIntegerField()
-    image = models.ImageField(upload_to='rewards/', blank=True, null=True)
-    reward_type = models.CharField(max_length=50, choices=REWARD_TYPES, default='badge')
-    is_active = models.BooleanField(default=True)
-    # data = models.JSONField(blank=True, null=True) # สำหรับเก็บข้อมูลเพิ่มเติม เช่น โค้ดส่วนลด
 
-    def __str__(self):
-        return f"{self.name} ({self.points_required} points)"
-
-class UserReward(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rewards_owned')
-    reward = models.ForeignKey(Reward, on_delete=models.CASCADE)
-    redeemed_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('user', 'reward')
-
-    def __str__(self):
-        return f"{self.user.username} redeemed {self.reward.name}"
-
-# --- Models สำหรับ Easter Egg (ข้อ 6) ---
 class EasterEgg(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(help_text="คำใบ้ หรือข้อความเมื่อค้นพบ")
     unique_code = models.CharField(max_length=50, unique=True, help_text="โค้ดลับสำหรับ URL หรือการตรวจสอบ")
-    points_reward = models.PositiveIntegerField(default=20) # กำหนดแต้มเริ่มต้น
+    points_reward = models.PositiveIntegerField(default=20)
     # image_icon = models.ImageField(upload_to='easter_eggs/', blank=True, null=True)
 
     def __str__(self):
@@ -160,11 +162,11 @@ class UserFoundEasterEgg(models.Model):
     def __str__(self):
         return f"{self.user.username} found {self.easter_egg.name}"
 
-# --- Models สำหรับ Greeting Card (ข้อ 7) ---
+
+
 class GreetingCardTemplate(models.Model):
-    name = models.CharField(max_length=100) # เช่น "สุขสันต์วันเกิด ลายผีเสื้อ"
-    image = models.ImageField(upload_to='greeting_cards/templates/') # รูป Template ของการ์ด
-    # category = models.CharField(max_length=50, blank=True)
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='greeting_cards/templates/')
 
     def __str__(self):
         return self.name
@@ -174,7 +176,7 @@ class UserGreetingCard(models.Model):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_greetings')
     card_template = models.ForeignKey(GreetingCardTemplate, on_delete=models.SET_NULL, null=True, blank=True)
     custom_message = models.TextField(max_length=500)
-    mood_icon = models.CharField(max_length=10, blank=True) # เก็บ Emoji เช่น "💖", "🎉"
+    mood_icon = models.CharField(max_length=10, blank=True)
     sent_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
 

@@ -196,40 +196,80 @@ def user_profile(request, username=None):
     context = {'profile_user': target_user, 'profile': profile, 'organized_events': organized_events, 'attending_events': attending_events}
     return render(request, 'myapp/user_profile.html', context)
 
+
 @login_required
 def edit_profile(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
+    # ดึงรายการกรอบโปรไฟล์ทั้งหมดที่ผู้ใช้คนนี้แลกมาแล้ว (เป็น Reward objects)
+    owned_frames = Reward.objects.filter(
+        reward_type='profile_frame',
+        userreward__user=request.user # ตรวจสอบผ่านตาราง UserReward
+    ).distinct() # ใช้ distinct เผื่อกรณีมีการแลกซ้ำ (แต่ model UserReward ควรมี unique_together ป้องกันอยู่แล้ว)
+
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            saved_profile = form.save()
-            points_awarded_this_time = False
-            
-            # Award points for Bio if not already awarded and bio is filled
-            if saved_profile.bio and not PointActivityLog.objects.filter(user=request.user, activity_type='profile_complete_basic').exists():
-                if manage_points(request.user, 10, 'profile_complete_basic', "กรอกข้อมูล Bio"):
-                    points_awarded_this_time = True
-            
-            # Award points for Profile Picture if not already awarded and not the default
-            is_default_image = False
-            default_image_path_in_model = UserProfile._meta.get_field('profile_image').get_default()
-            if default_image_path_in_model and saved_profile.profile_image and \
-               saved_profile.profile_image.name and default_image_path_in_model in saved_profile.profile_image.name: # Check if name contains default path part
-                is_default_image = True
-            
-            if saved_profile.profile_image and saved_profile.profile_image.name and not is_default_image:
-                if not PointActivityLog.objects.filter(user=request.user, activity_type='profile_complete_picture').exists():
-                    if manage_points(request.user, 15, 'profile_complete_picture', "อัปโหลดรูปโปรไฟล์"):
-                        points_awarded_this_time = True
-            
-            if points_awarded_this_time:
-                 messages.success(request, "โปรไฟล์ของคุณถูกบันทึก และได้รับแต้มสะสมพิเศษ! ✨")
+            saved_profile = form.save(commit=False)
+
+            selected_frame_id = request.POST.get('active_frame_selector')
+            if selected_frame_id:
+                try:
+                    # ตรวจสอบว่า frame ที่เลือกมานั้น user เป็นเจ้าของจริงๆ และเป็นประเภท profile_frame
+                    chosen_frame = owned_frames.get(id=selected_frame_id)
+                    saved_profile.active_profile_frame = chosen_frame
+                except Reward.DoesNotExist:
+                    messages.warning(request, "กรอบโปรไฟล์ที่เลือกไม่ถูกต้อง")
+                    # ไม่เปลี่ยนค่า active_profile_frame เดิม ถ้าเลือกผิด
             else:
-                messages.success(request, "โปรไฟล์ของคุณถูกบันทึกเรียบร้อยแล้วค่ะ")
+                saved_profile.active_profile_frame = None # ถ้าผู้ใช้เลือก "ไม่มีกรอบ"
+
+            saved_profile.save()
+            # ... (โค้ดการให้แต้มสำหรับการแก้ไขโปรไฟล์ของคุณ) ...
+            messages.success(request, "โปรไฟล์ของคุณถูกบันทึกเรียบร้อยแล้วค่ะ")
             return redirect('user_profile')
-        else: messages.error(request, "เกิดข้อผิดพลาดในการบันทึกโปรไฟล์ กรุณาตรวจสอบข้อมูลอีกครั้ง")
-    else: form = UserProfileForm(instance=profile)
-    return render(request, 'myapp/edit_profile.html', {'form': form})
+        else:
+            messages.error(request, "เกิดข้อผิดพลาดในการบันทึกโปรไฟล์ กรุณาตรวจสอบข้อมูลอีกครั้ง")
+    else:
+        form = UserProfileForm(instance=profile)
+
+    context = {
+        'form': form,
+        'owned_profile_frames': owned_frames, # ส่งไปให้ template เพื่อสร้าง dropdown
+        'current_active_frame_id': profile.active_profile_frame.id if profile.active_profile_frame else None, # ส่ง ID ของ frame ที่ active อยู่
+    }
+    return render(request, 'myapp/edit_profile.html', context)
+
+
+@login_required
+def user_profile(request, username=None):
+    target_user = get_object_or_404(User, username=username) if username else request.user
+    profile, created = UserProfile.objects.get_or_create(user=target_user)
+    organized_events = Event.objects.filter(organizer=target_user).order_by('-date', '-time')
+    attending_events_ids = Attendance.objects.filter(user=target_user, status='attending').values_list('event_id', flat=True)
+    attending_events = Event.objects.filter(id__in=attending_events_ids).order_by('-date', '-time')
+    
+    # ตรวจสอบว่า profile.active_profile_frame มี object หรือไม่ก่อนจะพยายามเข้าถึง attribute
+    active_frame_url = None
+    active_frame_name = None
+    if profile.active_profile_frame:
+        # **สำคัญมาก:** แก้ไข .actual_frame_image ให้ตรงกับชื่อ field ที่คุณใช้เก็บรูปกรอบจริงใน Reward model
+        if hasattr(profile.active_profile_frame, 'actual_frame_image') and profile.active_profile_frame.actual_frame_image:
+            active_frame_url = profile.active_profile_frame.actual_frame_image.url
+        elif profile.active_profile_frame.image: # Fallback ไปใช้ image ถ้า actual_frame_image ไม่มี
+             active_frame_url = profile.active_profile_frame.image.url
+        active_frame_name = profile.active_profile_frame.name
+
+
+    context = {
+        'profile_user': target_user,
+        'profile': profile, # profile object ทั้งหมดจะถูกส่งไป ซึ่งรวม active_profile_frame อยู่แล้ว
+        'organized_events': organized_events,
+        'attending_events': attending_events,
+        'active_profile_frame_url': active_frame_url, # ส่ง URL ไปโดยตรงเพื่อความสะดวก
+        'active_profile_frame_name': active_frame_name, # ส่งชื่อไปด้วย (ถ้าต้องการ)
+    }
+    return render(request, 'myapp/user_profile.html', context)
+
 
 def signup(request):
     if request.method == 'POST':
@@ -248,10 +288,33 @@ def signup(request):
 # --- Views ใหม่สำหรับระบบแต้มและของรางวัล ---
 @login_required
 def rewards_store_view(request):
-    rewards = Reward.objects.filter(is_active=True).order_by('points_required')
+    rewards_queryset = Reward.objects.filter(is_active=True).order_by('points_required')
     profile = get_object_or_404(UserProfile, user=request.user)
-    user_owned_reward_ids = UserReward.objects.filter(user=request.user, reward__reward_type='badge').values_list('reward_id', flat=True)
-    context = {'rewards': rewards, 'user_profile': profile, 'user_owned_reward_ids': list(user_owned_reward_ids), 'page_title': "ร้านค้าของรางวัลสุดพิเศษ"}
+    # ดึง list ของ ID ของ badge ที่ user มีอยู่แล้ว
+    user_owned_badge_ids = list(UserReward.objects.filter(
+        user=request.user,
+        reward__reward_type='badge'
+    ).values_list('reward_id', flat=True))
+
+    # เตรียม list ของ rewards พร้อมสถานะ 'is_owned_badge'
+    rewards_data_for_template = []
+    for reward_item in rewards_queryset:
+        # คำนวณ is_owned_badge สำหรับแต่ละ reward
+        # is_owned_badge จะเป็น true ถ้า reward_type คือ 'badge' และ reward_item.id อยู่ใน list ที่ผู้ใช้มี
+        is_owned_badge_for_this_reward = (
+            reward_item.reward_type == 'badge' and
+            reward_item.id in user_owned_badge_ids
+        )
+        rewards_data_for_template.append({
+            'reward': reward_item, # ตัว object ของ Reward
+            'is_owned_badge': is_owned_badge_for_this_reward # ค่า boolean ที่คำนวณแล้ว
+        })
+
+    context = {
+        'rewards_data': rewards_data_for_template, # ส่ง list ใหม่นี้ไปให้ template
+        'user_profile': profile,
+        'page_title': "ร้านค้าของรางวัลสุดพิเศษ"
+    }
     return render(request, 'myapp/rewards_store.html', context)
 
 @login_required

@@ -7,10 +7,66 @@
 <style>
     .profile-header-bg { background: linear-gradient(135deg, #fbcfe8 0%, #fde68a 50%, #bfdbfe 100%); }
     .dark .profile-header-bg { background: linear-gradient(135deg, #86efac 0%, #93c5fd 50%, #d8b4fe 100%); }
-    .profile-avatar-wrapper { border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    .dark .profile-avatar-wrapper { border-color: #374151; }
-    .profile-avatar-img { object-fit: cover; }
-    .profile-avatar-placeholder { background: linear-gradient(to br, #a78bfa, #f472b6); color: white; font-family: 'Mitr', sans-serif; font-size: 3.5rem; }
+
+    /* Container for Avatar and Frame (Relative Positioning) */
+    .profile-avatar-container {
+        position: relative;
+        /* ขนาดจะถูกกำหนดโดย Tailwind classes ที่ใช้กับ div นี้โดยตรงใน HTML */
+        /* เช่น w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 */
+    }
+
+    /* Wrapper for the user's actual profile image & placeholder */
+    .profile-avatar-image-wrapper {
+        width: 100%;
+        height: 100%;
+        border-radius: 9999px; /* rounded-full */
+        overflow: hidden;
+        border: 4px solid white; /* ขอบขาวรอบรูปโปรไฟล์ */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        position: relative; /* เพื่อให้ z-index ทำงาน */
+        z-index: 1; /* ให้รูปโปรไฟล์อยู่ชั้นล่าง (ถ้ามีกรอบ) */
+    }
+    .dark .profile-avatar-image-wrapper {
+        border-color: #374151; /* สีขอบใน dark mode */
+    }
+
+    .profile-avatar-img { /* User's actual image */
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* รูปเต็มพื้นที่ wrapper, อาจมีการ crop */
+    }
+    .profile-avatar-placeholder { /* Placeholder if no image */
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to br, #a78bfa, #f472b6); /* สี placeholder */
+        color: white;
+        font-family: 'Mitr', sans-serif;
+        /* font-size จะถูกกำหนดโดย Tailwind class ที่ใช้กับ span ด้านใน */
+    }
+
+    /* Overlay for the profile frame */
+    .profile-frame-overlay {
+        position: absolute;
+        top: 50%;    /* จัดกึ่งกลางแนวนอน */
+        left: 50%;   /* จัดกึ่งกลางแนวตั้ง */
+        transform: translate(-50%, -50%); /* เทคนิคจัดกึ่งกลาง */
+        /* ปรับค่า 20px (หรือค่าอื่น) ให้พอดีกับความหนาของขอบนอกของกรอบโปรไฟล์ของคุณ */
+        /* เพื่อให้กรอบล้อมรอบรูปโปรไฟล์ได้พอดี */
+        width: calc(100% + 20px);
+        height: calc(100% + 20px);
+        pointer-events: none; /* ทำให้คลิกทะลุผ่านกรอบไปยัง element ข้างใต้ได้ */
+        z-index: 2; /* ให้กรอบโปรไฟล์แสดงอยู่ด้านบนรูปโปรไฟล์ */
+    }
+    .profile-frame-overlay img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* แสดงรูปกรอบเต็มๆ ไม่มีการ crop (เหมาะสำหรับกรอบ) */
+    }
+
+    /* Other existing styles from your original file */
     .profile-section-title { font-family: 'Mitr', sans-serif; color: #c026d3; }
     .dark .profile-section-title { color: #e879f9; }
     .btn-edit-profile-playful { background-color: #f59e0b; color: white; padding: 0.6rem 1.2rem; border-radius: 0.75rem; font-weight: 500; transition: all 0.2s ease-in-out; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -32,16 +88,39 @@
         <div class="bg-white dark:bg-slate-800/80 backdrop-blur-md dark:border dark:border-slate-700/70 rounded-2xl shadow-xl overflow-hidden">
             <div class="p-6 md:p-8 profile-header-bg">
                 <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-8">
-                    <div class="flex-shrink-0 w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full overflow-hidden profile-avatar-wrapper">
-                        {% if profile.profile_image and profile.profile_image.url %}<img src="{{ profile.profile_image.url }}" alt="รูปโปรไฟล์ของ {{ profile_user.username }}" class="w-full h-full profile-avatar-img">
-                        {% else %}<div class="w-full h-full profile-avatar-placeholder flex items-center justify-center"><span>{{ profile_user.username.0|upper }}</span></div>{% endif %}
+
+                    {# --- AVATAR AND FRAME SECTION --- #}
+                    <div class="flex-shrink-0 profile-avatar-container w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40">
+                        <div class="profile-avatar-image-wrapper"> {# ขนาดของ wrapper นี้จะเท่ากับ container แม่ #}
+                            {% if profile.profile_image and profile.profile_image.url %}
+                                <img src="{{ profile.profile_image.url }}" alt="รูปโปรไฟล์ของ {{ profile_user.username }}" class="profile-avatar-img">
+                            {% else %}
+                                <div class="profile-avatar-placeholder">
+                                    {# ปรับขนาด font ของ placeholder ให้ responsive ตามขนาด avatar ที่กำหนดโดย Tailwind #}
+                                    <span class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl">{{ profile_user.username.0|upper }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {# ใช้ active_profile_frame_url และ active_profile_frame_name ที่ส่งมาจาก context ใน view #}
+                        {% if active_profile_frame_url %}
+                            <div class="profile-frame-overlay">
+                                <img src="{{ active_profile_frame_url }}" alt="{{ active_profile_frame_name|default:'กรอบโปรไฟล์' }} Frame">
+                            </div>
+                        {% endif %}
                     </div>
+                    {# --- END AVATAR AND FRAME SECTION --- #}
+
                     <div class="text-center sm:text-left flex-grow pt-2 sm:pt-4">
                         <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-white mb-1" style="font-family: 'Mitr', sans-serif;">{{ profile_user.username }}</h1>
                         {% if profile_user.first_name and profile_user.last_name %}<p class="text-md text-slate-700 dark:text-slate-200 mb-2.5">{{ profile_user.first_name }} {{ profile_user.last_name }}</p>{% endif %}
                         {% if profile.bio %}<p class="text-slate-600 dark:text-slate-300 mb-4 leading-relaxed text-sm sm:text-base max-w-xl">{{ profile.bio|linebreaksbr }}</p>
                         {% else %}<p class="text-slate-500 dark:text-slate-400 mb-4 italic text-sm sm:text-base">ผู้ใช้นี้ยังไม่ได้เพิ่มเรื่องราวเกี่ยวกับตัวเองเลยค่ะ 🦋</p>{% endif %}
-                        {% if request.user == profile_user %}<a href="{% url 'edit_profile' %}" class="btn-edit-profile-playful inline-flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>แก้ไขโปรไฟล์</a>{% endif %}
+                        {% if request.user == profile_user %}
+                            <a href="{% url 'edit_profile' %}" class="btn-edit-profile-playful inline-flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+                                แก้ไขโปรไฟล์
+                            </a>
+                        {% endif %}
                         {% if user.is_authenticated and request.user == profile_user and profile %}
                         <div class="mt-5 pt-4 border-t border-pink-200 dark:border-slate-700/50">
                             <h3 class="text-md font-semibold text-pink-600 dark:text-pink-400 mb-2" style="font-family: 'Mitr', sans-serif;">แต้มสะสมและรางวัล 🏅</h3>

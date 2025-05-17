@@ -9,18 +9,18 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
-from django.contrib import messages
+from django.contrib import messages # <--- ตรวจสอบว่า import messages แล้ว
 from django.db import transaction, IntegrityError
 from django.utils import timezone
 from django.http import HttpResponseForbidden, HttpResponse
 from django.db.models import Q
 
 # Django REST framework Imports
-from rest_framework import viewsets, permissions, filters # <--- Added/Ensure these are present
-from rest_framework.decorators import action             # <--- Added/Ensure this is present
-from rest_framework.response import Response               # <--- Added/Ensure this is present
+from rest_framework import viewsets, permissions, filters
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-# Local Imports (from your app)
+# Local Imports (จาก app ของคุณ)
 from .models import (
     Event, Category, Attendance, UserProfile, Community,
     PointActivityLog, Reward, UserReward,
@@ -28,7 +28,7 @@ from .models import (
     GreetingCardTemplate, UserGreetingCard
 )
 from .forms import EventForm, UserProfileForm
-from .serializers import (                                # <--- Ensure all your serializers are imported
+from .serializers import (
     UserSerializer,
     UserProfileSerializer,
     CommunitySerializer,
@@ -36,7 +36,6 @@ from .serializers import (                                # <--- Ensure all your
     EventSerializer,
     EventDetailSerializer,
     AttendanceSerializer
-    # Add any other serializers you have created
 )
 
 # --- Helper function manage_points ---
@@ -48,8 +47,9 @@ def manage_points(user_instance, points_to_change, activity_type_code, descripti
                 profile.total_points = profile.total_points + points_to_change
             elif points_to_change < 0 and profile.total_points + points_to_change < 0:
                 print(f"Attempted to deduct more points than available for {user_instance.username}")
-                return False 
+                return False
             profile.save()
+
             PointActivityLog.objects.create(
                 user=user_instance,
                 activity_type=activity_type_code,
@@ -70,6 +70,7 @@ def home(request):
     categories = Category.objects.all()[:5]
     today = timezone.now().date()
     featured_events = Event.objects.filter(date__gte=today).order_by('date')[:4]
+
     if request.user.is_authenticated:
         profile, created = UserProfile.objects.get_or_create(user=request.user)
         today_min = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -79,7 +80,8 @@ def home(request):
         ).exists()
         if not has_daily_login_today:
             if manage_points(request.user, 5, 'daily_login', "เข้าสู่ระบบรายวัน"):
-                pass # messages.info(request, "คุณได้รับ 5 แต้มสำหรับการเข้าสู่ระบบวันนี้! ☀️")
+                # messages.info(request, "คุณได้รับ 5 แต้มสำหรับการเข้าสู่ระบบวันนี้! ☀️") # Optional message
+                pass
     context = {
         'communities': communities if communities.exists() else [],
         'categories': categories if categories.exists() else [],
@@ -129,10 +131,12 @@ class EventCreateView(LoginRequiredMixin, CreateView):
     model = Event
     form_class = EventForm
     template_name = 'myapp/event_form.html'
+
     def form_valid(self, form):
         form.instance.organizer = self.request.user
         try:
-            self.object = form.save()
+            self.object = form.save() # Save event first
+            # Award points for creating an event
             if manage_points(self.request.user, 25, 'create_event', f"สร้างกิจกรรม: {self.object.title}"):
                  messages.success(self.request, f"กิจกรรม '{self.object.title}' ถูกสร้างเรียบร้อย และคุณได้รับ 25 แต้ม! 🎉")
             else:
@@ -159,21 +163,33 @@ def attend_event(request, pk):
     event = get_object_or_404(Event, pk=pk)
     status = request.POST.get('status', 'attending')
     attendance, created = Attendance.objects.update_or_create(event=event, user=request.user, defaults={'status': status})
+
     if status == 'attending':
         log_description = f"เข้าร่วมกิจกรรม: {event.title}"
-        already_got_points = PointActivityLog.objects.filter(user=request.user, activity_type='join_event', description=log_description).exists()
-        if not already_got_points:
+        # Check if points for this specific event joining action were already awarded
+        already_got_points_for_this_event_action = PointActivityLog.objects.filter(
+            user=request.user,
+            activity_type='join_event',
+            description=log_description # For simplicity. A more robust way is to link PointActivityLog to Event model.
+        ).exists()
+
+        if not already_got_points_for_this_event_action:
             if manage_points(request.user, 10, 'join_event', log_description):
                 messages.info(request, f"คุณได้รับ 10 แต้มสำหรับการเข้าร่วมกิจกรรม '{event.title}'! 👍")
-        if created: messages.success(request, f"คุณได้ยืนยันเข้าร่วมกิจกรรม '{event.title}' เรียบร้อยแล้วค่ะ")
-        else: messages.success(request, f"สถานะการเข้าร่วมกิจกรรม '{event.title}' ของคุณถูกอัปเดตแล้วค่ะ")
-    elif status == 'interested': messages.success(request, f"คุณได้แสดงความสนใจกิจกรรม '{event.title}' แล้วค่ะ")
+        
+        if created : # If a new attendance record was created (first time setting status for this event)
+             messages.success(request, f"คุณได้ยืนยันเข้าร่วมกิจกรรม '{event.title}' เรียบร้อยแล้วค่ะ")
+        else: # If an existing attendance record was updated
+            messages.success(request, f"สถานะการเข้าร่วมกิจกรรม '{event.title}' ของคุณถูกอัปเดตแล้วค่ะ")
+
+    elif status == 'interested':
+        messages.success(request, f"คุณได้แสดงความสนใจกิจกรรม '{event.title}' แล้วค่ะ")
     return redirect('event_detail', pk=pk)
 
 @login_required
 def user_profile(request, username=None):
     target_user = get_object_or_404(User, username=username) if username else request.user
-    profile, created = UserProfile.objects.get_or_create(user=target_user)
+    profile, created = UserProfile.objects.get_or_create(user=target_user) # Ensures profile exists
     organized_events = Event.objects.filter(organizer=target_user).order_by('-date', '-time')
     attending_events_ids = Attendance.objects.filter(user=target_user, status='attending').values_list('event_id', flat=True)
     attending_events = Event.objects.filter(id__in=attending_events_ids).order_by('-date', '-time')
@@ -187,17 +203,29 @@ def edit_profile(request):
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             saved_profile = form.save()
-            awarded = False
+            points_awarded_this_time = False
+            
+            # Award points for Bio if not already awarded and bio is filled
             if saved_profile.bio and not PointActivityLog.objects.filter(user=request.user, activity_type='profile_complete_basic').exists():
-                if manage_points(request.user, 10, 'profile_complete_basic', "กรอกข้อมูล Bio"): awarded = True
-            is_default = False
-            default_path = UserProfile._meta.get_field('profile_image').get_default()
-            if default_path and saved_profile.profile_image and saved_profile.profile_image.name.endswith(default_path.split('/')[-1]): is_default = True
-            if saved_profile.profile_image and saved_profile.profile_image.name and not is_default:
+                if manage_points(request.user, 10, 'profile_complete_basic', "กรอกข้อมูล Bio"):
+                    points_awarded_this_time = True
+            
+            # Award points for Profile Picture if not already awarded and not the default
+            is_default_image = False
+            default_image_path_in_model = UserProfile._meta.get_field('profile_image').get_default()
+            if default_image_path_in_model and saved_profile.profile_image and \
+               saved_profile.profile_image.name and default_image_path_in_model in saved_profile.profile_image.name: # Check if name contains default path part
+                is_default_image = True
+            
+            if saved_profile.profile_image and saved_profile.profile_image.name and not is_default_image:
                 if not PointActivityLog.objects.filter(user=request.user, activity_type='profile_complete_picture').exists():
-                    if manage_points(request.user, 15, 'profile_complete_picture', "อัปโหลดรูปโปรไฟล์"): awarded = True
-            if awarded: messages.success(request, "โปรไฟล์ของคุณถูกบันทึก และได้รับแต้มสะสมพิเศษ! ✨")
-            else: messages.success(request, "โปรไฟล์ของคุณถูกบันทึกเรียบร้อยแล้วค่ะ")
+                    if manage_points(request.user, 15, 'profile_complete_picture', "อัปโหลดรูปโปรไฟล์"):
+                        points_awarded_this_time = True
+            
+            if points_awarded_this_time:
+                 messages.success(request, "โปรไฟล์ของคุณถูกบันทึก และได้รับแต้มสะสมพิเศษ! ✨")
+            else:
+                messages.success(request, "โปรไฟล์ของคุณถูกบันทึกเรียบร้อยแล้วค่ะ")
             return redirect('user_profile')
         else: messages.error(request, "เกิดข้อผิดพลาดในการบันทึกโปรไฟล์ กรุณาตรวจสอบข้อมูลอีกครั้ง")
     else: form = UserProfileForm(instance=profile)
@@ -210,18 +238,20 @@ def signup(request):
             user = form.save()
             UserProfile.objects.create(user=user) 
             login(request, user)
+            # Award points for new signup
             if manage_points(user, 5, 'user_signup', "ยินดีต้อนรับสมาชิกใหม่!"):
                messages.info(request, "ยินดีต้อนรับ! คุณได้รับ 5 แต้มสำหรับการสมัครสมาชิก 🥳")
             return redirect('home')
     else: form = UserCreationForm()
     return render(request, 'myapp/signup.html', {'form': form})
 
+# --- Views ใหม่สำหรับระบบแต้มและของรางวัล ---
 @login_required
 def rewards_store_view(request):
     rewards = Reward.objects.filter(is_active=True).order_by('points_required')
     profile = get_object_or_404(UserProfile, user=request.user)
-    owned_badge_ids = UserReward.objects.filter(user=request.user, reward__reward_type='badge').values_list('reward_id', flat=True)
-    context = {'rewards': rewards, 'user_profile': profile, 'user_owned_reward_ids': list(owned_badge_ids), 'page_title': "ร้านค้าของรางวัลสุดพิเศษ"}
+    user_owned_reward_ids = UserReward.objects.filter(user=request.user, reward__reward_type='badge').values_list('reward_id', flat=True)
+    context = {'rewards': rewards, 'user_profile': profile, 'user_owned_reward_ids': list(user_owned_reward_ids), 'page_title': "ร้านค้าของรางวัลสุดพิเศษ"}
     return render(request, 'myapp/rewards_store.html', context)
 
 @login_required
@@ -255,35 +285,80 @@ def points_history_view(request):
     return render(request, 'myapp/points_history.html', context)
 
 # --- DRF ViewSets ---
+# (โค้ด ViewSets ของคุณควรจะอยู่ที่นี่ และมี import ที่ถูกต้องตามที่แก้ไขไปแล้ว)
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all(); serializer_class = UserSerializer; permission_classes = [permissions.IsAuthenticated]; filter_backends = [filters.SearchFilter]; search_fields = ['username', 'email', 'first_name', 'last_name']
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username', 'email', 'first_name', 'last_name']
+
 class UserProfileViewSet(viewsets.ModelViewSet):
-    queryset = UserProfile.objects.all(); serializer_class = UserProfileSerializer; permission_classes = [permissions.IsAuthenticated]
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
     def get_queryset(self):
         if self.request.user.is_superuser: return UserProfile.objects.all()
         if self.request.user.is_authenticated: return UserProfile.objects.filter(user=self.request.user)
         return UserProfile.objects.none()
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
-    def me(self, request): profile, created = UserProfile.objects.get_or_create(user=request.user); serializer = self.get_serializer(profile); return Response(serializer.data)
+    def me(self, request):
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
 class CommunityViewSet(viewsets.ModelViewSet):
-    queryset = Community.objects.all(); serializer_class = CommunitySerializer; permission_classes = [permissions.IsAuthenticatedOrReadOnly]; filter_backends = [filters.SearchFilter]; search_fields = ['name', 'description']
+    queryset = Community.objects.all()
+    serializer_class = CommunitySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'description']
     @action(detail=True, methods=['get'])
-    def events(self, request, pk=None): community = self.get_object(); events = Event.objects.filter(community=community); serializer = EventSerializer(events, many=True, context={'request': request}); return Response(serializer.data)
+    def events(self, request, pk=None):
+        community = self.get_object()
+        events = Event.objects.filter(community=community)
+        serializer = EventSerializer(events, many=True, context={'request': request})
+        return Response(serializer.data)
+
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all(); serializer_class = CategorySerializer; permission_classes = [permissions.IsAuthenticatedOrReadOnly]; filter_backends = [filters.SearchFilter]; search_fields = ['name']
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
     @action(detail=True, methods=['get'])
-    def events(self, request, pk=None): category = self.get_object(); events = Event.objects.filter(category=category); serializer = EventSerializer(events, many=True, context={'request': request}); return Response(serializer.data)
+    def events(self, request, pk=None):
+        category = self.get_object()
+        events = Event.objects.filter(category=category)
+        serializer = EventSerializer(events, many=True, context={'request': request})
+        return Response(serializer.data)
+
 class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.all().select_related('organizer', 'category', 'community'); permission_classes = [permissions.IsAuthenticatedOrReadOnly]; filter_backends = [filters.SearchFilter, filters.OrderingFilter]; search_fields = ['title', 'description', 'location', 'category__name', 'community__name', 'organizer__username']; ordering_fields = ['date', 'time', 'created_at']
+    queryset = Event.objects.all().select_related('organizer', 'category', 'community')
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title', 'description', 'location', 'category__name', 'community__name', 'organizer__username']
+    ordering_fields = ['date', 'time', 'created_at']
     def get_serializer_class(self): return EventDetailSerializer if self.action == 'retrieve' else EventSerializer
     def get_serializer_context(self): return {'request': self.request}
     def perform_create(self, serializer): serializer.save(organizer=self.request.user)
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    def attend(self, request, pk=None): event = self.get_object(); status = request.data.get('status', 'attending'); attendance, created = Attendance.objects.update_or_create(event=event, user=request.user, defaults={'status': status}); serializer = AttendanceSerializer(attendance, context={'request': request}); return Response(serializer.data)
+    def attend(self, request, pk=None):
+        event = self.get_object()
+        status = request.data.get('status', 'attending')
+        attendance, created = Attendance.objects.update_or_create(event=event, user=request.user, defaults={'status': status})
+        serializer = AttendanceSerializer(attendance, context={'request': request})
+        return Response(serializer.data)
     @action(detail=True, methods=['delete'], permission_classes=[permissions.IsAuthenticated])
-    def cancel_attendance(self, request, pk=None): event = self.get_object(); attendance = get_object_or_404(Attendance, event=event, user=request.user); attendance.delete(); return Response({"status": "canceled"})
+    def cancel_attendance(self, request, pk=None):
+        event = self.get_object()
+        attendance = get_object_or_404(Attendance, event=event, user=request.user)
+        attendance.delete(); return Response({"status": "canceled"})
+
 class AttendanceViewSet(viewsets.ModelViewSet):
-    queryset = Attendance.objects.all(); serializer_class = AttendanceSerializer; permission_classes = [permissions.IsAuthenticated]
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
+    permission_classes = [permissions.IsAuthenticated]
     def get_queryset(self):
         queryset = Attendance.objects.filter(user=self.request.user)
         event_id = self.request.query_params.get('event')
@@ -296,3 +371,4 @@ def dashboard_page(request):
     user_count = User.objects.count(); event_count = Event.objects.count(); community_count = Community.objects.count(); attendance_count = Attendance.objects.count()
     context = {'user_count': user_count, 'event_count': event_count, 'community_count': community_count, 'attendance_count': attendance_count}
     return render(request, 'myapp/dashboard.html', context)
+

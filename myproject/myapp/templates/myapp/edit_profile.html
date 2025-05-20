@@ -11,25 +11,28 @@
     main.flex-grow { flex: 1 0 auto; }
 
     .edit-profile-page-bg {
-        background: linear-gradient(120deg, #fdf2f8 0%, #f2f2ff 50%, #f0ffff 100%);
+        background: linear-gradient(120deg, #fdf2f8 0%, #f2f2ff 50%, #f0ffff 100%); /* Softer Pink to Lavender to Light Cyan */
     }
     .dark .edit-profile-page-bg {
-        background: linear-gradient(120deg, #31222a 0%, #2f2f4f 50%, #1e293b 100%);
+        background: linear-gradient(120deg, #31222a 0%, #2f2f4f 50%, #1e293b 100%); /* Darker, desaturated versions */
     }
 
     .edit-profile-card {
-        background-color: rgba(255, 255, 255, 0.92);
+        background-color: rgba(255, 255, 255, 0.95); /* Slightly more opaque for better readability */
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(236, 72, 153, 0.15);
+        border: 1px solid rgba(236, 72, 153, 0.1); /* Lighter pink border */
         max-width: 680px;
         border-radius: 1.25rem; /* rounded-2xl */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); /* Softer shadow */
     }
     .dark .edit-profile-card {
-        background-color: rgba(30, 41, 59, 0.9);
-        border: 1px solid rgba(71, 85, 105, 0.5);
+        background-color: rgba(30, 41, 59, 0.92); /* slate-800 slightly more opaque */
+        border: 1px solid rgba(71, 85, 105, 0.4); /* slate-600 transparent */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     }
 
+    /* Profile Image Upload Area */
     .profile-image-upload-area {
         width: 150px;
         height: 150px;
@@ -39,18 +42,18 @@
         position: relative;
         overflow: hidden;
         cursor: pointer;
-        background-color: rgba(252, 231, 243, 0.1);
+        background-color: rgba(252, 231, 243, 0.1); /* Very light pink bg */
     }
     .dark .profile-image-upload-area {
         border-color: #ec4899; /* pink-500 */
-        background-color: rgba(131, 24, 67, 0.05);
+        background-color: rgba(131, 24, 67, 0.05); /* Darker light pink bg */
     }
     .profile-image-upload-area:hover {
-        border-color: #ec4899;
-        background-color: rgba(252, 231, 243, 0.3);
+        border-color: #ec4899; /* pink-500 */
+        background-color: rgba(252, 231, 243, 0.3); /* Lighter pink on hover */
     }
     .dark .profile-image-upload-area:hover {
-        border-color: #fbcfe8;
+        border-color: #fbcfe8; /* Lighter pink for dark hover */
         background-color: rgba(131, 24, 67, 0.15);
     }
     .profile-image-upload-area img.current-profile-img,
@@ -71,43 +74,100 @@
     .profile-image-upload-area .upload-icon-overlay p { color: white; font-size: 0.75rem; margin-top: 0.375rem; font-weight: 500; }
     #id_profile_image { display: none; }
 
+    /* Bio Textarea Styling */
     .bio-textarea {
-        min-height: 100px;
-        border-color: #fbcfe8; background-color: #fff;
+        min-height: 100px; /* Adjusted min-height */
+        border-color: #fbcfe8; /* Pink-200 */
+        background-color: #fff; /* White background */
         transition: all 0.2s ease-in-out;
-        padding: 0.75rem 1rem; line-height: 1.6; border-radius: 0.5rem; border-width: 1px;
+        padding: 0.75rem 1rem; line-height: 1.6; border-radius: 0.5rem; border-width: 1px; /* Tailwind rounded-lg */
     }
-    .dark .bio-textarea { border-color: #4b5563; background-color: #374151; color: #e5e7eb; }
+    .dark .bio-textarea {
+        border-color: #4b5563; /* Gray-600 */
+        background-color: #374151; /* gray-700 */
+        color: #e5e7eb; /* gray-200 */
+    }
     .bio-textarea:focus {
-        border-color: #ec4899; box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.25); outline: none;
+        border-color: #ec4899; /* Pink-500 */
+        box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.25);
+        outline: none;
     }
     .dark .bio-textarea:focus {
-        border-color: #f472b6; box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.35); background-color: #1f2937;
+        border-color: #f472b6; /* Pink-400 */
+        box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.35);
+        background-color: #1f2937; /* slate-800 */
     }
 
+    /* Profile Frame Select Styling */
     .profile-frame-select {
         appearance: none;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23db2777' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23db2777' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* Pink-600 arrow */
         background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.25em 1.25em;
-        padding-right: 2.5rem; border-radius: 0.5rem; border-width: 1px;
+        padding-right: 2.5rem; border-radius: 0.5rem; border-width: 1px; /* Tailwind rounded-lg */
+        border-color: #fbcfe8; /* Pink-200 */
+        background-color: #fff; /* White background */
     }
     .dark .profile-frame-select {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23fbcfe8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23fbcfe8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* Lighter Pink arrow for dark */
+        border-color: #4b5563; /* Gray-600 */
+        background-color: #374151; /* gray-700 */
+        color: #e5e7eb; /* gray-200 */
+    }
+    .profile-frame-select:focus {
+        border-color: #ec4899; /* Pink-500 */
+        box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.25);
+        outline: none;
+    }
+    .dark .profile-frame-select:focus {
+        border-color: #f472b6; /* Pink-400 */
+        box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.35);
     }
 
-    .form-field-group > label {
-        font-family: 'Mitr', sans-serif; color: #c026d3; font-weight: 500;
-        margin-bottom: 0.375rem; display: block;
-    }
-    .dark .form-field-group > label { color: #f0abfc; }
 
+    /* Form Field Group Label Styling */
+    .form-field-group > label.main-label { /* Class for main labels of sections */
+        font-family: 'Mitr', sans-serif;
+        color: #c026d3; /* Fuchsia-600 */
+        font-weight: 500; /* semibold */
+        font-size: 1.125rem; /* text-lg */
+        margin-bottom: 0.5rem; /* mb-2 */
+        display: block;
+    }
+    .dark .form-field-group > label.main-label {
+        color: #f0abfc; /* Fuchsia-300 */
+    }
+    .form-field-group > p.help-text { /* Class for help texts */
+        font-size: 0.75rem; /* text-xs */
+        color: #6b7280; /* gray-500 */
+        margin-top: 0.25rem; /* mt-1 */
+    }
+    .dark .form-field-group > p.help-text {
+        color: #9ca3af; /* gray-400 */
+    }
+
+    /* Action Button Primary Styling */
     .action-button-primary {
-        background-color: #ec4899; color: white;
-        padding: 0.625rem 1.5rem; border-radius: 0.75rem; font-weight: 500;
+        background-color: #ec4899; /* Pink-500 */
+        color: white;
+        padding: 0.625rem 1.5rem; /* py-2.5 px-6 */
+        border-radius: 0.75rem; /* rounded-xl */
+        font-weight: 500; /* medium */
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.07);
     }
-    .action-button-primary:hover { background-color: #db2777; }
-    .dark .action-button-primary { background-color: #f472b6; color: #1e293b; }
-    .dark .action-button-primary:hover { background-color: #f9a8d4; }
+    .action-button-primary:hover {
+        background-color: #db2777; /* Pink-600 */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-1px);
+    }
+    .dark .action-button-primary {
+        background-color: #f472b6; /* Pink-400 */
+        color: #1e293b; /* slate-800 */
+    }
+    .dark .action-button-primary:hover {
+        background-color: #f9a8d4; /* Pink-300 */
+        color: #0f172a; /* slate-900 */
+    }
 
     .animate-popIn {
         animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275) 0.1s forwards;
@@ -117,17 +177,18 @@
 </style>
 {% endblock %}
 
+
 {% block content %}
 <section class="relative min-h-screen flex items-center justify-center py-10 px-4 edit-profile-page-bg overflow-y-auto">
-    <div class="w-full max-w-lg mx-auto my-8 animate-popIn">
+    <div class="w-full max-w-lg mx-auto my-8 animate-popIn"> 
         <form method="post" enctype="multipart/form-data" class="edit-profile-card rounded-2xl shadow-xl p-6 sm:p-8 md:p-10 space-y-6 sm:space-y-7">
             {% csrf_token %}
-            <div class="text-center mb-5 sm:mb-7">
+            <header class="text-center mb-6 sm:mb-8">
                 <h1 class="text-2xl sm:text-3xl font-bold text-pink-600 dark:text-pink-400" style="font-family: 'Mitr', sans-serif;">
                     ✨ แก้ไขโปรไฟล์ของคุณ ✨
                 </h1>
                 <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">อัปเดตข้อมูลส่วนตัวและเลือกกรอบโปรไฟล์สุดเก๋!</p>
-            </div>
+            </header>
 
             {% if messages %}
                 {% for message in messages %}
@@ -150,15 +211,15 @@
             {% endif %}
 
             {# --- Profile Image Section --- #}
-            <div class="form-field-group text-center">
-                <label for="profileImageUploadTrigger" class="block text-md font-semibold mb-2">รูปโปรไฟล์</label>
+            <div class="form-field-group text-center pt-2 pb-4 border-b border-pink-100 dark:border-slate-700">
+                <label for="profileImageUploadTrigger" class="block text-md font-semibold mb-3 main-label">รูปโปรไฟล์</label>
                 <div id="profileImageUploadTrigger" class="profile-image-upload-area mx-auto" title="คลิกเพื่อเปลี่ยนรูปโปรไฟล์">
                     <img src="{% if form.instance.profile_image and form.instance.profile_image.url %}{{ form.instance.profile_image.url }}{% else %}{% static 'images/fw.png' %}{% endif %}"
-                         alt="รูปโปรไฟล์ปัจจุบัน"
-                         class="current-profile-img"
-                         id="imagePreview"
-                         onerror="handleImageError(this, '{% static 'images/fw.png' %}');"> {/* MODIFIED: Call JavaScript function */}
-                    <div class="upload-icon-overlay">
+                    alt="รูปโปรไฟล์ปัจจุบัน"
+                    class="current-profile-img"
+                    id="imagePreview">
+                    
+                         <div class="upload-icon-overlay">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" /><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" /></svg>
                         <p>เปลี่ยนรูป</p>
                     </div>
@@ -167,29 +228,29 @@
                 {% if form.profile_image.errors %}
                 <p class="text-xs text-red-600 dark:text-red-400 font-medium text-center mt-1.5">{{ form.profile_image.errors.0 }}</p>
                 {% endif %}
-                 <p class="text-xs text-slate-500 dark:text-slate-400 text-center mt-1.5">คลิกที่รูปเพื่ออัปโหลด (แนะนำภาพจัตุรัส)</p>
+                 <p class="help-text text-center mt-2">คลิกที่รูปเพื่ออัปโหลด (แนะนำภาพจัตุรัส)</p>
             </div>
             {# --- End Profile Image Section --- #}
 
 
             {# --- Bio Section --- #}
-            <div class="form-field-group">
-                <label for="{{ form.bio.id_for_label }}">เกี่ยวกับตัวคุณ (Bio)</label>
+            <div class="form-field-group pt-3 pb-4 border-b border-pink-100 dark:border-slate-700">
+                <label for="{{ form.bio.id_for_label }}" class="main-label">เกี่ยวกับตัวคุณ (Bio)</label>
                 {% render_field form.bio class="w-full text-sm text-slate-800 dark:text-slate-100 rounded-lg border bio-textarea focus:ring-0" placeholder="เล่าเรื่องราวของคุณให้เพื่อนๆ รู้จัก..." rows="4" %}
                 {% if form.bio.errors %}
                 <p class="text-xs text-red-600 dark:text-red-400 font-medium mt-1">{{ form.bio.errors.0 }}</p>
                 {% endif %}
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">ไม่เกิน 250 ตัวอักษร</p>
+                <p class="help-text">ไม่เกิน 250 ตัวอักษร</p>
             </div>
             {# --- End Bio Section --- #}
 
 
             {# --- Profile Frame Selection Section --- #}
-            <div class="form-field-group pt-4 border-t border-pink-100 dark:border-slate-600">
-                <label for="active_frame_selector">เลือกกรอบโปรไฟล์</label>
+            <div class="form-field-group pt-3">
+                <label for="active_frame_selector" class="main-label">เลือกกรอบโปรไฟล์</label>
                 {% if owned_profile_frames %}
                     <select name="active_frame_selector" id="active_frame_selector"
-                            class="profile-frame-select block w-full px-4 py-2.5 text-sm text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-700 border-pink-300 dark:border-slate-500 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors">
+                            class="profile-frame-select block w-full px-4 py-2.5 text-sm text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors">
                         <option value="">-- ไม่ใช้กรอบโปรไฟล์ --</option>
                         {% for frame in owned_profile_frames %}
                             <option value="{{ frame.id }}" {% if current_active_frame_id == frame.id %}selected{% endif %}>
@@ -197,9 +258,9 @@
                             </option>
                         {% endfor %}
                     </select>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">เลือกกรอบโปรไฟล์ที่คุณแลกมาเพื่อใช้งานกับรูปโปรไฟล์ของคุณ</p>
+                    <p class="help-text">เลือกกรอบโปรไฟล์ที่คุณแลกมาเพื่อใช้งานกับรูปโปรไฟล์ของคุณ</p>
                 {% else %}
-                     <p class="text-sm text-slate-500 dark:text-slate-400 text-center py-2">คุณยังไม่มีกรอบโปรไฟล์ที่แลกมาเลยนี่นา...
+                     <p class="text-sm text-slate-500 dark:text-slate-400 text-center py-2 bg-pink-50 dark:bg-slate-700/50 rounded-lg">คุณยังไม่มีกรอบโปรไฟล์ที่แลกมาเลยนี่นา...
                         <a href="{% url 'rewards_store' %}" class="font-semibold text-pink-500 hover:text-pink-600 dark:text-pink-400 dark:hover:text-pink-300 hover:underline">
                             แวะไปดูที่ร้านค้าของรางวัลสิ!
                         </a>
@@ -210,8 +271,8 @@
 
 
             {# --- Submit Button --- #}
-            <div class="pt-5 flex justify-end">
-                <button type="submit" class="action-button-primary font-semibold transition-all duration-200 ease-in-out shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95">
+            <div class="pt-5 flex justify-end mt-4">
+                <button type="submit" class="action-button-primary font-semibold">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 inline-block -mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a1 1 0 011 1v3a1 1 0 11-2 0V8h-4v3.586l-1.293-1.293zM4 4a1 1 0 011-1h10a1 1 0 011 1v1H4V4z" /></svg>
                     บันทึกการเปลี่ยนแปลง
                 </button>
@@ -233,14 +294,22 @@
         const profileImageInput = document.getElementById('id_profile_image');
         const imagePreview = document.getElementById('imagePreview');
 
-        if (profileImageInput && imagePreview) {
-            const defaultStaticImage = "{% static 'images/fw.png' %}"; // Django renders this to a URL string
-            let originalImageSrc = imagePreview.src;
+        const defaultStaticImage = "{% static 'images/fw.png' %}";
+        const profileImageUrl = "{% if form.instance.profile_image and form.instance.profile_image.url %}{{ form.instance.profile_image.url|escapejs }}{% else %}''{% endif %}";
 
-            if (originalImageSrc === window.location.href || !originalImageSrc || originalImageSrc.endsWith('/None')) {
-                originalImageSrc = defaultStaticImage;
-                imagePreview.src = defaultStaticImage;
-            }
+        let initialImageSrcForReset;
+        if (profileImageUrl && profileImageUrl.trim() !== "") {
+            initialImageSrcForReset = profileImageUrl;
+        } else {
+            initialImageSrcForReset = defaultStaticImage;
+        }
+
+        if (profileImageInput && imagePreview) {
+            imagePreview.src = initialImageSrcForReset;
+            // Add onerror handler programmatically
+            imagePreview.onerror = function() {
+                handleImageError(this, defaultStaticImage);
+            };
 
             if (profileImageUploadTrigger) {
                 profileImageUploadTrigger.addEventListener('click', function() {
@@ -257,7 +326,7 @@
                     }
                     reader.readAsDataURL(file);
                 } else {
-                    imagePreview.src = originalImageSrc;
+                    imagePreview.src = initialImageSrcForReset;
                 }
             });
         } else {
@@ -266,4 +335,3 @@
         }
     });
 </script>
-{% endblock %}

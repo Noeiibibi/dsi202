@@ -53,7 +53,7 @@
             {% if point_logs %}
             <ul class="space-y-3">
                 {% for log in point_logs %}
-                <li class="log-item flex justify-between items-center p-3.5 rounded-lg 
+                <li class="log-item flex justify-between items-center p-3.5 rounded-lg
                            {% if log.points_change > 0 %}log-item-positive bg-green-50 dark:bg-green-900/20{% else %}log-item-negative bg-red-50 dark:bg-red-900/20{% endif %}">
                     <div>
                         <p class="font-medium text-slate-700 dark:text-slate-100">{{ log.get_activity_type_display }}</p>

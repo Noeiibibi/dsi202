@@ -180,7 +180,7 @@
 
 {% block content %}
 <section class="relative min-h-screen flex items-center justify-center py-10 px-4 edit-profile-page-bg overflow-y-auto">
-    <div class="w-full max-w-lg mx-auto my-8 animate-popIn"> 
+    <div class="w-full max-w-lg mx-auto my-8 animate-popIn">
         <form method="post" enctype="multipart/form-data" class="edit-profile-card rounded-2xl shadow-xl p-6 sm:p-8 md:p-10 space-y-6 sm:space-y-7">
             {% csrf_token %}
             <header class="text-center mb-6 sm:mb-8">
@@ -270,9 +270,7 @@
             {# --- End Profile Frame Selection Section --- #}
 
 
-           <!-- ... (previous content remains unchanged) ... -->
-
-            {# --- Submit Button --- #}
+           {# --- Submit Button --- #}
             <div class="pt-5 flex justify-end mt-4">
                 <button type="submit" class="action-button-primary font-semibold">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 inline-block -mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a1 1 0 011 1v3a1 1 0 11-2 0V8h-4v3.586l-1.293-1.293zM4 4a1 1 0 011-1h10a1 1 0 011 1v1H4V4z" /></svg>
@@ -338,4 +336,4 @@
     });
 </script>
 
-{% endblock %} <!-- Add this to close the content block -->
+{% endblock %} ```

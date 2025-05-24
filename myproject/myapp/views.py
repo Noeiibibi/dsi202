@@ -1,8 +1,7 @@
 # myproject/myapp/views.py
-
 # Django Core Imports
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse # เพิ่ม reverse
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -11,7 +10,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.db import transaction, IntegrityError
-from django.utils import timezone
+from django.utils import timezone # เพิ่มบรรทัดนี้
+from .utils import manage_points
 from django.http import HttpResponseForbidden, HttpResponse
 from django.db.models import Q
 
@@ -38,33 +38,6 @@ from .serializers import (
     AttendanceSerializer
 )
 
-# --- Helper function manage_points (ย้ายมาที่นี่หรือแยกไปที่ myapp/utils.py) ---
-# เนื่องจากโค้ดนี้ถูกใช้ใน signals ด้วย จึงควรอยู่ในที่ที่เข้าถึงได้ง่าย
-# หรือ import จาก myapp.signals หรือ myapp.utils
-# ในที่นี้จะใส่ไว้ที่นี่เพื่อความครบถ้วนของโค้ด แต่การย้ายไป utils.py จะดีกว่า
-def manage_points(user_instance, points_to_change, activity_type_code, description_text=""):
-    try:
-        profile, created = UserProfile.objects.get_or_create(user=user_instance)
-        with transaction.atomic():
-            if points_to_change > 0 or (points_to_change < 0 and profile.total_points + points_to_change >= 0):
-                profile.total_points = profile.total_points + points_to_change
-            elif points_to_change < 0 and profile.total_points + points_to_change < 0:
-                print(f"Attempted to deduct more points than available for {user_instance.username}")
-                return False
-            profile.save()
-
-            PointActivityLog.objects.create(
-                user=user_instance,
-                activity_type=activity_type_code,
-                points_change=points_to_change,
-                description=description_text
-            )
-        return True
-    except Exception as e:
-        print(f"Error managing points for {user_instance.username}: {e}")
-        return False
-
-# --- Views เดิมของคุณ ---
 def index(request):
     return redirect('home')
 

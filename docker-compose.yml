@@ -27,9 +27,12 @@ services:
       - POSTGRES_USER=django_user
       - POSTGRES_PASSWORD=django_pass
       - POSTGRES_HOST=db
+      - GOOGLE_CLIENT_ID='YOUR_ACTUAL_CLIENT_ID_FROM_GOOGLE_HERE'
+      - GOOGLE_CLIENT_SECRET='YOUR_ACTUAL_CLIENT_SECRET_FROM_GOOGLE_HERE'
     depends_on:
       - db
     command: /bin/bash /usr/src/app/entrypoint.sh
+
 
   jupyter:
     build:

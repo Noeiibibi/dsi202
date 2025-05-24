@@ -1,5 +1,5 @@
-# Dockerfile
-FROM python:3.9-slim
+# Dockerfile.django
+FROM python:3.10-slim 
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -10,10 +10,14 @@ RUN apt-get update && apt-get install -y \
 # Create a directory for our code
 WORKDIR /usr/src/app
 
-# Copy requirements first, for caching purposes
+RUN echo "Forcing fresh pip install: $(date +%s)"
+
+RUN pip install --no-cache-dir django-allauth==0.61.1 requests==2.31.0 PyJWT cryptography
+
+
 COPY requirements_django.txt .
 
-# Install Python dependencies
+# Install Python dependencies (ส่วนนี้จะยังคงอยู่เพื่อติดตั้ง dependencies อื่นๆ)
 RUN pip install --no-cache-dir -r requirements_django.txt
 
 # Copy the rest of our code into the container

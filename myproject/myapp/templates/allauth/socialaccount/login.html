@@ -1,0 +1,136 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% load i18n %} {# เพิ่มบรรทัดนี้สำหรับใช้ tag i18n ของ Django #}
+
+{% block title %}เชื่อมต่อกับ Google - Chum-Chon Link{% endblock %}
+
+{% block extra_head %}
+<style>
+    html, body { height: 100%; }
+    body { display: flex; flex-direction: column; }
+    main.flex-grow { flex: 1 0 auto; }
+
+    /* Reusing styles from login.html for consistency */
+    .login-page-bg {
+        background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 50%, #FFF2B2 100%); /* Light Pink, Light Cyan, Light Yellow */
+    }
+    .dark .login-page-bg {
+        background: linear-gradient(135deg, #7A2E59 0%, #1A5276 50%, #4D3F00 100%); /* Deeper versions of the cute colors */
+    }
+
+    .login-card-playful {
+        background-color: rgba(255, 255, 255, 0.95); /* เกือบขาวสนิท, โปร่งใสเล็กน้อย */
+        backdrop-filter: blur(15px); /* เพิ่ม Blur ให้ดูเป็น Glassmorphism มากขึ้น */
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 192, 203, 0.5); /* ชมพูอ่อนๆ แบบโปร่งใส */
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* เงาที่นุ่มนวลขึ้น */
+    }
+    .dark .login-card-playful {
+        background-color: rgba(30, 41, 59, 0.9); /* slate-800 ที่โปร่งใสน้อยลงนิดหน่อย */
+        border: 1px solid rgba(100, 116, 139, 0.6); /* slate-500 โปร่งใส */
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-cute-pink {
+        background: linear-gradient(135deg, #FF69B4, #FFB6C1); /* Hot Pink to Light Pink */
+        color: white;
+        font-weight: 700;
+        border-radius: 9999px; /* rounded-full */
+        box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4); /* เงาชมพูเข้มๆ */
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.320, 1.275); /* Springy transition */
+    }
+    .btn-cute-pink:hover {
+        background: linear-gradient(135deg, #FF1493, #FF69B4); /* Deeper Hot Pink */
+        transform: translateY(-3px) scale(1.02); /* ยกขึ้นและขยายเล็กน้อย */
+        box-shadow: 0 8px 20px rgba(255, 20, 147, 0.5);
+    }
+    .dark .btn-cute-pink {
+        background: linear-gradient(135deg, #C71585, #FF4500); /* Medium Violet Red to Orange Red */
+        color: #FFF0F5;
+    }
+    .dark .btn-cute-pink:hover {
+        background: linear-gradient(135deg, #DB7093, #FF6347); /* Paler shades on hover in dark */
+        transform: translateY(-3px) scale(1.02);
+    }
+
+    .text-cute-pink { color: #FF69B4; } /* Hot Pink text for headings */
+    .dark .text-cute-pink { color: #FFC0CB; } /* Light Pink for dark mode headings */
+
+    .text-cute-gray { color: #6A5ACD; } /* Slate Blue for sub-text */
+    .dark .text-cute-gray { color: #E0BBE4; } /* Light Lavender for dark sub-text */
+
+    /* Butterfly animation (reusing from login/signup) */
+    .butterfly-social {
+        position: absolute;
+        opacity: 0.3;
+        pointer-events: none;
+        animation: flutterSocial 15s ease-in-out infinite alternate;
+        z-index: 0;
+    }
+    .butterfly-social-1 { width: 80px; height: 80px; top: 8%; left: 12%; animation-delay: -1s; }
+    .butterfly-social-2 { width: 100px; height: 100px; bottom: 12%; right: 15%; animation-delay: -4s; transform: rotate(15deg); }
+    .butterfly-social-3 { width: 60px; height: 60px; top: 30%; left: 25%; animation-delay: -7s; transform: rotate(-10deg); }
+    .butterfly-social-4 { width: 75px; height: 75px; top: 20%; right: 10%; animation-delay: -10s; transform: rotate(25deg); }
+    .butterfly-social-5 { width: 90px; height: 90px; bottom: 5%; left: 8%; animation-delay: -13s; transform: rotate(-20deg); }
+
+    @keyframes flutterSocial {
+        0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--initial-rotate, 0deg)); }
+        25% { transform: translateX(25px) translateY(-20px) rotate(calc(var(--initial-rotate, 0deg) + 10deg)); }
+        50% { transform: translateX(-15px) translateY(18px) rotate(calc(var(--initial-rotate, 0deg) - 8deg)); }
+        75% { transform: translateX(20px) translateY(-15px) rotate(calc(var(--initial-rotate, 0deg) + 5deg)); }
+    }
+
+    .animate-fadeInUpPlayful {
+        animation: fadeInUpPlayful 0.7s ease-out forwards;
+        opacity: 0;
+    }
+    @keyframes fadeInUpPlayful {
+        from { opacity: 0; transform: translateY(25px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="relative min-h-screen flex items-center justify-center py-12 px-4 login-page-bg overflow-hidden">
+    {# Butterflies for cute ambiance #}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social butterfly-social-1 text-pink-300 dark:text-purple-500" style_vars="--initial-rotate:-5deg;" %}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social butterfly-social-2 text-purple-300 dark:text-pink-500" style_vars="--initial-rotate:20deg;" %}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social butterfly-social-3 text-yellow-300 dark:text-sky-500" style_vars="--initial-rotate:-15deg;" %}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social butterfly-social-4 text-blue-300 dark:text-yellow-500" style_vars="--initial-rotate:10deg;" %}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social butterfly-social-5 text-green-300 dark:text-green-500" style_vars="--initial-rotate:-25deg;" %}
+
+    <div class="w-full max-w-lg mx-auto my-8 animate-fadeInUpPlayful relative z-10">
+        <div class="rounded-2xl shadow-2xl overflow-hidden login-card-playful p-8 sm:p-10 text-center">
+            <h1 class="text-3xl sm:text-4xl font-bold text-cute-pink mb-4" style="font-family: 'Mitr', sans-serif;">
+                <img src="{% static 'images/google-logo.png' %}" alt="Google logo" class="h-8 w-8 inline-block align-middle mr-2 -mt-1"
+                     onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_gmail_2020_svg.svg';">
+                เข้าสู่ระบบด้วย Google
+            </h1>
+            <p class="text-md text-cute-gray mb-8">
+                คุณกำลังจะเข้าสู่ระบบโดยใช้บัญชี Google ของคุณ.
+                <br>โปรดตรวจสอบข้อมูลก่อนดำเนินการต่อนะคะ ✨
+            </p>
+
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <button type="submit"
+                        class="w-full flex items-center justify-center py-3 px-4 rounded-xl shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 btn-cute-pink">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    ดำเนินการต่อ
+                </button>
+            </form>
+
+            <div class="mt-8 text-sm text-slate-600 dark:text-slate-300">
+                <p>ถ้าคุณเปลี่ยนใจ หรือต้องการใช้ช่องทางอื่น:</p>
+                <a href="{% url 'login' %}" class="font-semibold text-pink-600 hover:text-pink-700 dark:text-pink-400 dark:hover:text-pink-300 hover:underline mt-2 inline-block">
+                    ย้อนกลับไปหน้าเข้าสู่ระบบ
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

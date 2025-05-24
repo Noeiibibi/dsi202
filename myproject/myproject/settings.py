@@ -1,3 +1,4 @@
+# myproject/myproject/settings.py
 """
 Django settings for myproject project.
 
@@ -11,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os #
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,12 +23,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&)@5u+$8cjx9!p+u0@jo^-#&8@*5caoje-3a9$_#^i73*@+$c*'
+# SECRET_KEY = 'django-insecure-&)@5u+$8cjx9!p+u0@jo^-#&8@*5caoje-3a9$_#^i73*@+$c*'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your_default_secret_key_for_dev') #
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True' #
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') #
+if DEBUG:
+    ALLOWED_HOSTS += ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -45,50 +51,46 @@ INSTALLED_APPS = [
     'widget_tweaks',
 
     # Add for allauth
-    'django.contrib.sites',  # Required for django.contrib.sites and allauth
-    'allauth',               # allauth core
-    'allauth.account',       # allauth account management
-    'allauth.socialaccount', # allauth social accounts
-    'allauth.socialaccount.providers.google', # Google provider for allauth
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 
 # allauth specific settings
 AUTHENTICATION_BACKENDS = (
-    # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
-    # `allauth` specific authentication methods, such as login by email
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-SITE_ID = 1 # Required for django.contrib.sites and allauth. Make sure this Site (ID 1) is configured correctly in Django Admin.
+SITE_ID = 1
 
-# Redirect URLs for allauth
-LOGIN_REDIRECT_URL = 'home' # URL to redirect to after successful login
-ACCOUNT_LOGOUT_REDIRECT_URL = 'home' # URL to redirect to after successful logout
+LOGIN_REDIRECT_URL = 'home'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 
-# Allauth account settings
-ACCOUNT_USERNAME_REQUIRED = True         # Username is required
-ACCOUNT_EMAIL_REQUIRED = True            # Email is required
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email' # Allow login with username or email
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True # Require password confirmation during signup
-ACCOUNT_UNIQUE_EMAIL = True              # Ensure unique email addresses
-ACCOUNT_SESSION_REMEMBER = True          # Remember me functionality
-ACCOUNT_EMAIL_VERIFICATION = 'none'      # Or 'mandatory' if you want email verification
-SOCIALACCOUNT_QUERY_EMAIL = True         # Request email from social providers (e.g., Google)
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory' #
+SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'SCOPE': [ # What user data you request from Google
-            'profile',  # Provides access to public profile information
-            'email',    # Provides access to the user's email address
+        'SCOPE': [
+            'profile',
+            'email',
         ],
         'AUTH_PARAMS': {
-            'access_type': 'online', # Ensures a refresh token is not returned (unless 'offline' is explicitly requested)
+            'access_type': 'online',
         },
-        'APP': { # These will be loaded from Django Admin later, but kept here for reference
-            'client_id': os.environ.get('GOOGLE_CLIENT_ID'),     # Get from environment variables
-            'secret': os.environ.get('GOOGLE_CLIENT_SECRET'),   # Get from environment variables
-            'key': '' # Not typically needed for Google
+        'APP': {
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID'),
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET'),
+            'key': ''
         }
     }
 }
@@ -102,6 +104,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Allauth middleware: Add the account middleware
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -112,13 +116,12 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'myapp/templates'),
-            # allauth will look for templates in 'templates/allauth/' by default
         ],
-        'APP_DIRS': True, # This allows Django to find templates within app directories (like allauth)
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request', # Required by allauth
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -176,12 +179,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'myapp/static')] 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Media settings
@@ -189,6 +188,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Login settings (these are general Django settings, allauth has its own overrides)
-LOGIN_URL = 'login' # This should point to your allauth login URL if you want consistent behavior
-# LOGIN_REDIRECT_URL is handled by allauth settings above
-# LOGOUT_REDIRECT_URL is handled by allauth settings above
+LOGIN_URL = 'login'

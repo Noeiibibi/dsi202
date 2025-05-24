@@ -8,3 +8,6 @@ traitlets==5.1.1
 djangorestframework
 django-widget-tweaks
 django-admin-interface
+django-allauth
+PyJWT
+cryptography

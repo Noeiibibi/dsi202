@@ -11,3 +11,7 @@ Pillow
 djangorestframework>=3.14.0
 django-widget-tweaks
 django-admin-interface
+
+# For Django Allauth and Google Social Login
+django-allauth==0.51.0
+requests==2.31.0

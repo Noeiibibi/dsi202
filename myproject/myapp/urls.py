@@ -36,6 +36,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('signup/', views.signup, name='signup'),
 
+
     # --- URLs ใหม่สำหรับระบบแต้มและของรางวัล ---
     path('rewards/', views.rewards_store_view, name='rewards_store'),
     path('rewards/redeem/<int:reward_id>/', views.redeem_reward_view, name='redeem_reward'),

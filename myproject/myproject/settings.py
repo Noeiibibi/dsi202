@@ -43,7 +43,56 @@ INSTALLED_APPS = [
     'myapp',
     'rest_framework',
     'widget_tweaks',
+
+    # Add for allauth
+    'django.contrib.sites',  # Required for django.contrib.sites and allauth
+    'allauth',               # allauth core
+    'allauth.account',       # allauth account management
+    'allauth.socialaccount', # allauth social accounts
+    'allauth.socialaccount.providers.google', # Google provider for allauth
 ]
+
+
+# allauth specific settings
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+SITE_ID = 1 # Required for django.contrib.sites and allauth. Make sure this Site (ID 1) is configured correctly in Django Admin.
+
+# Redirect URLs for allauth
+LOGIN_REDIRECT_URL = 'home' # URL to redirect to after successful login
+ACCOUNT_LOGOUT_REDIRECT_URL = 'home' # URL to redirect to after successful logout
+
+# Allauth account settings
+ACCOUNT_USERNAME_REQUIRED = True         # Username is required
+ACCOUNT_EMAIL_REQUIRED = True            # Email is required
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email' # Allow login with username or email
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True # Require password confirmation during signup
+ACCOUNT_UNIQUE_EMAIL = True              # Ensure unique email addresses
+ACCOUNT_SESSION_REMEMBER = True          # Remember me functionality
+ACCOUNT_EMAIL_VERIFICATION = 'none'      # Or 'mandatory' if you want email verification
+SOCIALACCOUNT_QUERY_EMAIL = True         # Request email from social providers (e.g., Google)
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [ # What user data you request from Google
+            'profile',  # Provides access to public profile information
+            'email',    # Provides access to the user's email address
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online', # Ensures a refresh token is not returned (unless 'offline' is explicitly requested)
+        },
+        'APP': { # These will be loaded from Django Admin later, but kept here for reference
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID'),     # Get from environment variables
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET'),   # Get from environment variables
+            'key': '' # Not typically needed for Google
+        }
+    }
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,13 +111,14 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
-            os.path.join(BASE_DIR, 'myapp/templates'),  # เพิ่มบรรทัดนี้
+            os.path.join(BASE_DIR, 'myapp/templates'),
+            # allauth will look for templates in 'templates/allauth/' by default
         ],
-        'APP_DIRS': True,
+        'APP_DIRS': True, # This allows Django to find templates within app directories (like allauth)
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
+                'django.template.context_processors.request', # Required by allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -134,13 +184,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-import os  # อย่าลืม import os ด้วยถ้ายังไม่ได้ import
-
 # Media settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Login settings
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+# Login settings (these are general Django settings, allauth has its own overrides)
+LOGIN_URL = 'login' # This should point to your allauth login URL if you want consistent behavior
+# LOGIN_REDIRECT_URL is handled by allauth settings above
+# LOGOUT_REDIRECT_URL is handled by allauth settings above

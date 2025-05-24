@@ -1,5 +1,5 @@
 # Dockerfile.django
-FROM python:3.10-slim 
+FROM python:3.9-slim
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -10,11 +10,11 @@ RUN apt-get update && apt-get install -y \
 # Create a directory for our code
 WORKDIR /usr/src/app
 
-RUN echo "Forcing fresh pip install: $(date +%s)"
-
+# *** เพิ่มบรรทัดเหล่านี้เพื่อติดตั้ง allauth และ dependencies สำคัญก่อน ***
 RUN pip install --no-cache-dir django-allauth==0.61.1 requests==2.31.0 PyJWT cryptography
+# *** สิ้นสุดการเพิ่มบรรทัด ***
 
-
+# Copy requirements first, for caching purposes
 COPY requirements_django.txt .
 
 # Install Python dependencies (ส่วนนี้จะยังคงอยู่เพื่อติดตั้ง dependencies อื่นๆ)
@@ -26,8 +26,9 @@ COPY . .
 # Make sure our entrypoint script is executable
 RUN chmod +x entrypoint.sh
 
-# Expose port 8000 for Django
+# Expose port 8000 for Django (คุณสามารถเพิ่มบรรทัดนี้ได้ หากยังไม่มี)
 EXPOSE 8000
 
-# Default command
+# Default command (นี่คือ command ที่ Docker จะรันหากไม่ได้กำหนดใน docker-compose.yml แต่ใน docker-compose.yml ของคุณกำหนดเป็น entrypoint.sh อยู่แล้ว)
 CMD ["/bin/bash", "entrypoint.sh"]
+

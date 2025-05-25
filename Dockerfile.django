@@ -1,4 +1,4 @@
-# Dockerfile
+# Dockerfile.django
 FROM python:3.9-slim
 
 # Install system dependencies
@@ -14,7 +14,8 @@ WORKDIR /usr/src/app
 COPY requirements_django.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements_django.txt
+RUN pip install --no-cache-dir --default-timeout=120 -r requirements_django.txt
+#                                 ^^^^^^^^^^^^^^^^^^^ เพิ่มส่วนนี้
 
 # Copy the rest of our code into the container
 COPY . .

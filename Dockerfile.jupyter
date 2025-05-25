@@ -14,7 +14,8 @@ WORKDIR /usr/src/app
 COPY requirements_jupyter.txt .
 
 # Install Python dependencies using the updated requirements file
-RUN pip install --no-cache-dir -r requirements_jupyter.txt
+RUN pip install --no-cache-dir --default-timeout=120 -r requirements_jupyter.txt
+#                                 ^^^^^^^^^^^^^^^^^^^ ส่วนที่เพิ่มเข้ามา
 
 # Copy the entire project into the container
 COPY . .

@@ -21,18 +21,16 @@ services:
       - .:/usr/src/app:rw
     ports:
       - "8000:8000"
-    env_file:       
-      - ./.env 
     environment:
       - PYTHONUNBUFFERED=1
       - POSTGRES_DB=django_db
       - POSTGRES_USER=django_user
       - POSTGRES_PASSWORD=django_pass
       - POSTGRES_HOST=db
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}  # แก้ไข syntax แล้ว
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} # แก้ไข syntax แล้ว
+      - GOOGLE_CLIENT_ID='YOUR_ACTUAL_CLIENT_ID_FROM_GOOGLE_HERE'
+      - GOOGLE_CLIENT_SECRET='YOUR_ACTUAL_CLIENT_SECRET_FROM_GOOGLE_HERE'
     depends_on:
-      - db # แก้ไข: ลบ "- serviceName" ออกไปแล้ว
+      - db
     command: /bin/bash /usr/src/app/entrypoint.sh
 
 

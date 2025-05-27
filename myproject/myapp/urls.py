@@ -46,4 +46,6 @@ urlpatterns = [
 
     # API URLs
     path('api/', include(router.urls)),
+    # ... other paths for your app
+    
 ]

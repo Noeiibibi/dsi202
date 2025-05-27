@@ -1,23 +1,150 @@
 {% extends 'myapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %} {# Add widget_tweaks for consistency, even if not strictly needed here yet #}
 
 {% block title %}เข้าสู่ระบบด้วย Google - Chum-Chon Link{% endblock %}
 
+{% block extra_head %}
+<style>
+    html, body { height: 100%; }
+    body { display: flex; flex-direction: column; }
+    main.flex-grow { flex: 1 0 auto; }
+
+    /* Re-using existing playful background from login/signup for consistency */
+    .social-login-page-bg {
+        background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 50%, #FFF2B2 100%); /* Light Pink, Light Cyan, Light Yellow */
+    }
+    .dark .social-login-page-bg {
+        background: linear-gradient(135deg, #7A2E59 0%, #1A5276 50%, #4D3F00 100%); /* Deeper versions of the cute colors */
+    }
+
+    /* Card Panel styling - consistent with other forms */
+    .social-login-card-playful {
+        background-color: rgba(255, 255, 255, 0.95); /* Almost white, slightly transparent */
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 192, 203, 0.5); /* Soft pink transparent */
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+    .dark .social-login-card-playful {
+        background-color: rgba(30, 41, 59, 0.9); /* slate-800 slightly more opaque */
+        border: 1px solid rgba(100, 116, 139, 0.6); /* slate-500 transparent */
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Butterfly animation (re-using from login/signup) */
+    .butterfly-social-login {
+        position: absolute;
+        opacity: 0.3;
+        pointer-events: none;
+        animation: flutterSocialLogin 15s ease-in-out infinite alternate;
+        z-index: 0;
+    }
+    .butterfly-social-login-1 { width: 80px; height: 80px; top: 8%; left: 12%; animation-delay: -1s; }
+    .butterfly-social-login-2 { width: 100px; height: 100px; bottom: 12%; right: 15%; animation-delay: -4s; transform: rotate(15deg); }
+    .butterfly-social-login-3 { width: 60px; height: 60px; top: 30%; left: 25%; animation-delay: -7s; transform: rotate(-10deg); }
+    .butterfly-social-login-4 { width: 75px; height: 75px; top: 20%; right: 10%; animation-delay: -10s; transform: rotate(25deg); }
+    .butterfly-social-login-5 { width: 90px; height: 90px; bottom: 5%; left: 8%; animation-delay: -13s; transform: rotate(-20deg); }
+
+    @keyframes flutterSocialLogin {
+        0%, 100% { transform: translateX(0px) translateY(0px) rotate(var(--initial-rotate, 0deg)); }
+        25% { transform: translateX(25px) translateY(-20px) rotate(calc(var(--initial-rotate, 0deg) + 10deg)); }
+        50% { transform: translateX(-15px) translateY(18px) rotate(calc(var(--initial-rotate, 0deg) - 8deg)); }
+        75% { transform: translateX(20px) translateY(-15px) rotate(calc(var(--initial-rotate, 0deg) + 5deg)); }
+    }
+
+    .animate-fadeInUpPlayful {
+        animation: fadeInUpPlayful 0.7s ease-out forwards;
+        opacity: 0;
+    }
+    @keyframes fadeInUpPlayful {
+        from { opacity: 0; transform: translateY(25px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Social login button styling - Enhanced for cuteness */
+    .social-login-button-enhanced {
+        background-color: white; /* Clean white */
+        border: 1.5px solid #FFD1DC; /* Cute light pink */
+        color: #6A5ACD; /* Slate Blue */
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        font-weight: 600; /* Bolder text */
+        display: inline-flex; /* For icon alignment */
+        align-items: center;
+        justify-content: center;
+    }
+    .dark .social-login-button-enhanced {
+        background-color: #374151; /* gray-700 */
+        border-color: #8A2BE2; /* Blue Violet */
+        color: #E0BBE4; /* Light Lavender */
+    }
+    .social-login-button-enhanced:hover {
+        background-color: #FFF0F5; /* LavenderBlush */
+        border-color: #FF69B4; /* Hot Pink */
+        color: #DE3163; /* Crimson */
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .dark .social-login-button-enhanced:hover {
+        background-color: #4B0082; /* Indigo */
+        border-color: #DDA0DD; /* Plum */
+        color: #FFF0F5; /* LavenderBlush */
+    }
+    .social-login-button-enhanced:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+
+    .text-cute-pink { color: #FF69B4; } /* Hot Pink text for headings */
+    .dark .text-cute-pink { color: #FFC0CB; } /* Light Pink for dark mode headings */
+
+    .text-cute-gray { color: #6A5ACD; } /* Slate Blue for sub-text */
+    .dark .text-cute-gray { color: #E0BBE4; } /* Light Lavender for dark sub-text */
+
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="py-10">
-    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">เข้าสู่ระบบด้วย Google</h1>
-        <p class="mb-6 text-center text-gray-700">
-            คุณกำลังจะเข้าสู่ระบบด้วยบัญชี Google ของคุณ<br>
-            กดปุ่มด้านล่างเพื่อดำเนินการต่อ
-        </p>
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">
-                <i class="fab fa-google"></i> ดำเนินการต่อด้วย Google
-            </button>
-        </form>
-        <div class="mt-4 text-center">
-            <a href="{% url 'login' %}" class="text-purple-600 hover:text-purple-800">กลับไปหน้าเข้าสู่ระบบปกติ</a>
+<section class="relative min-h-screen flex items-center justify-center py-12 px-4 social-login-page-bg overflow-hidden">
+    {# Butterflies from partial for consistent theme #}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social-login butterfly-social-login-1 text-pink-300 dark:text-purple-500" style_vars="--initial-rotate:-5deg;" %}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social-login butterfly-social-login-2 text-purple-300 dark:text-pink-500" style_vars="--initial-rotate:20deg;" %}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social-login butterfly-social-login-3 text-yellow-300 dark:text-sky-500" style_vars="--initial-rotate:-15deg;" %}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social-login butterfly-social-login-4 text-blue-300 dark:text-yellow-500" style_vars="--initial-rotate:10deg;" %}
+    {% include 'myapp/partials/_butterfly_icon.html' with butterfly_classes="butterfly-social-login butterfly-social-login-5 text-green-300 dark:text-green-500" style_vars="--initial-rotate:-25deg;" %}
+
+    <div class="w-full max-w-md mx-auto my-8 animate-fadeInUpPlayful relative z-10">
+        <div class="social-login-card-playful rounded-2xl shadow-2xl p-6 sm:p-8">
+            <div class="text-center mb-6 sm:mb-8">
+                <img src="{% static 'images/logo.png' %}"
+                     alt="โลโก้ Chum-Chon Link"
+                     class="h-16 sm:h-20 mx-auto mb-4 drop-shadow-md"
+                     onerror="this.onerror=null; this.src='https://placehold.co/120x80/FFFFFF/FFFFFF?text=Logo&font=mitr';">
+                <h1 class="text-2xl sm:text-3xl font-bold text-cute-pink mb-2" style="font-family: 'Mitr', sans-serif;">
+                    เข้าสู่ระบบด้วย Google
+                </h1>
+                <p class="text-sm text-cute-gray">
+                    คุณกำลังจะเข้าสู่ระบบด้วยบัญชี Google ของคุณ<br>
+                    กดปุ่มด้านล่างเพื่อดำเนินการต่อ 💖
+                </p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit"
+                        class="w-full px-6 py-3 rounded-xl text-md social-login-button-enhanced focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transform hover:scale-105 active:scale-95">
+                    <img class="h-5 w-5 mr-3" src="{% static 'images/google-logo.png' %}" alt="Google logo"
+                         onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_gmail_2020_svg.svg';">
+                    ดำเนินการต่อด้วย Google
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="{% url 'login' %}" class="text-sm text-pink-600 hover:text-pink-700 dark:text-pink-400 dark:hover:text-pink-300 hover:underline">
+                    &larr; กลับไปหน้าเข้าสู่ระบบปกติ
+                </a>
+            </div>
         </div>
     </div>
 </section>
